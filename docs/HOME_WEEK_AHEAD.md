@@ -67,3 +67,15 @@ Tests: `tests/home-week.mjs`, with saved copies of ESPN's college football board
 - The choices are `level|sport` pairs saved on the device (`localStorage` key `sas-home-filter`). Nothing chosen shows everything.
 - They trim everyone else's games: Live now everywhere, the week ahead's other games, and featured meets. A starred team's games always show, every sport. A team's own page is not filtered.
 - Tests: `tests/home-customize.mjs`; the week test checks that the filter trims others and keeps favorites.
+
+## Level pages (November 21, `4.324.0-level-pages`)
+
+**User:** "Can we make a landing page for each level that you can also customize what you see when you click on middle school, high school, college, and pro?"
+
+- Each level button (Middle School, High School, College, Pro) now opens that level's own landing page instead of the first team on its list. The page is Home for that level: the viewer's favorites at that level (Live now, the spotlight, the week ahead), then everyone else's games at that level, by sport.
+  - College and Pro: ESPN's boards, every day through next Sunday.
+  - High school and Middle school: today's games at every school in the app (Kansas tonight, `/live/tonight`). Other days show the viewer's teams only, since no source lists every school's schedule for the week.
+- The team finder sits above it, with "Choose a school…" (or "Choose a team…") selected. Picking a team opens that team's page, as before. Home returns to all levels.
+- Each level page has its own Customize, showing only that level's sports, saved on the device as `sas-home-filter:<level>`. Home keeps `sas-home-filter`.
+- `homeTeams()` returns the favorites at that level. Favorites' catalog cards are fetched first, since their level is needed.
+- Tests: `tests/home-customize.mjs` (a level page: that level only, its own panel and key); `tests/home-week.mjs` (Kansas tonight's games as others, never highlighted; the subtitle).

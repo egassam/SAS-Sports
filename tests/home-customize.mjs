@@ -10,8 +10,8 @@ assert.ok(start>0&&end>start,'the block is found');
 const block=page.slice(start,end);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>`&#${c.charCodeAt(0)};`);
 const store=new Map(),localStorage={getItem:k=>store.has(k)?store.get(k):null,setItem:(k,v)=>store.set(k,String(v))};
-const env={homeView:true};
-const load=()=>Function('esc','localStorage','env',block.replace(/\bhomeView\b/g,'env.homeView')+';return{homeAllows,homeCustomize,homeFilterSummary,saveHomeFilter,get set(){return homeFilterSet},open:v=>{homeCustomOpen=v},HOME_FILTER_SPORTS};')(esc,localStorage,env);
+const env={homeView:true,levelHome:null};
+const load=()=>Function('esc','localStorage','env','HOME_LEVEL_NAMES',block.replace(/\bhomeView\b/g,'env.homeView').replace(/\blevelHome\b/g,'env.levelHome')+';return{homeAllows,homeCustomize,homeFilterSummary,saveHomeFilter,get set(){return homeFilterSet},open:v=>{homeCustomOpen=v},HOME_FILTER_SPORTS};')(esc,localStorage,env,{pro:'Pro',college:'College','high-school':'High school','middle-school':'Middle school'});
 
 // 1. Nothing chosen: everything shows; the bar says so.
 {
@@ -49,6 +49,21 @@ const load=()=>Function('esc','localStorage','env',block.replace(/\bhomeView\b/g
   const h=load();
   const schools=JSON.parse(readFileSync(new URL('../src/schools.json',import.meta.url),'utf8')),sponsored=JSON.parse(readFileSync(new URL('../src/sponsored-sports.json',import.meta.url),'utf8'));
   for(const s of (Array.isArray(schools)?schools:schools.schools)){const lv=s.level||'college';for(const sp of sponsored[s.id]||s.sponsored_sports||[])assert.ok(h.HOME_FILTER_SPORTS[lv].includes(sp),`${lv} ${sp} (${s.id}) is offered`)}
+}
+// 5b. A level's own page (user, November 21: "a landing page for each level
+// that you can also customize"): only that level, its own saved choice.
+{
+  store.clear();env.levelHome='college';
+  const h=load();
+  assert.ok(h.homeAllows('college','Volleyball')&&!h.homeAllows('pro','Football')&&!h.homeAllows('high-school','Football'),'a College page shows college games only');
+  assert.match(h.homeCustomize(),/Showing: <b>everything in College<\/b>/);
+  h.open(true);const panel=h.homeCustomize();
+  assert.ok(panel.includes('<div class="hc-level">College</div>')&&!panel.includes('<div class="hc-level">Pro</div>'),'the panel lists that level only');
+  h.set.add('college|Basketball');h.saveHomeFilter();
+  assert.ok(store.has('sas-home-filter:college')&&!store.has('sas-home-filter'),'saved under the level\'s own key');
+  assert.ok(!load().homeAllows('college','Football')&&load().homeAllows('college','Basketball'),'the level\'s choice');
+  env.levelHome=null;assert.equal(load().set.size,0,'Home keeps its own choice');
+  store.clear();
 }
 // 6. Wired into Home: everyone else's games are trimmed; favorites are not.
 assert.match(page,/\.filter\(x=>!homeView\|\|teams\.includes\(x\.school_id\)\|\|homeAllows\(/,'feeds: favorites always, the rest by the choice');

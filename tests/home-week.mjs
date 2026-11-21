@@ -59,10 +59,10 @@ const block=page.slice(page.indexOf('// The week ahead (user, November 20, 2026'
 assert.ok(block.length>2000,'the block is found');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>`&#${c.charCodeAt(0)};`);
 const catalog={'manhattan-ks':{level:'high-school',name:'Manhattan High School',short_name:'Manhattan'},kstate:{level:'college',name:'Kansas State',short_name:'K-State',theme:{}},kansas:{level:'college'},'kansas-city-chiefs':{level:'pro'},byu:{level:'college'}};
-const env={homeView:true,teams:['kstate','kansas-city-chiefs'],view:'all',q:''};
-const api=Function('homeAllows','esc','countdownAt','homeTeams','catalogEntry','knownColors','search','marqueeOf','slug','sectionHead','homeSectionOpen','comingDay','apiFetch','homeMode','render','displayedGroups','viewerTimeZone','env','document',
-  block.replace(/\bhomeView\b/g,'env.homeView').replace(/\bcurrentView\b/g,'env.view')+';return{weekSections,weekTile,weekHero,weekSpotlight,withoutWeek,weekRequestDays,weekBounds,weekSection,set:m=>{weekDays=m},setDay:d=>{weekPickDay=d}};')(
-  (lv,sp)=>!env.only||env.only.has(`${lv}|${sp}`),esc,t=>{const ms=t-Date.now();return ms>0?{t,d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4),s:Math.floor(ms%6e4/1e3)}:null},()=>env.teams,id=>catalog[id],()=>null,{get value(){return env.q}},()=>['#fff','●'],s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-'),(t,sub)=>`<h2>${t}</h2><p>${sub}</p>`,t=>`<section id="${t}">`,x=>({day:x.day,at:x.at??Date.parse(`${x.day}T18:00:00Z`),time:x.time??null}),null,()=>true,()=>{},()=>[],'America/Chicago',env,{querySelector:()=>({hidden:false,classList:{contains:()=>false}})});
+const env={levelHome:null,homeView:true,teams:['kstate','kansas-city-chiefs'],view:'all',q:''};
+const api=Function('homeAllows','esc','HOME_LEVEL_NAMES','apiFetch2','countdownAt','homeTeams','catalogEntry','knownColors','search','marqueeOf','slug','sectionHead','homeSectionOpen','comingDay','apiFetch','homeMode','render','displayedGroups','viewerTimeZone','env','document',
+  block.replace(/\bhomeView\b/g,'env.homeView').replace(/\blevelHome\b/g,'env.levelHome').replace(/\bcurrentView\b/g,'env.view')+';return{weekSections,weekTile,weekHero,weekSpotlight,withoutWeek,weekRequestDays,weekBounds,weekSection,set:m=>{weekDays=m},setDay:d=>{weekPickDay=d}};')(
+  (lv,sp)=>(!env.levelHome||(lv||'college')===env.levelHome)&&(!env.only||env.only.has(`${lv}|${sp}`)),esc,{pro:'Pro',college:'College','high-school':'High school','middle-school':'Middle school'},null,t=>{const ms=t-Date.now();return ms>0?{t,d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4),s:Math.floor(ms%6e4/1e3)}:null},()=>env.teams,id=>catalog[id],()=>null,{get value(){return env.q}},()=>['#fff','●'],s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-'),(t,sub)=>`<h2>${t}</h2><p>${sub}</p>`,t=>`<section id="${t}">`,x=>({day:x.day,at:x.at??Date.parse(`${x.day}T18:00:00Z`),time:x.time??null}),null,()=>true,()=>{},()=>[],'America/Chicago',env,{querySelector:()=>({hidden:false,classList:{contains:()=>false}})});
 // The days asked for: today through next week's Sunday (Eastern).
 {
   const fri=api.weekRequestDays(Date.parse('2026-11-20T18:00:00Z'));
@@ -93,6 +93,18 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   env.only=new Set(['pro|Football']);assert.deepEqual(api.weekSections().others.map(x=>x.g.id),[],'Customize Home: only Pro Football, so college basketball is left out');assert.deepEqual(api.weekSections().mine.map(x=>x.g.id).sort(),['a','b'],'favorites always show (user, November 21)');env.only=null;
   env.view='results';assert.deepEqual(api.weekSections(),{mine:[],others:[]},'not on Results');env.view='all';
   env.homeView=false;assert.equal(api.weekSections().others.length,0,'a team\'s own page shows only its own games');env.homeView=true;
+  // A high school page: Kansas tonight's games join as the others, never as favorites.
+  {
+    const local=new Date().toLocaleDateString('en-CA',{timeZone:'America/Chicago'});
+    const tonight=[{f:{e:{id:'t1',title:'Hanover at Axtell',opponent:'Axtell',event_type:'GAME'},school:'Hanover',sport:'Football',school_id:'hanover-ks'},day:local,at:Date.now()+36e5,time:'7:00 PM',team:'hanover-ks',level:'high-school',other:true}];
+    env.levelHome='high-school';
+    const w=api.weekSections([],tonight);
+    assert.deepEqual(w.others.map(x=>x.f?.e.id),['t1'],'tonight\'s game is listed (ESPN\'s college and pro games are not)');
+    const tile=api.weekTile(w.others[0]);
+    assert.match(tile,/class="wk-tile"/,'not highlighted: not a favorite');
+    assert.match(api.weekSection(w),/today's games at every high school/,'the subtitle says what the page shows');
+    env.levelHome=null;
+  }
   // A tile: both teams in their own colors (no logos), the favorite highlighted.
   const tile=api.weekTile(mine.find(x=>x.g.id==='a'));
   assert.match(tile,/class="wk-tile fav"[^>]*data-open-team="kstate"[^>]*data-open-sport="Football"/,'the favorite\'s tile, highlighted, opens its football');

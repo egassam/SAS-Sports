@@ -230,7 +230,7 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .preview-individual-result span{min-width:0;overflow-wrap:anywhere}
 .preview-individual-result strong{white-space:nowrap;font-variant-numeric:tabular-nums}
 @media(max-width:560px){.preview-team-result{gap:8px}.preview-team-result strong{font-size:17px}.preview-group-title{font-size:12px}}
-.home-view .finder,.home-view #favorite,.home-view #fieldLive{display:none!important}.home-view .action-row{grid-template-columns:1fr auto}
+.home-view .finder,.home-view #favorite,.home-view #fieldLive{display:none!important}.home-view.level-home .finder{display:grid!important}.home-view .action-row{grid-template-columns:1fr auto}
 .favorite-teams .favorite-team{background:color-mix(in srgb,var(--chip,#29435f) 80%,#0b1622);color:var(--chip-ink,#eef3f8);border:1.5px solid color-mix(in srgb,var(--chip-edge,#29435f) 70%,transparent);box-shadow:none;font-weight:800}
 .favorite-teams .favorite-team.active{background:var(--chip,#29435f);border-color:var(--chip-edge,#29435f);box-shadow:0 0 0 2px color-mix(in srgb,#fff 60%,transparent)}
 /* My Teams dropdown (user, October 30) */
@@ -962,11 +962,17 @@ async function loadNews(generation,signal){
 // page (user, October 29): browsing a team no longer writes ?school= into the
 // address, so a reload, a restored tab or a saved shortcut opens Home.
 let homeView=!new URLSearchParams(location.search).get('school');
-function applyHomeView(){document.body.classList.toggle('home-view',homeView);if(homeView){if(!fieldTimer&&!fieldBusy)loadFieldHome()}else{clearTimeout(fieldTimer);fieldTimer=null;fieldHome=[];fieldKey=''}applyCurrentSchoolTheme();if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent='My Teams · every level'}}
+// A level's own landing page (user, November 21, 2026: "Can we make a
+// landing page for each level that you can also customize what you see when
+// you click on middle school, high school, college, and pro?"): Home's layout
+// for one level. levelHome names the level, or is null on Home and on a
+// team's page.
+let levelHome=null;const HOME_LEVEL_NAMES={pro:'Pro',college:'College','high-school':'High school','middle-school':'Middle school'};
+function applyHomeView(){document.body.classList.toggle('home-view',homeView);if(homeView){if(!fieldTimer&&!fieldBusy)loadFieldHome()}else{clearTimeout(fieldTimer);fieldTimer=null;fieldHome=[];fieldKey=''}applyCurrentSchoolTheme();if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent=levelHome?`${HOME_LEVEL_NAMES[levelHome]||levelHome} · your teams and every game`:'My Teams · every level'}document.body.classList.toggle('level-home',Boolean(homeView&&levelHome))}
 function homeMode(){return homeView||!sportFilter.value}
 // Home: the favorites, in their order. A team's own page with no sport
 // chosen: that team alone.
-function homeTeams(){return homeView?favoriteSchoolIds():[school.value].filter(Boolean)}
+function homeTeams(){return homeView?favoriteSchoolIds().filter(id=>!levelHome||(catalogEntry(id)?.level||'college')===levelHome):[school.value].filter(Boolean)}
 // What this device last saw of a team-sport (its saved feed, up to 30 days
 // old): whether a game is live or today, and the days to the next game and
 // since the last result. Null when it has no copy.
@@ -1167,7 +1173,7 @@ function loadWeek(signal){
 // Eastern date (its midnight start would fall on the day before).
 const weekDayOf=g=>g.time_tba?zoneDay(g.start_utc,'America/New_York'):zoneDay(g.start_utc,viewerTimeZone);
 const weekPlain=v=>String(v||'').toLowerCase().replace(/^#\d+\s+/,'').replace(/[^a-z0-9]+/g,' ').trim();
-function weekSections(feed=[]){
+function weekSections(feed=[],extra=[]){
   if(currentView!=='all'&&currentView!=='upcoming')return{mine:[],others:[]};
   const teams=homeTeams(),q=search.value.trim().toLowerCase(),{today,nextSunday}=weekBounds(),seen=new Set(),boards=[];
   for(const {games} of weekDays.values())for(const g of games||[]){if(seen.has(g.id))continue;seen.add(g.id);const day=weekDayOf(g);if(day<today||day>nextSunday||(!g.time_tba&&Date.parse(g.start_utc)<=Date.now()))continue;if(q&&!`${g.away?.name} ${g.home?.name} ${g.sport} ${g.team_label||''}`.toLowerCase().includes(q))continue;boards.push({g,day,at:Date.parse(g.start_utc)})}
@@ -1189,7 +1195,11 @@ function weekSections(feed=[]){
   // A favorite's game on ESPN's board its schedule does not list (or not yet loaded).
   for(const w of mineBoards)if(!used.has(w.g.id))mine.push({...w,team:mineOf(w.g)});
   mine.sort((a,b)=>a.day.localeCompare(b.day)||((a.g?a.g.time_tba:!a.time)?1:0)-((b.g?b.g.time_tba:!b.time)?1:0)||a.at-b.at);
-  others.sort((a,b)=>a.day.localeCompare(b.day)||(a.g.time_tba?1:0)-(b.g.time_tba?1:0)||a.at-b.at);
+  // A high or middle school page: today's games of every school in the app
+  // (Kansas tonight), as the others.
+  if(homeView)for(const x of extra)if(!teams.includes(x.team)&&x.day>=today&&x.day<=nextSunday&&homeAllows(weekLevelOf(x),weekSportOf(x))&&(!q||`${x.f.e.title} ${x.f.school} ${x.f.sport}`.toLowerCase().includes(q)))others.push(x);
+  const tba=x=>(x.g?x.g.time_tba:!x.time)?1:0;
+  others.sort((a,b)=>a.day.localeCompare(b.day)||tba(a)-tba(b)||a.at-b.at);
   return{mine,others};
 }
 const weekSportName=g=>g.league?`${g.league} · ${g.sport}`:g.team_label?`${g.team_label} ${g.sport}`:g.sport;
@@ -1205,7 +1215,7 @@ const WEEK_BELL_ICON='<svg viewBox="0 0 16 16" width="16" height="16" aria-hidde
 // college and pro games, featured first. Team colors stand in for logos (no
 // logos: user, October 15 and November 20).
 const WEEK_GRAY='#3b4a5e',WEEK_SPORT_SHOWN=6,WEEK_LEVELS=['college','pro','high-school','middle-school'],WEEK_LEVEL_NAMES={'middle-school':'Middle school','high-school':'High school',college:'College',pro:'Pro'};
-const weekLevelOf=x=>x.g?(x.g.level||'college'):(catalogEntry(x.team)?.level||'college');let weekPickDay=null;const expandedWeekDays=new Set();
+const weekLevelOf=x=>x.level||(x.g?(x.g.level||'college'):(catalogEntry(x.team)?.level||'college'));let weekPickDay=null;const expandedWeekDays=new Set();
 const weekHex=v=>/^#[0-9a-f]{6}$/i.test(v||'')?v:null;
 const weekLum=hex=>{const n=parseInt(hex.slice(1),16);return(.2126*(n>>16&255)+.7152*(n>>8&255)+.0722*(n&255))/255};
 // A color that reads on the dark page: not near black or white.
@@ -1216,7 +1226,7 @@ const weekInitials=name=>{const words=String(name||'').replace(/[^A-Za-z0-9 ]+/g
 function weekSides(x){
   const teams=homeTeams();
   if(x.g){const g=x.g,side=t=>({id:t?.id||null,name:t?.name||'TBA',abbr:t?.abbr||weekInitials(t?.name),color:weekColor(t?.color,knownColors(catalogEntry(t?.id)?.theme)?.main,t?.alt),rank:t?.rank||null,record:t?.record||null,mine:Boolean(t?.id&&teams.includes(t.id))});return[side(g.away),side(g.home)]}
-  const e=x.f.e,entry=catalogEntry(x.team),me={id:x.team,name:entry?.short_name||entry?.name||x.f.school,abbr:weekInitials(entry?.name||x.f.school),color:weekColor(knownColors(entry?.theme)?.main),mine:true};
+  const e=x.f.e,entry=catalogEntry(x.team),me={id:x.team,name:entry?.short_name||entry?.name||x.f.school,abbr:weekInitials(entry?.name||x.f.school),color:weekColor(knownColors(entry?.theme)?.main),mine:!x.other};
   const bare=String(e.title||'').replace(/^(?:Boys|Girls|Men's|Women's|JV|C Team|Varsity)\s*·\s*/i,'');
   const opp=e.opponent&&!/^(?:MEET|RACE)$/i.test(e.event_type||'')?{name:e.opponent,abbr:weekInitials(e.opponent),color:WEEK_GRAY}:null;
   if(!opp)return[{...me,name:bare||me.name}];
@@ -1275,9 +1285,21 @@ function weekDayView(mine,others,spot){
     return`<section class="wk-level wk-lv-${lv}" aria-label="${esc(WEEK_LEVEL_NAMES[lv]||lv)}"><div class="wk-lhead" id="${esc(`week-${lv}`)}" role="heading" aria-level="3"><span class="wk-lname">${esc(WEEK_LEVEL_NAMES[lv]||lv)}</span><span class="wk-lcount">${esc(tally(favs(m),count(m)))}</span></div>${groups}</section>`}).join('');
   return chips+head+jump+sections;
 }
+// Kansas tonight's games (a high or middle school page) as week items.
+let levelTonight=null,levelTonightAt=0,levelTonightBusy=false;
+function loadLevelTonight(){
+  if(!levelHome||!['high-school','middle-school'].includes(levelHome)||levelTonightBusy)return;
+  if(levelTonight?.level===levelHome&&Date.now()-levelTonightAt<60000)return;
+  levelTonightBusy=true;const level=levelHome;
+  apiFetch(`/live/tonight?level=${encodeURIComponent(level)}`,1,{transientOnly:true}).then(r=>r.json()).then(d=>{if(Array.isArray(d?.counties)){levelTonight={...d,level};levelTonightAt=Date.now();if(homeView&&levelHome===level)render(displayedGroups())}}).catch(()=>{}).finally(()=>{levelTonightBusy=false});
+}
+function levelTonightItems(){
+  if(!levelHome||levelTonight?.level!==levelHome)return[];
+  return levelTonight.counties.flatMap(c=>c.games).filter(g=>g.status==='Today'||g.status==='Upcoming').map(g=>{const x={e:{...g,title:g.title,opponent:g.opponent,event_type:g.event_type,team_label:g.team_label},bucket:'upcoming',school:g.school,sport:g.sport,school_id:g.school_id},c=comingDay(x);return{f:x,day:c.day,at:c.at,time:c.time,team:g.school_id,level:levelHome,other:true}});
+}
 function weekSection(week){
   const spot=weekSpotlight(week.mine);if(!week.mine.length&&!week.others.length)return'';
-  const sub=week.others.length?'By sport: your teams ★ first, then every college and pro game':'Today through next Sunday';
+  const sub=!week.others.length?'Today through next Sunday':levelHome==='high-school'||levelHome==='middle-school'?`By sport: your teams ★ first, then today's games at every ${levelHome==='middle-school'?'middle':'high'} school`:levelHome?`By sport: your teams ★ first, then every ${HOME_LEVEL_NAMES[levelHome].toLowerCase()} game`:'By sport: your teams ★ first, then every college and pro game';
   return`${homeSectionOpen('The week ahead')}${sectionHead('The week ahead',sub)}<div class="section">${spot?weekHero(spot):''}${weekDayView(week.mine,week.others,spot)}</div></section>`;
 }
 // Coming up leaves out the games the week ahead already shows.
@@ -1323,22 +1345,25 @@ async function readFieldHome(){
 // everywhere, the week ahead, featured meets); a starred team's games always
 // show.
 const HOME_FILTER_KEY='sas-home-filter';
+// Each level's page keeps its own choice (sas-home-filter:<level>).
+const homeFilterKey=()=>levelHome?`${HOME_FILTER_KEY}:${levelHome}`:HOME_FILTER_KEY;
 const HOME_FILTER_LEVELS=[['pro','Pro'],['college','College'],['high-school','High school'],['middle-school','Middle school']];
 const HOME_FILTER_SPORTS={pro:['Football','Basketball','Baseball','Hockey','Soccer','Auto Racing','Track & Field'],college:['Football','Basketball','Baseball','Softball','Volleyball','Soccer','Hockey','Cross Country','Track & Field','Golf','Tennis','Swimming & Diving','Wrestling','Lacrosse','Gymnastics','Field Hockey','Beach Volleyball','Rowing','Water Polo','Bowling','Fencing','Equestrian','Rifle','Triathlon','Acrobatics & Tumbling','STUNT','Skiing'],'high-school':['Football','Basketball','Volleyball','Baseball','Softball','Wrestling','Cross Country','Track & Field','Golf','Soccer','Tennis','Bowling','Swimming & Diving','Flag Football'],'middle-school':['Football','Basketball','Volleyball','Wrestling','Cross Country','Track & Field','Tennis','Golf']};
-function loadHomeFilter(){try{const v=JSON.parse(localStorage.getItem(HOME_FILTER_KEY)||'[]');return new Set(Array.isArray(v)?v.filter(x=>typeof x==='string'&&x.includes('|')):[])}catch{return new Set()}}
+function loadHomeFilter(){try{const v=JSON.parse(localStorage.getItem(homeFilterKey())||'[]');return new Set(Array.isArray(v)?v.filter(x=>typeof x==='string'&&x.includes('|')):[])}catch{return new Set()}}
 let homeFilterSet=loadHomeFilter(),homeCustomOpen=false;
-function saveHomeFilter(){try{localStorage.setItem(HOME_FILTER_KEY,JSON.stringify([...homeFilterSet]))}catch{}}
-const homeAllows=(level,sport)=>!homeFilterSet.size||homeFilterSet.has(`${level||'college'}|${sport}`);
+function saveHomeFilter(){try{localStorage.setItem(homeFilterKey(),JSON.stringify([...homeFilterSet]))}catch{}}
+const homeAllows=(level,sport)=>(!levelHome||(level||'college')===levelHome)&&(!homeFilterSet.size||homeFilterSet.has(`${level||'college'}|${sport}`));
 function homeFilterSummary(){if(!homeFilterSet.size)return'Everything';const names=Object.fromEntries(HOME_FILTER_LEVELS);return[...homeFilterSet].map(k=>{const [lv,sp]=k.split('|');return`${names[lv]||lv} ${sp}`}).join(', ')}
 function homeCustomize(){
   if(!homeView)return'';
-  const bar=`<div class="home-custom"><span class="home-custom-now">Showing: <b>${esc(homeFilterSet.size?`your teams + ${homeFilterSummary()}`:'Everything')}</b></span><button type="button" class="ghost home-custom-btn" data-home-customize aria-expanded="${homeCustomOpen}" aria-controls="homeCustomPanel">⚙ Customize</button></div>`;
+  const scope=levelHome?HOME_LEVEL_NAMES[levelHome]:'';
+  const bar=`<div class="home-custom"><span class="home-custom-now">Showing: <b>${esc(homeFilterSet.size?`your teams + ${homeFilterSummary()}`:scope?`everything in ${scope}`:'Everything')}</b></span><button type="button" class="ghost home-custom-btn" data-home-customize aria-expanded="${homeCustomOpen}" aria-controls="homeCustomPanel">⚙ Customize</button></div>`;
   if(!homeCustomOpen)return bar;
-  const rows=HOME_FILTER_LEVELS.map(([lv,name])=>`<div class="hc-row"><div class="hc-level">${esc(name)}</div><div class="hc-chips">${HOME_FILTER_SPORTS[lv].map(sp=>{const on=homeFilterSet.has(`${lv}|${sp}`);return`<button type="button" class="ghost hc-chip${on?' on':''}" data-home-pick="${esc(`${lv}|${sp}`)}" aria-pressed="${on}">${on?'✓ ':''}${esc(sp)}</button>`}).join('')}</div></div>`).join('');
+  const rows=HOME_FILTER_LEVELS.filter(([lv])=>!levelHome||lv===levelHome).map(([lv,name])=>`<div class="hc-row"><div class="hc-level">${esc(name)}</div><div class="hc-chips">${HOME_FILTER_SPORTS[lv].map(sp=>{const on=homeFilterSet.has(`${lv}|${sp}`);return`<button type="button" class="ghost hc-chip${on?' on':''}" data-home-pick="${esc(`${lv}|${sp}`)}" aria-pressed="${on}">${on?'✓ ':''}${esc(sp)}</button>`}).join('')}</div></div>`).join('');
   return`${bar}<div class="home-custom-panel" id="homeCustomPanel" role="group" aria-label="Customize Home"><p class="hc-note">Pick what Home shows. Your ★ favorite teams always show. Nothing picked shows everything.</p>${rows}<div class="hc-actions"><button type="button" class="ghost" data-home-all>Show everything</button><button type="button" data-home-done>Done</button></div></div>`;
 }
 function renderHome(groups){
-  const {live,everywhere,todays,recent,coming:upcoming}=homeSections(groups),week=weekSections(groups.flatMap(g=>(g.upcoming||[]).map(e=>({e,bucket:'upcoming',school:g.school,sport:g.sport,school_id:g.school_id})))),coming=withoutWeek(upcoming,week.mine),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
+  const {live,everywhere,todays,recent,coming:upcoming}=homeSections(groups),week=weekSections(groups.flatMap(g=>(g.upcoming||[]).map(e=>({e,bucket:'upcoming',school:g.school,sport:g.sport,school_id:g.school_id}))),levelTonightItems()),coming=withoutWeek(upcoming,week.mine),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
   const news=currentView==='all'?homeNews():[];
   const mine=homeView&&everywhere.length?'Live now · My Teams':'Live now';
   const field=homeView&&(currentView==='all'||currentView==='live')?fieldHome:[];homeField=field;
@@ -1350,7 +1375,7 @@ function renderHome(groups){
   sportNav.hidden=chips.length<2;
   sportNav.innerHTML=chips.map(([title,items,short])=>`<a class="sport-chip home-jump${/^Live/.test(short)?' live-jump':''}" href="#home-${slug(title)}">${esc(short)} <b>${items.length}</b></a>`).join('');
   const everywhereHtml=everywhere.length?homeSection('Live now · Everywhere',everywhere,'live'):'';
-  const noFavorites=homeView&&!names.length?'<div class="empty">No favorite teams yet. Choose a level above, pick a team and tap ☆ Favorite: its live and upcoming games will show first.</div>':'';
+  const noFavorites=homeView&&!names.length?(levelHome?`<div class="empty">No ${esc((HOME_LEVEL_NAMES[levelHome]||'').toLowerCase())} favorites yet. Pick a team above and tap ☆ Favorite: its games will show first here.</div>`:'<div class="empty">No favorite teams yet. Choose a level above, pick a team and tap ☆ Favorite: its live and upcoming games will show first.</div>'):'';
   const weekHtml=weekSection(week),spot=weekSpotlight(week.mine);
   const customHtml=homeCustomize();
   if(noFavorites&&!todays.length&&!coming.length&&!recent.length){feed.innerHTML=customHtml+weekHtml+everywhereHtml+noFavorites;bindFeedCards();return}
@@ -1432,7 +1457,7 @@ async function loadHome(forceRefresh,automatic,generation,signal){
   // its card is asked for again on every load until it arrives (user,
   // November 2: "Anthony Middle School girls basketball isn't showing up for
   // upcoming today").
-  if(homeTeams().some(id=>!SCHOOL_SPORTS[id]))await ensureEntries(homeTeams());
+  if(favoriteSchoolIds().some(id=>!SCHOOL_SPORTS[id]))await ensureEntries(favoriteSchoolIds());
   if(generation!==feedGeneration)return;
   const pairs=homePairs(),key=([id,sp])=>`${id}|${sp}`;
   const busy=new Set(currentGroups.filter(g=>(g.live||[]).length||(g.upcoming||[]).some(e=>String(e.start_time||'').slice(0,10)===schoolToday(g.school_id))).map(g=>`${g.school_id}|${g.sport}`));
@@ -1441,7 +1466,7 @@ async function loadHome(forceRefresh,automatic,generation,signal){
   if(!currentGroups.length)for(const [id,sp] of pairs){try{const copy=JSON.parse(localStorage.getItem(`sas-feed:${id}|${sp}`)||'null');if(copy&&Array.isArray(copy.groups)&&Date.now()-Date.parse(copy.at)<=SAVED_FEED_MS)for(const g of copy.groups)byPair.set(key([id,sp]),{...g,saved_at:copy.at})}catch{}}
   const show=()=>{currentGroups=homePairs().map(p=>byPair.get(key(p))).filter(Boolean);updateDemo()};
   homeLoading=true;show();
-  loadWeek(signal);
+  loadWeek(signal);loadLevelTonight();
   if(homeView)apiFetch('/live/now',1,{signal,transientOnly:true}).then(r=>r.json()).then(d=>{if(generation!==feedGeneration||!homeView)return;everywhereGames=Array.isArray(d?.games)?d.games:[];
     // New featured meets load like a favorite's sport.
     const featured=Array.isArray(d?.featured)?d.featured.map(f=>[f.school_id,f.sport]):[];
@@ -1655,11 +1680,21 @@ async function ensureEntries(ids){
   if(missing.length)try{rememberEntries(await catalogFetch(`/catalog/entries?ids=${encodeURIComponent(missing.join(','))}`))}catch{}
 }
 function levelSchools(){return catalogMenuState.entries||[]}
+async function openLevelHome(level){
+  if(homeView&&levelHome===level)return;
+  activeFeedController?.abort();feedGeneration++;
+  homeView=true;levelHome=level;homeFilterSet=loadHomeFilter();homeCustomOpen=false;weekPickDay=null;sportFilter.value='';currentGroups=[];
+  const changed=level!==currentLevel;currentLevel=level;
+  renderLevels();applyHomeView();feed.innerHTML=`<div class="empty">Loading ${esc(HOME_LEVEL_NAMES[level]||level)}…</div>`;
+  if(changed){const menu=await loadMenu(level).catch(()=>null);if(menu&&homeView&&levelHome===level){await populateSchoolControls(menu.entries[0]?.id);populateSportFilter();renderLevels()}}else fillSchools();
+  if(homeView&&levelHome===level)loadFeed(false);
+}
 function renderLevels(){
   const levelSwitch=$('#levelSwitch');
-  levelSwitch.innerHTML=`<button type="button" class="level ${homeView?'active':''}" data-home aria-pressed="${homeView}">Home</button>`+LEVELS.map(level=>{const ready=(catalogMenuState.levels||[]).some(l=>l.id===level.id&&l.count>0);return`<button type="button" class="level ${level.id===currentLevel&&!homeView?'active':''}" data-level="${level.id}" aria-pressed="${level.id===currentLevel&&!homeView}" ${ready?'':'disabled title="Coming soon"'}>${esc(level.label)}${ready?'':'<span class="soon">Soon</span>'}</button>`}).join('');
-  levelSwitch.querySelector('[data-home]').addEventListener('click',()=>{if(homeView)return;homeView=true;activeFeedController?.abort();feedGeneration++;currentGroups=[];renderLevels();applyHomeView();feed.innerHTML='<div class="empty">Loading your teams…</div>';loadFeed(false)});
-  levelSwitch.querySelectorAll('[data-level]:not([disabled])').forEach(button=>button.addEventListener('click',async()=>{const wasHome=homeView;if(button.dataset.level===currentLevel&&!wasHome)return;homeView=false;applyHomeView();if(button.dataset.level===currentLevel){activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];renderLevels();populateSportFilter();loadFeed(false);return}currentLevel=button.dataset.level;activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];const menu=await loadMenu(currentLevel).catch(()=>null);if(!menu)return;await populateSchoolControls(menu.entries[0]?.id);populateSportFilter();loadFeed(false)}));
+  levelSwitch.innerHTML=`<button type="button" class="level ${homeView&&!levelHome?'active':''}" data-home aria-pressed="${homeView&&!levelHome}">Home</button>`+LEVELS.map(level=>{const ready=(catalogMenuState.levels||[]).some(l=>l.id===level.id&&l.count>0),on=level.id===currentLevel&&(!homeView||levelHome===level.id);return`<button type="button" class="level ${on?'active':''}" data-level="${level.id}" aria-pressed="${on}" ${ready?'':'disabled title="Coming soon"'}>${esc(level.label)}${ready?'':'<span class="soon">Soon</span>'}</button>`}).join('');
+  levelSwitch.querySelector('[data-home]').addEventListener('click',()=>{if(homeView&&!levelHome)return;homeView=true;levelHome=null;homeFilterSet=loadHomeFilter();homeCustomOpen=false;activeFeedController?.abort();feedGeneration++;currentGroups=[];renderLevels();applyHomeView();feed.innerHTML='<div class="empty">Loading your teams…</div>';loadFeed(false)});
+  // A level opens its own landing page, with the team finder above it.
+  levelSwitch.querySelectorAll('[data-level]:not([disabled])').forEach(button=>button.addEventListener('click',()=>openLevelHome(button.dataset.level)));
   const level=LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
   $('#groupLabel').textContent=level.group;$('#teamLabel').textContent=level.teamFor?level.teamFor(conference.value):level.team;
   if(level.middle)$('#cityLabel').textContent=level.middle;
@@ -1696,6 +1731,8 @@ function fillSchools(wanted){
   // High School — Manhattan"), since the menu above is the county.
   const label=s=>{const town=level.townOf?.(s);return town?`${s.name} — ${town}`:s.name};
   school.innerHTML=!sectioned?list.map(s=>`<option value="${esc(s.id)}">${esc(label(s))}</option>`).join(''):groups.map(([name,items])=>`<optgroup label="${esc(name)}">${items.map(s=>`<option value="${esc(s.id)}">${esc(label(s))}</option>`).join('')}</optgroup>`).join('');
+  // A level's landing page: no team chosen yet, so any pick opens one.
+  if(homeView&&levelHome){school.insertAdjacentHTML('afterbegin',`<option value="" selected>Choose a ${esc(level.team.toLowerCase())}…</option>`);school.value='';return}
   if(list.some(s=>s.id===current))school.value=current; else if(list.length)school.value=list[0].id;
 }
 // Fill every box for a team: its level, its group and city or league, and
@@ -2014,7 +2051,7 @@ function raceTableHtml(e){
 function raceCard(e){return`<article class="card" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${rankedTitle(e)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div></div><div class="results">${raceTableHtml({race_table:e.race_card?.length?e.race_card:e.race_table.slice(0,3)})}</div></article>`}
 function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute('aria-hidden','true')}
 refresh.addEventListener('click',()=>loadFeed(true));
-school.addEventListener('change',()=>{activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSportFilter();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});
+school.addEventListener('change',()=>{if(!school.value)return;if(homeView){homeView=false;levelHome=null;applyHomeView();renderLevels()}activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSportFilter();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});
 conference.addEventListener('change',async()=>{if(await refillFromMenus())loadFeed()});
 city.addEventListener('change',async()=>{if(await refillFromMenus())loadFeed()});
 sportFilter.addEventListener('change',()=>{
