@@ -127,7 +127,7 @@ scoreboard=null;
 const app=read('../public/index.html');
 assert.match(app,/&cached=1/,'the app asks for the saved copy after a failed load');
 assert.match(app,/Saved schedule · updated/,'saved copies are labeled with their age');
-assert.match(app,/localStorage\.setItem\(`sas-feed:\$\{id\}\|\$\{sp\}`/,'the device keeps its own last good copy');
+assert.match(app,/storeSet\(`sas-feed:\$\{id\}\|\$\{sp\}`/,'the device keeps its own last good copy (through storeSet, which makes room when storage is full)');
 // A live meet card in a copy over 15 minutes old is not shown LIVE (user,
 // October 31: "I'm still seeing the live cards on the home page for cross
 // country"): it moves to results; a live game and a recent copy are kept.
