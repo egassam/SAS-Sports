@@ -118,7 +118,8 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   const order=[...aDayHtml.matchAll(/class="wk-tile( fav)?"/g)].map(m=>Boolean(m[1]));
   assert.ok(order.indexOf(false)<0||order.lastIndexOf(true)<order.indexOf(false),'the viewer\'s games come first');
   assert.ok(aDayHtml.includes('Duke')&&!aDayHtml.includes('Alpha'),'featured games first; the rest behind Show all');
-  assert.match(aDayHtml,/data-week-more="[\d-]+">Show all \d+ games/,'Show all for that day');
+  assert.match(aDayHtml,/data-week-more="[\d-]+\|Basketball">Show all 2 Basketball games/,'Show all for that day and sport');
+  assert.match(aDayHtml,/class="mq-group wk-sport"[^>]*><div class="sport-marquee"[^>]*id="week-basketball"[\s\S]*mq-name">Basketball<\/span><span class="mq-count">2 games</,'each sport under its marquee sign (user, November 21)');
 }
 // All levels from the official schedules (user, November 20: "No logos and
 // all levels"): ESPN's same game lends its line; a high school game, a meet.

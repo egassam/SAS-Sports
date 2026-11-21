@@ -312,7 +312,7 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .wk-tm{display:flex;align-items:center;gap:7px;margin:6px 0;min-width:0}.wk-chip{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;font-size:10px;font-weight:900;letter-spacing:.02em}.wk-chip.long{font-size:8.5px;letter-spacing:0}.wk-tm b{min-width:0;font-size:13px;font-weight:800;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wk-tm b.me{color:var(--warn)}.wk-tm b small{margin-right:3px;font-size:10px;color:#9db0c7}
 .wk-bt{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px}.wk-when{font-size:14px;font-weight:900;color:#fff;white-space:nowrap}.wk-when.tba{color:var(--muted)}.wk-bt .wk-pill{background:#1d2a3a;font-size:11px;padding:2px 8px;max-width:58%}
 .wk-odds{margin-top:5px;font-size:11px;font-weight:700;color:#9db0c7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wk-none{padding:16px;color:var(--muted);text-align:center;border:1px dashed #29435f;border-radius:14px}.wk-more{display:block;margin:12px auto 0}
+.wk-sport{margin-top:14px}.wk-sport .wk-tile:not(.fav){border-color:color-mix(in srgb,var(--mq) 30%,#22334a)}.wk-none{padding:16px;color:var(--muted);text-align:center;border:1px dashed #29435f;border-radius:14px}.wk-more{display:block;margin:12px auto 0}
 @media(forced-colors:active){.wk-tile,.wk-hero,.wk-dchip{border:2px solid CanvasText}}
 </style>
 </head>
@@ -1189,7 +1189,7 @@ const WEEK_BELL_ICON='<svg viewBox="0 0 16 16" width="16" height="16" aria-hidde
 // across on a phone: the viewer's teams first, highlighted, then the other
 // college and pro games, featured first. Team colors stand in for logos (no
 // logos: user, October 15 and November 20).
-const WEEK_GRAY='#3b4a5e';let weekPickDay=null;const expandedWeekDays=new Set();
+const WEEK_GRAY='#3b4a5e',WEEK_SPORT_SHOWN=6;let weekPickDay=null;const expandedWeekDays=new Set();
 const weekHex=v=>/^#[0-9a-f]{6}$/i.test(v||'')?v:null;
 const weekLum=hex=>{const n=parseInt(hex.slice(1),16);return(.2126*(n>>16&255)+.7152*(n>>8&255)+.0722*(n&255))/255};
 // A color that reads on the dark page: not near black or white.
@@ -1216,7 +1216,7 @@ function weekLabel(x){const sides=weekSides(x),tv=weekTv(x);return`${sides.lengt
 function weekTile(x){
   const sides=weekSides(x),fav=sides.some(t=>t.mine),open=weekOpen(x),tv=weekTv(x),odds=weekOdds(x),bar=sides.length>1?sides:[sides[0],sides[0]];
   const row=t=>`<div class="wk-tm"><span class="wk-chip${String(t.abbr).length>3?' long':''}" style="background:${t.color};color:${weekInk(t.color)}">${esc(t.abbr)}</span><b${t.mine?' class="me"':''}>${t.rank?`<small>${esc(t.rank)}</small>`:''}${esc(t.name)}</b></div>`;
-  return`<div class="wk-tile${fav?' fav':''}" role="button" tabindex="0" aria-label="${esc((fav?'Your team: ':'')+weekLabel(x))}"${open?` data-open-team="${esc(open)}" data-open-sport="${esc(weekSportOf(x))}"`:''}><div class="wk-bar"><i style="background:${bar[0].color}"></i><i style="background:${bar[1].color}"></i></div><div class="wk-in"><div class="wk-tag">${fav?'<span class="wk-star" aria-hidden="true">★</span>':''}${esc(weekShortSport(x))}</div>${sides.map(row).join('')}<div class="wk-bt"><span class="wk-when${weekTime(x)==='TBA'?' tba':''}">${esc(weekTime(x))}</span>${tv?`<span class="wk-pill">${esc(tv)}</span>`:''}</div>${odds?`<div class="wk-odds">${esc(odds)}</div>`:''}</div></div>`;
+  return`<div class="wk-tile${fav?' fav':''}" role="button" tabindex="0" aria-label="${esc((fav?'Your team: ':'')+weekLabel(x))}"${open?` data-open-team="${esc(open)}" data-open-sport="${esc(weekSportOf(x))}"`:''}><div class="wk-bar"><i style="background:${bar[0].color}"></i><i style="background:${bar[1].color}"></i></div><div class="wk-in">${fav||weekShortSport(x)!==weekSportOf(x)?`<div class="wk-tag">${fav?'<span class="wk-star" aria-hidden="true">★</span>':''}${weekShortSport(x)!==weekSportOf(x)?esc(weekShortSport(x)):''}</div>`:''}${sides.map(row).join('')}<div class="wk-bt"><span class="wk-when${weekTime(x)==='TBA'?' tba':''}">${esc(weekTime(x))}</span>${tv?`<span class="wk-pill">${esc(tv)}</span>`:''}</div>${odds?`<div class="wk-odds">${esc(odds)}</div>`:''}</div></div>`;
 }
 // The spotlight: the viewer's next game with a published time.
 function weekSpotlight(mine){return mine.filter(x=>!(x.g?x.g.time_tba:!x.time)&&Number.isFinite(x.at)&&x.at>Date.now()).sort((a,b)=>a.at-b.at)[0]||null}
@@ -1236,15 +1236,25 @@ function weekDayView(mine,others,spot){
   const days=[...new Set([...mine,...others].map(x=>x.day))].sort();if(!days.length)return'';
   const day=days.includes(weekPickDay)?weekPickDay:days[0];
   const chips=`<div class="wk-days" role="group" aria-label="Day">${days.map(d=>{const f=mine.filter(x=>x.day===d).length,n=f+others.filter(x=>x.day===d).length,date=new Date(`${d}T12:00:00Z`);return`<button type="button" class="ghost wk-dchip${d===day?' active':''}" data-week-day="${esc(d)}" aria-pressed="${d===day}" aria-label="${esc(`${weekDayName(d,true)}, ${n} game${n===1?'':'s'}${f?`, ${f} of your teams`:''}`)}"><b>${esc(weekDayName(d).replace('Tomorrow','Tmrw').toUpperCase())}</b><span>${date.getUTCDate()}</span><i>${f?`<u>★${f}</u> `:''}${n}</i></button>`}).join('')}</div>`;
-  const mineDay=mine.filter(x=>x.day===day&&x!==spot),rest=others.filter(x=>x.day===day),open=expandedWeekDays.has(day),featured=rest.filter(x=>x.g.featured);
-  const shown=open?rest:(featured.length?featured:rest).slice(0,WEEK_SHOWN),date=new Date(`${day}T12:00:00Z`);
+  // Each sport under its marquee sign (user, November 21: "you took away
+  // the organization by sport with the marque design"): the sports the
+  // viewer's teams play that day first, then A to Z; in each, the viewer's
+  // games (highlighted), then the featured others, WEEK_SPORT_SHOWN until
+  // "Show all".
+  const mineDay=mine.filter(x=>x.day===day&&x!==spot),rest=others.filter(x=>x.day===day),date=new Date(`${day}T12:00:00Z`),bySport=new Map();
+  const add=(x,fav)=>{const k=weekSportOf(x);if(!bySport.has(k))bySport.set(k,{mine:[],rest:[]});bySport.get(k)[fav?'mine':'rest'].push(x)};
+  for(const x of mineDay)add(x,true);for(const x of rest)add(x,false);
+  const sports=[...bySport.keys()].sort((a,b)=>(bySport.get(b).mine.length?1:0)-(bySport.get(a).mine.length?1:0)||String(a).localeCompare(String(b)));
   const head=`<div class="wk-day"><h3>${esc(weekDayName(day,true))}<small>${esc(date.toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric'}))}</small></h3>${mine.length?weekBell():''}</div>`;
-  const tiles=[...mineDay,...shown].map(weekTile).join('');
-  return chips+head+(tiles?`<div class="wk-tiles">${tiles}</div>`:`<div class="wk-none">${spot&&spot.day===day?'Your only game this day is the one above.':'No games this day.'}</div>`)+(rest.length>shown.length?`<button type="button" class="ghost show-all-live wk-more" data-week-more="${esc(day)}">Show all ${rest.length+mineDay.length} games</button>`:'');
+  if(!sports.length)return chips+head+`<div class="wk-none">${spot&&spot.day===day?'Your only game this day is the one above.':'No games this day.'}</div>`;
+  const jump=sports.length>1?`<div class="mq-chips">${sports.map(sp=>{const [color,mark]=marqueeOf(sp),g=bySport.get(sp),n=g.mine.length+g.rest.length;return`<button type="button" class="mq-chip" data-jump="${esc(`week-${slug(sp)}`)}" style="--mq:${color}"><span aria-hidden="true">${mark}</span>${esc(sp)} <b>${g.mine.length?`★${g.mine.length} · `:''}${n}</b></button>`}).join('')}</div>`:'';
+  const groups=sports.map(sp=>{const g=bySport.get(sp),key=`${day}|${sp}`,open=expandedWeekDays.has(key),featured=g.rest.filter(x=>x.g.featured),shown=open?g.rest:(featured.length?featured:g.rest).slice(0,WEEK_SPORT_SHOWN),n=g.mine.length+g.rest.length,[color,mark]=marqueeOf(sp);
+    return`<div class="mq-group wk-sport" style="--mq:${color}"><div class="sport-marquee" style="--mq:${color}" id="${esc(`week-${slug(sp)}`)}" role="heading" aria-level="3"><span class="mq-mark" aria-hidden="true">${mark}</span><span class="mq-name">${esc(sp)}</span><span class="mq-count">${g.mine.length?`★${g.mine.length} · `:''}${n} game${n===1?'':'s'}</span></div><div class="wk-tiles">${[...g.mine,...shown].map(weekTile).join('')}</div>${g.rest.length>shown.length?`<button type="button" class="ghost show-all-live mq-more" data-week-more="${esc(key)}">Show all ${n} ${esc(sp)} games</button>`:''}</div>`}).join('');
+  return chips+head+jump+groups;
 }
 function weekSection(week){
   const spot=weekSpotlight(week.mine);if(!week.mine.length&&!week.others.length)return'';
-  const sub=week.others.length?'Your teams ★ first, then every college and pro game':'Today through next Sunday';
+  const sub=week.others.length?'By sport: your teams ★ first, then every college and pro game':'Today through next Sunday';
   return`${homeSectionOpen('The week ahead')}${sectionHead('The week ahead',sub)}<div class="section">${spot?weekHero(spot):''}${weekDayView(week.mine,week.others,spot)}</div></section>`;
 }
 // Coming up leaves out the games the week ahead already shows.
