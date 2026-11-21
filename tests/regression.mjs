@@ -314,7 +314,7 @@ contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports mus
 // Home screen (user, Oct 28): live games of the selected and favorite teams,
 // favorites in order, smaller sports first; then today; then coming up.
 contains(page,/if\(!chosen\)\{[^\n]*await loadHome\(/,'With no sport chosen the home screen must load the teams\' live and today games');
-contains(page,/function homeTeams\(\)\{return homeView\?favoriteSchoolIds\(\):\[school\.value\]/,'Home must read the favorites in order; a team page with no sport, that team');
+contains(page,/function homeTeams\(\)\{return homeView\?favoriteSchoolIds\(\)\.filter\(id=>!levelHome\|\|\(catalogEntry\(id\)\?\.level\|\|'college'\)===levelHome\):\[school\.value\]/,'Home must read the favorites in order (a level page, that level\'s favorites); a team page with no sport, that team');
 contains(page,/let homeView=!new URLSearchParams\(location\.search\)\.get\('school'\)/,'The app must open on Home unless a link names a team');
 assert.ok(!/searchParams\.set\('school'/.test(page),'Browsing a team must not write ?school= into the address: Home is the landing page');
 contains(page,/data-home aria-pressed/,'Home must be a level button before Middle School');
@@ -369,7 +369,7 @@ contains(page,/loadFeaturedAthletes\(currentGroups,id,generation\)/,'Athletes mu
 contains(page,/generation!==feedGeneration\|\|school\.value!==schoolId/,'Late athlete responses must not render after a school change');
 contains(page,/queuedFeedRequest=\{forceRefresh,automatic\}/,'A school change during loading must queue the newest request');
 contains(page,/currentGroups\.filter\(g=>g\.school_id===id\)/,'Athletes from the previous school must never be reused');
-contains(page,/school\.addEventListener\('change',\(\)=>\{activeFeedController\?\.abort\(\);feedGeneration\+\+/,'Changing schools must cancel obsolete feeds and invalidate in-flight athlete responses immediately');
+contains(page,/school\.addEventListener\('change',\(\)=>\{if\(!school\.value\)return;if\(homeView\)\{homeView=false;levelHome=null;applyHomeView\(\);renderLevels\(\)\}activeFeedController\?\.abort\(\);feedGeneration\+\+/,'Changing schools must cancel obsolete feeds and invalidate in-flight athlete responses immediately');
 contains(page,/sportFilter\.addEventListener\('change',[\s\S]*feedGeneration\+\+;[\s\S]*currentGroups=\[\][\s\S]*loadFeed\(false\)/,'Changing sports must invalidate the previous feed before queueing the newest selection');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
 contains(page,/href="\$\{esc\(href\)\}"/,'Athlete cards must link to a verified Instagram or official roster profile');

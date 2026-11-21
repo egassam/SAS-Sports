@@ -5812,3 +5812,23 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 
 **Production `4.322.2-week-levels`** (merge `9c1a3c9`): `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, the page as on the preview.
 
+## November 20, 2026 — Customize Home (PR #629)
+
+**Conversation.** User: "Can we set the home screen up so users can choose what they want to see? For example if the only want to see pro football and college basketball?" Asked whether starred favorites' other sports should be filtered too, they chose "Favorites always show". Asked how to pick, they chose the Customize panel over chips on Home.
+
+**Built.**
+- A bar at the top of Home: "Showing: Everything" or "your teams + Pro Football, College Basketball", with ⚙ Customize.
+- The panel has a row per level (Pro, College, High school, Middle school) with a chip for every sport that level's catalog teams play (listed in the page, checked against the catalog by the test), plus "Show everything" and "Done".
+- The choice is `level|sport` pairs in `localStorage` (`sas-home-filter`). It trims Live now everywhere, the week ahead's other games, and featured meets' feeds. Starred teams always show. A team's own page is not filtered.
+- Picked chips use a fixed green: Home's theme turned the accent gray.
+
+**Checked.** Christ Prep (a favorite) seemed missing from Saturday's tiles; it was the spotlight (Campbell at K-State had tipped off), so nothing was wrong.
+
+**Tests.** `tests/home-customize.mjs` (new, in `npm test` and `test:release`); `tests/home-week.mjs` (filter trims others, keeps favorites); `tests/home-live.mjs` (harness gets the filter). `npm test` and CI `guardrails` green on `a878bc8`.
+
+**Gate.** Preview: `check-reference-page` PASS; `verify:preview` 69 PASS (Manhattan, Anthony, Eisenhower, 3 refreshes) and 6 (K-State Football, 36 refreshes); XC 18/20 and 26/21; Customize tried in Chromium (pick Pro Football and College Basketball, Done, reload).
+
+**Production `4.323.0-home-customize`** (merge `32721bc`): `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, Customize as on the preview.
+
+**Open.** The choice is per device (like favorites), not per account.
+
