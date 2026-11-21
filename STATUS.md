@@ -2,6 +2,7 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| uc-santa-barbara | Volleyball | 🔴 on | live 17-20 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -724,7 +725,6 @@
 | uc-san-diego | Water Polo | ⚪ off (waiting) |  |
 | uc-santa-barbara | Baseball | ⚪ off (waiting) |  |
 | uc-santa-barbara | Softball | ⚪ off (waiting) |  |
-| uc-santa-barbara | Volleyball | ⚪ off (waiting) |  |
 | uc-santa-barbara | Water Polo | ⚪ off (waiting) |  |
 | ucf | Baseball | ⚪ off (waiting) |  |
 | ucf | Softball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1123/1956; on 0; off 831; failing 2.
+Done 1123/1956; on 1; off 830; failing 2.
