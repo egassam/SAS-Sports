@@ -60,9 +60,9 @@ assert.ok(block.length>2000,'the block is found');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>`&#${c.charCodeAt(0)};`);
 const catalog={'manhattan-ks':{level:'high-school',name:'Manhattan High School',short_name:'Manhattan'},kstate:{level:'college',name:'Kansas State',short_name:'K-State',theme:{}},kansas:{level:'college'},'kansas-city-chiefs':{level:'pro'},byu:{level:'college'}};
 const env={homeView:true,teams:['kstate','kansas-city-chiefs'],view:'all',q:''};
-const api=Function('esc','countdownAt','homeTeams','catalogEntry','knownColors','search','marqueeOf','slug','sectionHead','homeSectionOpen','comingDay','apiFetch','homeMode','render','displayedGroups','viewerTimeZone','env','document',
+const api=Function('homeAllows','esc','countdownAt','homeTeams','catalogEntry','knownColors','search','marqueeOf','slug','sectionHead','homeSectionOpen','comingDay','apiFetch','homeMode','render','displayedGroups','viewerTimeZone','env','document',
   block.replace(/\bhomeView\b/g,'env.homeView').replace(/\bcurrentView\b/g,'env.view')+';return{weekSections,weekTile,weekHero,weekSpotlight,withoutWeek,weekRequestDays,weekBounds,weekSection,set:m=>{weekDays=m},setDay:d=>{weekPickDay=d}};')(
-  esc,t=>{const ms=t-Date.now();return ms>0?{t,d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4),s:Math.floor(ms%6e4/1e3)}:null},()=>env.teams,id=>catalog[id],()=>null,{get value(){return env.q}},()=>['#fff','●'],s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-'),(t,sub)=>`<h2>${t}</h2><p>${sub}</p>`,t=>`<section id="${t}">`,x=>({day:x.day,at:x.at??Date.parse(`${x.day}T18:00:00Z`),time:x.time??null}),null,()=>true,()=>{},()=>[],'America/Chicago',env,{querySelector:()=>({hidden:false,classList:{contains:()=>false}})});
+  (lv,sp)=>!env.only||env.only.has(`${lv}|${sp}`),esc,t=>{const ms=t-Date.now();return ms>0?{t,d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4),s:Math.floor(ms%6e4/1e3)}:null},()=>env.teams,id=>catalog[id],()=>null,{get value(){return env.q}},()=>['#fff','●'],s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-'),(t,sub)=>`<h2>${t}</h2><p>${sub}</p>`,t=>`<section id="${t}">`,x=>({day:x.day,at:x.at??Date.parse(`${x.day}T18:00:00Z`),time:x.time??null}),null,()=>true,()=>{},()=>[],'America/Chicago',env,{querySelector:()=>({hidden:false,classList:{contains:()=>false}})});
 // The days asked for: today through next week's Sunday (Eastern).
 {
   const fri=api.weekRequestDays(Date.parse('2026-11-20T18:00:00Z'));
@@ -90,6 +90,7 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   assert.equal(mine.find(x=>x.g.id==='a').team,'kstate');
   assert.deepEqual(others.map(x=>x.g.id).sort(),['c','d'],'the rest; a game already started is gone');
   env.q='duke';assert.deepEqual(api.weekSections().others.map(x=>x.g.id),['c'],'search narrows it');env.q='';
+  env.only=new Set(['pro|Football']);assert.deepEqual(api.weekSections().others.map(x=>x.g.id),[],'Customize Home: only Pro Football, so college basketball is left out');assert.deepEqual(api.weekSections().mine.map(x=>x.g.id).sort(),['a','b'],'favorites always show (user, November 21)');env.only=null;
   env.view='results';assert.deepEqual(api.weekSections(),{mine:[],others:[]},'not on Results');env.view='all';
   env.homeView=false;assert.equal(api.weekSections().others.length,0,'a team\'s own page shows only its own games');env.homeView=true;
   // A tile: both teams in their own colors (no logos), the favorite highlighted.

@@ -58,3 +58,12 @@ Each board-day is kept 10 minutes for today and 3 hours for later days. Each day
 - A favorite's game today stays in Today (its official schedule), not in the week ahead.
 
 Tests: `tests/home-week.mjs`, with saved copies of ESPN's college football board for Nov 21 and the NFL board for Nov 26.
+
+## Customize Home (November 21, `4.323.0-home-customize`)
+
+**User:** "Can we set the home screen up so users can choose what they want to see? For example if the only want to see pro football and college basketball?" Asked, they chose: favorites always show, and a Customize panel.
+
+- A bar at the top of Home reads "Showing: Everything" (or "your teams + Pro Football, College Basketball") with a **⚙ Customize** button. The panel has one row per level (Pro, College, High school, Middle school) with a chip for each sport that level's catalog teams play, plus "Show everything" and "Done".
+- The choices are `level|sport` pairs saved on the device (`localStorage` key `sas-home-filter`). Nothing chosen shows everything.
+- They trim everyone else's games: Live now everywhere, the week ahead's other games, and featured meets. A starred team's games always show, every sport. A team's own page is not filtered.
+- Tests: `tests/home-customize.mjs`; the week test checks that the filter trims others and keeps favorites.
