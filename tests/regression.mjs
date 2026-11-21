@@ -501,3 +501,9 @@ console.log('SAS Sports regression checks passed');
   const single=recordLine({records:[{team_label:null,text:'4-4',conference:{name:'Big Sky',text:'3-2'}}],live:[],results:[{}],upcoming:[]});
   if(!/^<div[^>]*>Record <b>4-4<\/b> · Big Sky <b>3-2<\/b>/.test(single))throw new Error(`Single-team sports keep "Record": ${single}`);
 }
+// A final's card says who won (user, November 21, 2026: "It doesn't tell me
+// who won", K-State vs Campbell 70–80 under Today): W, L or T in front of the
+// score, colored, and read aloud.
+contains(page,/const wl=e\.status==='Final'\?resultMark\(e\)\.wl:''/,'A final card must take its W/L/T from resultMark');
+contains(page,/<span class="score-wl">\$\{wl\}<\/span>`:''\}\$\{score\}/,'A final card must show W/L/T in front of the score');
+contains(page,/\.score\.wl-w\{color:#86efac\}\.score\.wl-l\{color:#fca5a5\}/,'W green, L red');
