@@ -60,9 +60,9 @@ assert.ok(block.length>2000,'the block is found');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>`&#${c.charCodeAt(0)};`);
 const catalog={'manhattan-ks':{level:'high-school',name:'Manhattan High School',short_name:'Manhattan'},kstate:{level:'college',name:'Kansas State',short_name:'K-State',theme:{}},kansas:{level:'college'},'kansas-city-chiefs':{level:'pro'},byu:{level:'college'}};
 const env={homeView:true,teams:['kstate','kansas-city-chiefs'],view:'all',q:''};
-const api=Function('esc','homeTeams','catalogEntry','knownColors','search','marqueeOf','slug','sectionHead','homeSectionOpen','comingDay','apiFetch','homeMode','render','displayedGroups','viewerTimeZone','env','document',
-  block.replace(/\bhomeView\b/g,'env.homeView').replace(/\bcurrentView\b/g,'env.view')+';return{weekSections,weekCard,withoutWeek,weekEverywhere,weekRequestDays,weekBounds,weekSection,set:m=>{weekDays=m}};')(
-  esc,()=>env.teams,id=>catalog[id],()=>null,{get value(){return env.q}},()=>['#fff','●'],s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-'),(t,sub)=>`<h2>${t}</h2><p>${sub}</p>`,t=>`<section id="${t}">`,x=>({day:x.day,at:x.at??Date.parse(`${x.day}T18:00:00Z`),time:x.time??null}),null,()=>true,()=>{},()=>[],'America/Chicago',env,{querySelector:()=>({hidden:false,classList:{contains:()=>false}})});
+const api=Function('esc','countdownAt','homeTeams','catalogEntry','knownColors','search','marqueeOf','slug','sectionHead','homeSectionOpen','comingDay','apiFetch','homeMode','render','displayedGroups','viewerTimeZone','env','document',
+  block.replace(/\bhomeView\b/g,'env.homeView').replace(/\bcurrentView\b/g,'env.view')+';return{weekSections,weekTile,weekHero,weekSpotlight,withoutWeek,weekRequestDays,weekBounds,weekSection,set:m=>{weekDays=m},setDay:d=>{weekPickDay=d}};')(
+  esc,t=>{const ms=t-Date.now();return ms>0?{t,d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4),s:Math.floor(ms%6e4/1e3)}:null},()=>env.teams,id=>catalog[id],()=>null,{get value(){return env.q}},()=>['#fff','●'],s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-'),(t,sub)=>`<h2>${t}</h2><p>${sub}</p>`,t=>`<section id="${t}">`,x=>({day:x.day,at:x.at??Date.parse(`${x.day}T18:00:00Z`),time:x.time??null}),null,()=>true,()=>{},()=>[],'America/Chicago',env,{querySelector:()=>({hidden:false,classList:{contains:()=>false}})});
 // The days asked for: today through next week's Sunday (Eastern).
 {
   const fri=api.weekRequestDays(Date.parse('2026-11-20T18:00:00Z'));
@@ -76,7 +76,7 @@ const day=n=>new Date(Date.now()+n*864e5);
 const iso=n=>day(n).toISOString();
 const side=(id,name,extra={})=>({id,name,abbr:name.slice(0,3).toUpperCase(),...extra});
 const games=[
-  {id:'a',sport:'Football',level:'college',start_utc:iso(2),away:side('arizona','Arizona',{rank:19}),home:side('kstate','Kansas State'),odds:{line:'-7.5',favorite:'away',total:51.5},tv:['FS1'],featured:true},
+  {id:'a',sport:'Football',level:'college',start_utc:iso(2),away:side('arizona','Arizona',{rank:19,color:'#AB0520'}),home:side('kstate','Kansas State'),odds:{line:'-7.5',favorite:'away',total:51.5},tv:['FS1'],featured:true},
   {id:'b',sport:'Football',level:'pro',league:'NFL',start_utc:iso(3),away:side('kansas-city-chiefs','Chiefs'),home:side('buffalo-bills','Bills'),odds:{line:'-3',favorite:'home',total:50.5},tv:['CBS'],featured:true},
   {id:'c',sport:'Basketball',team_label:"Men's",level:'college',start_utc:iso(2),away:side('duke','Duke',{rank:5}),home:side('byu','BYU'),featured:true},
   {id:'d',sport:'Basketball',team_label:"Men's",level:'college',start_utc:iso(2),away:side('a1','Alpha'),home:side('b1','Beta'),featured:false},
@@ -92,28 +92,33 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   env.q='duke';assert.deepEqual(api.weekSections().others.map(x=>x.g.id),['c'],'search narrows it');env.q='';
   env.view='results';assert.deepEqual(api.weekSections(),{mine:[],others:[]},'not on Results');env.view='all';
   env.homeView=false;assert.equal(api.weekSections().others.length,0,'a team\'s own page shows only its own games');env.homeView=true;
-  // The card: ESPN's look.
-  const card=api.weekCard(mine.find(x=>x.g.id==='a'));
-  assert.match(card,/class="wk-card wk-line"[^>]*data-open-team="kstate"[^>]*data-open-sport="Football"/,'one slim row that opens the favorite\'s football');
-  assert.match(card,/wk-when">\d{1,2}:\d{2} [AP]M</,'the time first');
-  assert.match(card,/wk-match"><span class="wk-team"><small class="wk-rank">19<\/small>Arizona<\/span><i>at<\/i><span class="wk-team mine">Kansas State</,'away at home, rank, the favorite in gold');
-  assert.match(card,/wk-meta">Football · ARI -7\.5 · O\/U 51\.5</,'sport, the line on the favored team, the total');
-  assert.match(card,/class="wk-tv">[\s\S]*FS1</,'the TV');
-  const nfl=api.weekCard(mine.find(x=>x.g.id==='b'));
-  assert.match(nfl,/wk-meta">NFL · Football · BIL -3 · O\/U 50\.5</,'a pro game names its league; the home favorite\'s line');
+  // A tile: both teams in their own colors (no logos), the favorite highlighted.
+  const tile=api.weekTile(mine.find(x=>x.g.id==='a'));
+  assert.match(tile,/class="wk-tile fav"[^>]*data-open-team="kstate"[^>]*data-open-sport="Football"/,'the favorite\'s tile, highlighted, opens its football');
+  assert.match(tile,/class="wk-bar"><i style="background:#AB0520"><\/i>/,'the away team\'s ESPN color on the bar');
+  assert.match(tile,/style="background:#AB0520;color:#fff">ARI<\/span><b><small>19<\/small>Arizona<\/b>/,'away: color badge, rank, name');
+  assert.match(tile,/>KAN<\/span><b class="me">Kansas State<\/b>/,'home: the favorite in gold');
+  assert.match(tile,/wk-when">\d{1,2}:\d{2} [AP]M<\/span><span class="wk-pill">FS1</,'time and TV');
+  assert.match(tile,/wk-odds">ARI -7\.5 · O\/U 51\.5</,'the line on the favored team, the total');
+  assert.match(api.weekTile(mine.find(x=>x.g.id==='b')),/wk-tag"><span class="wk-star"[^>]*>★<\/span>NFL</,'a pro game names its league');
+  const other=api.weekTile(others.find(x=>x.g.id==='c'));
+  assert.match(other,/class="wk-tile"/,'another team\'s game is not highlighted');
+  assert.match(other,/background:#3b4a5e/,'no color known: gray');
   // Coming up drops a game the week ahead shows.
   const coming=[{school_id:'kstate',sport:'Football',e:{},day:mine.find(x=>x.g.id==='a').day},{school_id:'kstate',sport:'Volleyball',e:{},day:mine[0].day}];
   assert.deepEqual(api.withoutWeek(coming,mine).map(x=>x.sport),['Volleyball']);
-  // Everywhere: a day at a time, featured first.
-  const html=api.weekEverywhere(others);
-  assert.match(html,/class="wk-days"[\s\S]*data-week-day="[\d-]+"[^>]*aria-pressed="true"/,'day buttons, the first chosen');
-  assert.ok(html.includes('Duke')&&!html.includes('Alpha'),'featured games first');
-  assert.match(html,/data-week-sport="[\d-]+\|Basketball">Show all 2 Basketball games/,'Show all for that day and sport');
-  const section=api.weekSection('The week ahead',mine);
-  assert.match(section,/through next Sunday/);
-  assert.match(section,/<div class="wk-week">(?:This|Next) week<\/div>/,'the week heading');
-  assert.match(section,/data-week-alerts>[\s\S]*?Get alerts</,'each day carries the alerts bell');
-  assert.equal(api.weekSection('The week ahead',[]),'','no games, no section');
+  // One list: the day buttons, then the day's games, the viewer's first.
+  const section=api.weekSection({mine,others});
+  assert.match(section,/class="wk-hero"/,'the spotlight leads');
+  assert.match(section,/class="wk-days"[\s\S]*data-week-day="[\d-]+"[^>]*aria-pressed="true"/,'day buttons, the first chosen');
+  assert.match(section,/<u>★1<\/u>/,'a day with a favorite game shows the star count');
+  assert.match(section,/data-week-alerts>[\s\S]*?Get alerts</,'the alerts bell');
+  assert.equal(api.weekSection({mine:[],others:[]}),'','no games, no section');
+  const aDayHtml=(api.setDay(mine.find(x=>x.g.id==='a').day),api.weekSection({mine:mine.filter(x=>x.g.id!=='a'||true),others}));
+  const order=[...aDayHtml.matchAll(/class="wk-tile( fav)?"/g)].map(m=>Boolean(m[1]));
+  assert.ok(order.indexOf(false)<0||order.lastIndexOf(true)<order.indexOf(false),'the viewer\'s games come first');
+  assert.ok(aDayHtml.includes('Duke')&&!aDayHtml.includes('Alpha'),'featured games first; the rest behind Show all');
+  assert.match(aDayHtml,/data-week-more="[\d-]+">Show all \d+ games/,'Show all for that day');
 }
 // All levels from the official schedules (user, November 20: "No logos and
 // all levels"): ESPN's same game lends its line; a high school game, a meet.
@@ -134,23 +139,32 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   assert.equal(mine.find(x=>x.g?.id==='a').fid,'k1','ESPN\'s card stands for the official game');
   assert.ok(mine.some(x=>x.g?.id==='b'),'a game only ESPN lists still shows');
   assert.deepEqual(mine.filter(x=>x.f).map(x=>x.f.e.id).sort(),['m1','m2','m4'],'high school game and meet, today\'s game too (Today folded in); not beyond next Sunday, not other teams');
-  const hs=api.weekCard(mine.find(x=>x.f?.e.id==='m1'));
-  assert.match(hs,/wk-when">6:00 PM<[\s\S]*wk-match"><span class="wk-team mine">Manhattan<\/span><i>at<\/i><span class="wk-team">Hays</,'"Manhattan at Hays" as written, the school in gold');
-  assert.match(hs,/wk-meta">Girls Basketball · High school</);
-  assert.match(hs,/data-open-team="manhattan-ks" data-open-sport="Basketball"/);
-  const meet=api.weekCard(mine.find(x=>x.f?.e.id==='m2'));
-  assert.match(meet,/wk-when tba">TBA<[\s\S]*wk-match"><span class="wk-team mine">Flint Hills Invitational<\/span><\/span>/,'a meet: its name, no opponent');
-  assert.match(meet,/wk-meta">Cross Country · High school · Manhattan</);
-  assert.ok(!/<img/.test(hs+meet+api.weekCard(mine.find(x=>x.g?.id==='a'))),'no logos');
+  const hs=api.weekTile(mine.find(x=>x.f?.e.id==='m1'));
+  assert.match(hs,/class="wk-tile fav"[^>]*data-open-team="manhattan-ks" data-open-sport="Basketball"/,'a favorite\'s tile is highlighted and opens the team');
+  assert.match(hs,/wk-tag"><span class="wk-star"[^>]*>★<\/span>Girls Basketball · HS</);
+  assert.match(hs,/class="wk-chip long"[^>]*>MHS<\/span><b class="me">Manhattan<\/b>[\s\S]*class="wk-chip"[^>]*>HAYS<|class="wk-chip"[^>]*>MHS<\/span><b class="me">Manhattan<\/b>[\s\S]*>HAYS</,'"Manhattan at Hays": the school first, in gold');
+  assert.match(hs,/wk-when">6:00 PM</);
+  const meet=api.weekTile(mine.find(x=>x.f?.e.id==='m2'));
+  assert.equal((meet.match(/class="wk-tm"/g)||[]).length,1,'a meet is one row: its name');
+  assert.match(meet,/Flint Hills Invitational[\s\S]*wk-when tba">TBA</);
+  assert.ok(!/<img/.test(hs+meet+api.weekTile(mine.find(x=>x.g?.id==='a'))),'no logos');
   const coming=[{school_id:'kstate',sport:'Football',e:{id:'k1'},day:aDay},{school_id:'manhattan-ks',sport:'Basketball',e:{id:'m1'},day:local(3)},{school_id:'manhattan-ks',sport:'Basketball',e:{id:'m3'},day:local(40)}];
   assert.deepEqual(api.withoutWeek(coming,mine).map(x=>x.e.id),['m3'],'Coming up keeps only what is after next Sunday');
+  // The spotlight: the next favorite game with a time (Manhattan wrestling tonight, 11:59 PM).
+  const spot=api.weekSpotlight(mine);
+  assert.ok(spot,'a spotlight');assert.ok(mine.every(x=>!(x.at>Date.now())||(x.g?x.g.time_tba:!x.time)||x.at>=spot.at),'the soonest');
+  const hero=api.weekHero(spot);
+  assert.match(hero,/class="wk-hero"[^>]*aria-label="Next up: /);
+  assert.match(hero,/data-countdown-at="\d+"[\s\S]*data-unit="h"[\s\S]*data-unit="m"[\s\S]*data-unit="s"/,'a live countdown');
   env.teams=['kstate','kansas-city-chiefs'];
 }
-assert.match(page,/weekSection\('The week ahead',week\.mine\)/,'My Teams after Today');
-assert.match(page,/weekSection\('The week ahead · Everywhere',week\.others,true\)/,'Everywhere');
-assert.match(page,/'The week ahead':\['upcoming','The week ahead'/,'the My Teams banner');
+assert.match(page,/homeSection\(mine,live,'live'\)\+weekHtml\+\(spot\?'':nextUpBox\(todays,coming\)\)/,'the week ahead right after Live now; its spotlight stands in for the countdown box');
+assert.ok(!/The week ahead · Everywhere/.test(page),'one combined section (user, November 21)');
+assert.ok(!/'The week ahead':\['upcoming'/.test(page),'not a My Teams-only banner: everyone\'s games are in it');
 assert.match(page,/loadWeek\(signal\)/,'loaded with Home');
 assert.match(page,/const HOME_AHEAD_DAYS=14,/,'Home reads every favorite sport playing through next Sunday');
 assert.match(page,/feed\.querySelectorAll\('\[data-week-day\]'\)/,'day buttons wired');
+assert.match(page,/feed\.querySelectorAll\('\[data-week-more\]'\)/,'Show all wired');
+assert.match(page,/feed\.querySelectorAll\('\.wk-tile\[data-open-team\],\.wk-hero\[data-open-team\]'\)/,'tiles and the spotlight open the team');
 assert.match(page,/feed\.querySelectorAll\('\[data-week-alerts\]'\)/,'the bell opens Alerts');
-console.log('home-week: ok (ESPN boards a day at a time, My Teams and Everywhere, ESPN\'s matchup card, day buttons)');
+console.log('home-week: ok (ESPN boards a day at a time; design B: spotlight, day buttons, tiles in team colors, favorites highlighted)');

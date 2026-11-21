@@ -23,6 +23,17 @@ Added November 20, 2026 (`4.320.1-week-ahead`, PR #621); moved up and made into 
 - The week ahead now comes right after Live now, above the countdown box. Today is its first day: today's games not yet started are listed there, and the Today section keeps only today's finals. The jump row calls it "Upcoming".
 - Each game is one slim row (about 49 px, against about 140 px for the earlier two-line card): the time, then the matchup ("19 Arizona at Kansas State", the favorite in gold), with the sport, the line on the favored team ("ARIZ -7.5"), the total ("O/U 51.5") and ESPN's note on the line below, and the TV on the right. A meet or race reads its name. Two rows sit side by side on wide screens. On a phone the TV moves to the second line, so the matchup gets the full width. Everywhere uses the same rows.
 
+## Design B: spotlight and tiles, one combined list (November 21, `4.322.0-week-tiles`)
+
+**User, November 20–21:** "I don't see how what you just did made it better. It's all list doesn't looking inviting at all. Very poor design." Shown three mockups (color matchup cards; spotlight and tiles; scoreboard cards in team colors), they chose B: "Let's do B. Can we combine the my teams and all others for the upcoming schedule to save space on the homepage. You could just highlight the teams that were the person's favorites?"
+
+This design replaces the rows and the separate Everywhere section described above.
+- **Spotlight:** the viewer's next game with a published time, in both teams' colors, with a live countdown (the page's existing `data-countdown-at` ticker), the time, the TV and the line. It stands in for the countdown box (`nextUpBox`), which shows only when there is no spotlight.
+- **Day buttons:** today through next Sunday, each with its date, a gold ★ count of the viewer's games and the total.
+- **Tiles**, two across on a phone, three from 760 px and four from 1100 px: a bar in both teams' colors, the sport (NFL, M Basketball, Girls Basketball · HS), a color badge with each team's abbreviation (no logos), the names with ranks, the time, the TV and the line. The viewer's games come first, with a gold border and a ★; then the other college and pro games, featured first, up to 12, then "Show all N games" for that day.
+- **Colors:** ESPN's team color (`/live/week` now sends `color` and `alt`), else the catalog theme, else gray; near-black or near-white colors fall back. Badge text is dark on light colors.
+- One section, "The week ahead" (no "★ My Teams" banner, since everyone's games are in it), right after Live now. The jump row's "Upcoming" counts the viewer's games.
+
 ## Source and cost
 
 `/live/week?day=YYYY-MM-DD` (an Eastern date, from yesterday through 14 days ahead) reads each in-season college and pro board for that one day (`liveNowBoards`: the same boards Live now · Everywhere reads; about 17 in November). It returns the games that have not started and that include at least one catalog team, matched as push alerts and Live Everywhere match them (`boardTeamMatcher`).
