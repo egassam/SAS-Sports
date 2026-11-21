@@ -5796,3 +5796,19 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 
 **Production `4.322.0-week-tiles`** (merge `75a5edd`): `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, the page as on the preview.
 
+## November 20, 2026 — The week ahead by level and sport (PR #627)
+
+**Conversation.** After design B went live the user said: "I'm liking this better but you took away the organization by sport with the marque design." The agent grouped each day's tiles by sport under Live's marquee signs. Before that merged, the user added: "Let's making sections by middle school, highschool, college, and pro as well."
+
+**Built** (one PR, two commits).
+- Each day is split into level sections: College, Pro, High school, Middle school. Each has its own colored banner, a "★1 · 243 games" count and a jump chip. Levels where the viewer's teams play that day come first, then college, pro, high school, middle school.
+- Inside a level, each sport sits under its marquee sign ("★1 · 57 games"); the viewer's sports first, then A to Z.
+- In each sport, the viewer's games come first (gold, ★), then the featured others: 6, then "Show all N Football games".
+- Tile labels show only what the signs don't (M Basketball, Girls Basketball, NFL); "HS"/"MS" are dropped.
+
+**Tests.** `tests/home-week.mjs` (level banners, the sign inside a level, the per-level, per-sport Show all, a High school section for the high school game's day); `tests/regression.mjs` passed. CI `guardrails` green on `21bc35e`.
+
+**Gate.** Preview: `check-reference-page` PASS; `verify:preview` 69 PASS (Manhattan, Anthony, Eisenhower, 3 refreshes) and 6 (K-State Football, 36 refreshes); XC 18/20 and 26/21; the page in Chromium (no sideways scroll, no images, no errors).
+
+**Production `4.322.2-week-levels`** (merge `9c1a3c9`): `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, the page as on the preview.
+
