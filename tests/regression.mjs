@@ -320,7 +320,7 @@ assert.ok(!/searchParams\.set\('school'/.test(page),'Browsing a team must not wr
 contains(page,/data-home aria-pressed/,'Home must be a level button before Middle School');
 contains(page,/\.home-view \.finder,\.home-view #favorite/,'Home must hide the level, team and sport menus');
 contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
-contains(page,/homeSection\(mine,live,'live'\)\+weekSection\('The week ahead',week\.mine\)\+nextUpBox\(todays,coming\)\+homeSection\('Today',todayFinals\)\+homeSection\('Recent results',recent\)\+homeSection\('Coming up',coming,'upcoming'\)\+homeSection\('News',news\)\+everywhereHtml\+weekEverywhereHtml/,'Home must lead with the favorites (user, November 2): Live now, the week ahead with today folded in (user, November 20: "move it higher"), the countdown, the finals of today, Recent results, Coming up and News, then every other live game and the week ahead everywhere');
+contains(page,/homeSection\(mine,live,'live'\)\+weekHtml\+\(spot\?'':nextUpBox\(todays,coming\)\)\+homeSection\('Today',todayFinals\)\+homeSection\('Recent results',recent\)\+homeSection\('Coming up',coming,'upcoming'\)\+homeSection\('News',news\)\+everywhereHtml\+noFavorites/,'Home must lead with the favorites (user, November 2): Live now, the week ahead with today folded in (user, November 20: "move it higher"), the countdown, the finals of today, Recent results, Coming up and News, then every other live game and the week ahead everywhere');
 contains(page,/bucket==='results'&&!isToday\(x\)&&day\(x\)<\(today\.get[^\n]*day\(x\)>=since\(x\.school_id\)/,'Recent results must hold the finals of the last days before today only');
 contains(page,/class="home-row home-result" data-event-id/,'Each recent result must be one row that opens the game');
 contains(page,/apiFetch\(`\/live\/news\?school=/,'Home must read its news from /live/news');
@@ -430,7 +430,7 @@ contains(page,/setInterval\(\(\)=>\{for\(const box of document\.querySelectorAll
 contains(page,/<b data-unit="s">\$\{c\.s\}<\/b><span>sec<\/span>/,'The countdown must show seconds');
 contains(page,/\.my-teams-toggle\{[^}]*border:2px solid var\(--warn,#ffd27a\)/,'The My Teams menu must stand out in the favorite gold (user, October 30)');
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
-contains(page,/homeSection\(mine,live,'live'\)\+weekSection\('The week ahead',week\.mine\)\+nextUpBox\(todays,coming\)\+homeSection\('Today'/,'The overview (Home, a team with no sport chosen) must lead with the next game\'s countdown');
+contains(page,/homeSection\(mine,live,'live'\)\+weekHtml\+\(spot\?'':nextUpBox\(todays,coming\)\)\+homeSection\('Today'/,'The overview (Home, a team with no sport chosen) must lead with the next game\'s countdown');
 // My Teams is one dropdown (user, October 30: "Go with option 1"): Home, then
 // the favorites by level, with reorder and remove.
 contains(page,/<button class="ghost my-teams-toggle" aria-expanded="\$\{myTeamsOpen\}"/,'My Teams must be one dropdown button');

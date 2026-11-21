@@ -350,7 +350,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.321.0-week-rows';
+const VERSION='4.322.0-week-tiles';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7139,7 +7139,7 @@ function weekGamesFromBoards(reads){
       const start=Date.parse(item.date||competition?.date||'');if(!Number.isFinite(start))continue;
       const sides=competition?.competitors||[];const away=sides.find(s=>s.homeAway==='away'),home=sides.find(s=>s.homeAway==='home');if(!away||!home)continue;
       const side=s=>{const found=match(s.team,board),rank=Number(s.curatedRank?.current),record=(s.records||[]).find(r=>/^(?:overall|total|ytd)$/i.test(r.type||r.name||''))||s.records?.[0];
-        return{id:found?.id||null,name:clean(board.level==='pro'?(s.team?.shortDisplayName||s.team?.displayName):(s.team?.location||s.team?.shortDisplayName||s.team?.displayName))||(found?(found.short_name||found.name):'TBA'),abbr:s.team?.abbreviation||null,...(rank>=1&&rank<=25?{rank}:{}),...(record?.summary?{record:record.summary}:{})}};
+        return{id:found?.id||null,name:clean(board.level==='pro'?(s.team?.shortDisplayName||s.team?.displayName):(s.team?.location||s.team?.shortDisplayName||s.team?.displayName))||(found?(found.short_name||found.name):'TBA'),abbr:s.team?.abbreviation||null,...(/^[0-9a-f]{6}$/i.test(s.team?.color||'')?{color:`#${s.team.color}`}:{}),...(/^[0-9a-f]{6}$/i.test(s.team?.alternateColor||'')?{alt:`#${s.team.alternateColor}`}:{}),...(rank>=1&&rank<=25?{rank}:{}),...(record?.summary?{record:record.summary}:{})}};
       const a=side(away),h=side(home);if(!a.id&&!h.id)continue;
       seen.add(`${board.path}|${item.id}`);
       const odds=competition?.odds?.[0],favHome=odds?.homeTeamOdds?.favorite===true,favAway=odds?.awayTeamOdds?.favorite===true;
