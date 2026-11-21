@@ -312,6 +312,12 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .wk-tm{display:flex;align-items:center;gap:7px;margin:6px 0;min-width:0}.wk-chip{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;font-size:10px;font-weight:900;letter-spacing:.02em}.wk-chip.long{font-size:8.5px;letter-spacing:0}.wk-tm b{min-width:0;font-size:13px;font-weight:800;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wk-tm b.me{color:var(--warn)}.wk-tm b small{margin-right:3px;font-size:10px;color:#9db0c7}
 .wk-bt{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px}.wk-when{font-size:14px;font-weight:900;color:#fff;white-space:nowrap}.wk-when.tba{color:var(--muted)}.wk-bt .wk-pill{background:#1d2a3a;font-size:11px;padding:2px 8px;max-width:58%}
 .wk-odds{margin-top:5px;font-size:11px;font-weight:700;color:#9db0c7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-levels{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 8px}.wk-levels::-webkit-scrollbar{display:none}
+.wk-levels .wk-lchip{flex:none;width:auto;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:850;background:color-mix(in srgb,var(--lv) 18%,#0a192a);border:1px solid color-mix(in srgb,var(--lv) 60%,#29435f);color:#f4f8fc;box-shadow:none}.wk-lchip b{margin-left:4px;padding:1px 7px;border-radius:999px;background:var(--lv);color:#06111c;font-size:11px}
+.wk-lv-college{--lv:#7cf7c4}.wk-lv-pro{--lv:#ffd27a}.wk-lv-high-school{--lv:#60a5fa}.wk-lv-middle-school{--lv:#c084fc}
+.wk-level{margin-top:18px;padding:12px 10px 14px;border-radius:20px;background:color-mix(in srgb,var(--lv) 6%,#0b1622);border:1px solid color-mix(in srgb,var(--lv) 35%,#1f2f42)}
+.wk-lhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 2px 4px;scroll-margin-top:12px}.wk-lname{font-size:16px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;color:var(--lv)}.wk-lcount{padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--lv) 22%,#0b1622);color:#f8fafc;font-size:11px;font-weight:900;letter-spacing:.06em;white-space:nowrap}
+.wk-level .wk-sport:first-of-type{margin-top:8px}
 .wk-sport{margin-top:14px}.wk-sport .wk-tile:not(.fav){border-color:color-mix(in srgb,var(--mq) 30%,#22334a)}.wk-none{padding:16px;color:var(--muted);text-align:center;border:1px dashed #29435f;border-radius:14px}.wk-more{display:block;margin:12px auto 0}
 @media(forced-colors:active){.wk-tile,.wk-hero,.wk-dchip{border:2px solid CanvasText}}
 </style>
@@ -1189,7 +1195,8 @@ const WEEK_BELL_ICON='<svg viewBox="0 0 16 16" width="16" height="16" aria-hidde
 // across on a phone: the viewer's teams first, highlighted, then the other
 // college and pro games, featured first. Team colors stand in for logos (no
 // logos: user, October 15 and November 20).
-const WEEK_GRAY='#3b4a5e',WEEK_SPORT_SHOWN=6;let weekPickDay=null;const expandedWeekDays=new Set();
+const WEEK_GRAY='#3b4a5e',WEEK_SPORT_SHOWN=6,WEEK_LEVELS=['college','pro','high-school','middle-school'],WEEK_LEVEL_NAMES={'middle-school':'Middle school','high-school':'High school',college:'College',pro:'Pro'};
+const weekLevelOf=x=>x.g?(x.g.level||'college'):(catalogEntry(x.team)?.level||'college');let weekPickDay=null;const expandedWeekDays=new Set();
 const weekHex=v=>/^#[0-9a-f]{6}$/i.test(v||'')?v:null;
 const weekLum=hex=>{const n=parseInt(hex.slice(1),16);return(.2126*(n>>16&255)+.7152*(n>>8&255)+.0722*(n&255))/255};
 // A color that reads on the dark page: not near black or white.
@@ -1207,7 +1214,7 @@ function weekSides(x){
   const away=/\sat\s/i.test(` ${bare} `)&&!/\s(?:vs\.?|v\.?)\s/i.test(` ${bare} `);
   return away?[me,opp]:[opp,me];
 }
-const weekShortSport=x=>{if(x.g)return x.g.league||[x.g.team_label==="Men's"?'M':x.g.team_label==="Women's"?'W':x.g.team_label,x.g.sport].filter(Boolean).join(' ');const e=x.f.e,entry=catalogEntry(x.team);return[[e.team_label,x.f.sport].filter(Boolean).join(' '),entry?.level==='high-school'?'HS':entry?.level==='middle-school'?'MS':''].filter(Boolean).join(' · ')};
+const weekShortSport=x=>{if(x.g)return x.g.league||[x.g.team_label==="Men's"?'M':x.g.team_label==="Women's"?'W':x.g.team_label,x.g.sport].filter(Boolean).join(' ');const e=x.f.e;return[e.team_label,x.f.sport].filter(Boolean).join(' ')};
 const weekOdds=x=>{const o=x.g?.odds;if(!o)return'';const fav=o.favorite==='home'?x.g.home:o.favorite==='away'?x.g.away:null;return[o.line?`${fav?.abbr||''} ${o.line}`.trim():'',o.total?`O/U ${o.total}`:''].filter(Boolean).join(' · ')};
 const weekTv=x=>x.g?(x.g.tv||[]).join(', '):x.f.e.broadcast||'';
 const weekOpen=x=>x.team||(catalogEntry(x.g?.home?.id)?x.g.home.id:catalogEntry(x.g?.away?.id)?x.g.away.id:x.g?.home?.id||x.g?.away?.id)||'';
@@ -1236,21 +1243,28 @@ function weekDayView(mine,others,spot){
   const days=[...new Set([...mine,...others].map(x=>x.day))].sort();if(!days.length)return'';
   const day=days.includes(weekPickDay)?weekPickDay:days[0];
   const chips=`<div class="wk-days" role="group" aria-label="Day">${days.map(d=>{const f=mine.filter(x=>x.day===d).length,n=f+others.filter(x=>x.day===d).length,date=new Date(`${d}T12:00:00Z`);return`<button type="button" class="ghost wk-dchip${d===day?' active':''}" data-week-day="${esc(d)}" aria-pressed="${d===day}" aria-label="${esc(`${weekDayName(d,true)}, ${n} game${n===1?'':'s'}${f?`, ${f} of your teams`:''}`)}"><b>${esc(weekDayName(d).replace('Tomorrow','Tmrw').toUpperCase())}</b><span>${date.getUTCDate()}</span><i>${f?`<u>★${f}</u> `:''}${n}</i></button>`}).join('')}</div>`;
-  // Each sport under its marquee sign (user, November 21: "you took away
-  // the organization by sport with the marque design"): the sports the
-  // viewer's teams play that day first, then A to Z; in each, the viewer's
-  // games (highlighted), then the featured others, WEEK_SPORT_SHOWN until
-  // "Show all".
-  const mineDay=mine.filter(x=>x.day===day&&x!==spot),rest=others.filter(x=>x.day===day),date=new Date(`${day}T12:00:00Z`),bySport=new Map();
-  const add=(x,fav)=>{const k=weekSportOf(x);if(!bySport.has(k))bySport.set(k,{mine:[],rest:[]});bySport.get(k)[fav?'mine':'rest'].push(x)};
+  // By level, then sport (user, November 21: "you took away the
+  // organization by sport with the marque design", then "Let's making
+  // sections by middle school, highschool, college, and pro as well"): each
+  // level under its own banner, the levels the viewer's teams play that day
+  // first, then college, pro, high school and middle school; in each level,
+  // each sport under its marquee sign (the viewer's sports first, then A to
+  // Z); in each sport, the viewer's games (highlighted), then the featured
+  // others, WEEK_SPORT_SHOWN until "Show all".
+  const mineDay=mine.filter(x=>x.day===day&&x!==spot),rest=others.filter(x=>x.day===day),date=new Date(`${day}T12:00:00Z`),byLevel=new Map();
+  const add=(x,fav)=>{const lv=weekLevelOf(x),sp=weekSportOf(x);if(!byLevel.has(lv))byLevel.set(lv,new Map());const m=byLevel.get(lv);if(!m.has(sp))m.set(sp,{mine:[],rest:[]});m.get(sp)[fav?'mine':'rest'].push(x)};
   for(const x of mineDay)add(x,true);for(const x of rest)add(x,false);
-  const sports=[...bySport.keys()].sort((a,b)=>(bySport.get(b).mine.length?1:0)-(bySport.get(a).mine.length?1:0)||String(a).localeCompare(String(b)));
+  const favs=m=>[...m.values()].reduce((n,g)=>n+g.mine.length,0),count=m=>[...m.values()].reduce((n,g)=>n+g.mine.length+g.rest.length,0);
+  const levels=[...byLevel.keys()].sort((a,b)=>(favs(byLevel.get(b))?1:0)-(favs(byLevel.get(a))?1:0)||WEEK_LEVELS.indexOf(a)-WEEK_LEVELS.indexOf(b));
   const head=`<div class="wk-day"><h3>${esc(weekDayName(day,true))}<small>${esc(date.toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric'}))}</small></h3>${mine.length?weekBell():''}</div>`;
-  if(!sports.length)return chips+head+`<div class="wk-none">${spot&&spot.day===day?'Your only game this day is the one above.':'No games this day.'}</div>`;
-  const jump=sports.length>1?`<div class="mq-chips">${sports.map(sp=>{const [color,mark]=marqueeOf(sp),g=bySport.get(sp),n=g.mine.length+g.rest.length;return`<button type="button" class="mq-chip" data-jump="${esc(`week-${slug(sp)}`)}" style="--mq:${color}"><span aria-hidden="true">${mark}</span>${esc(sp)} <b>${g.mine.length?`★${g.mine.length} · `:''}${n}</b></button>`}).join('')}</div>`:'';
-  const groups=sports.map(sp=>{const g=bySport.get(sp),key=`${day}|${sp}`,open=expandedWeekDays.has(key),featured=g.rest.filter(x=>x.g.featured),shown=open?g.rest:(featured.length?featured:g.rest).slice(0,WEEK_SPORT_SHOWN),n=g.mine.length+g.rest.length,[color,mark]=marqueeOf(sp);
-    return`<div class="mq-group wk-sport" style="--mq:${color}"><div class="sport-marquee" style="--mq:${color}" id="${esc(`week-${slug(sp)}`)}" role="heading" aria-level="3"><span class="mq-mark" aria-hidden="true">${mark}</span><span class="mq-name">${esc(sp)}</span><span class="mq-count">${g.mine.length?`★${g.mine.length} · `:''}${n} game${n===1?'':'s'}</span></div><div class="wk-tiles">${[...g.mine,...shown].map(weekTile).join('')}</div>${g.rest.length>shown.length?`<button type="button" class="ghost show-all-live mq-more" data-week-more="${esc(key)}">Show all ${n} ${esc(sp)} games</button>`:''}</div>`}).join('');
-  return chips+head+jump+groups;
+  if(!levels.length)return chips+head+`<div class="wk-none">${spot&&spot.day===day?'Your only game this day is the one above.':'No games this day.'}</div>`;
+  const tally=(f,n)=>`${f?`★${f} · `:''}${n} game${n===1?'':'s'}`;
+  const jump=levels.length>1?`<div class="wk-levels">${levels.map(lv=>{const m=byLevel.get(lv);return`<button type="button" class="ghost wk-lchip wk-lv-${lv}" data-jump="${esc(`week-${lv}`)}">${esc(WEEK_LEVEL_NAMES[lv]||lv)} <b>${esc(tally(favs(m),count(m)))}</b></button>`}).join('')}</div>`:'';
+  const sections=levels.map(lv=>{const m=byLevel.get(lv),sports=[...m.keys()].sort((a,b)=>(m.get(b).mine.length?1:0)-(m.get(a).mine.length?1:0)||String(a).localeCompare(String(b)));
+    const groups=sports.map(sp=>{const g=m.get(sp),key=`${day}|${lv}|${sp}`,open=expandedWeekDays.has(key),featured=g.rest.filter(x=>x.g?.featured),shown=open?g.rest:(featured.length?featured:g.rest).slice(0,WEEK_SPORT_SHOWN),n=g.mine.length+g.rest.length,[color,mark]=marqueeOf(sp);
+      return`<div class="mq-group wk-sport" style="--mq:${color}"><div class="sport-marquee" style="--mq:${color}" id="${esc(`week-${lv}-${slug(sp)}`)}" role="heading" aria-level="4"><span class="mq-mark" aria-hidden="true">${mark}</span><span class="mq-name">${esc(sp)}</span><span class="mq-count">${esc(tally(g.mine.length,n))}</span></div><div class="wk-tiles">${[...g.mine,...shown].map(weekTile).join('')}</div>${g.rest.length>shown.length?`<button type="button" class="ghost show-all-live mq-more" data-week-more="${esc(key)}">Show all ${n} ${esc(sp)} games</button>`:''}</div>`}).join('');
+    return`<section class="wk-level wk-lv-${lv}" aria-label="${esc(WEEK_LEVEL_NAMES[lv]||lv)}"><div class="wk-lhead" id="${esc(`week-${lv}`)}" role="heading" aria-level="3"><span class="wk-lname">${esc(WEEK_LEVEL_NAMES[lv]||lv)}</span><span class="wk-lcount">${esc(tally(favs(m),count(m)))}</span></div>${groups}</section>`}).join('');
+  return chips+head+jump+sections;
 }
 function weekSection(week){
   const spot=weekSpotlight(week.mine);if(!week.mine.length&&!week.others.length)return'';

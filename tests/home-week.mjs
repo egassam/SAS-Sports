@@ -118,8 +118,9 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   const order=[...aDayHtml.matchAll(/class="wk-tile( fav)?"/g)].map(m=>Boolean(m[1]));
   assert.ok(order.indexOf(false)<0||order.lastIndexOf(true)<order.indexOf(false),'the viewer\'s games come first');
   assert.ok(aDayHtml.includes('Duke')&&!aDayHtml.includes('Alpha'),'featured games first; the rest behind Show all');
-  assert.match(aDayHtml,/data-week-more="[\d-]+\|Basketball">Show all 2 Basketball games/,'Show all for that day and sport');
-  assert.match(aDayHtml,/class="mq-group wk-sport"[^>]*><div class="sport-marquee"[^>]*id="week-basketball"[\s\S]*mq-name">Basketball<\/span><span class="mq-count">2 games</,'each sport under its marquee sign (user, November 21)');
+  assert.match(aDayHtml,/data-week-more="[\d-]+\|college\|Basketball">Show all 2 Basketball games/,'Show all for that day and sport');
+  assert.match(aDayHtml,/class="mq-group wk-sport"[^>]*><div class="sport-marquee"[^>]*id="week-college-basketball"[\s\S]*mq-name">Basketball<\/span><span class="mq-count">2 games</,'each sport under its marquee sign (user, November 21)');
+  assert.match(aDayHtml,/<section class="wk-level wk-lv-college"[^>]*><div class="wk-lhead" id="week-college"[^>]*><span class="wk-lname">College<\/span>/,'each level under its own banner (user, November 21: "sections by middle school, highschool, college, and pro")');
 }
 // All levels from the official schedules (user, November 20: "No logos and
 // all levels"): ESPN's same game lends its line; a high school game, a meet.
@@ -142,7 +143,7 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   assert.deepEqual(mine.filter(x=>x.f).map(x=>x.f.e.id).sort(),['m1','m2','m4'],'high school game and meet, today\'s game too (Today folded in); not beyond next Sunday, not other teams');
   const hs=api.weekTile(mine.find(x=>x.f?.e.id==='m1'));
   assert.match(hs,/class="wk-tile fav"[^>]*data-open-team="manhattan-ks" data-open-sport="Basketball"/,'a favorite\'s tile is highlighted and opens the team');
-  assert.match(hs,/wk-tag"><span class="wk-star"[^>]*>★<\/span>Girls Basketball · HS</);
+  assert.match(hs,/wk-tag"><span class="wk-star"[^>]*>★<\/span>Girls Basketball</);
   assert.match(hs,/class="wk-chip long"[^>]*>MHS<\/span><b class="me">Manhattan<\/b>[\s\S]*class="wk-chip"[^>]*>HAYS<|class="wk-chip"[^>]*>MHS<\/span><b class="me">Manhattan<\/b>[\s\S]*>HAYS</,'"Manhattan at Hays": the school first, in gold');
   assert.match(hs,/wk-when">6:00 PM</);
   const meet=api.weekTile(mine.find(x=>x.f?.e.id==='m2'));
@@ -157,6 +158,12 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   const hero=api.weekHero(spot);
   assert.match(hero,/class="wk-hero"[^>]*aria-label="Next up: /);
   assert.match(hero,/data-countdown-at="\d+"[\s\S]*data-unit="h"[\s\S]*data-unit="m"[\s\S]*data-unit="s"/,'a live countdown');
+  // Levels: those with the viewer's games first, then college, pro, high school, middle school.
+  api.setDay(local(3));
+  const lvHtml=api.weekSection({mine,others:[]});
+  assert.match(lvHtml,/wk-lv-high-school/,'a high school level');
+  const levelOrder=[...lvHtml.matchAll(/<section class="wk-level wk-lv-([a-z-]+)"/g)].map(m=>m[1]);
+  assert.ok(levelOrder.includes('high-school'),'the high school game\'s day has a High school section');
   env.teams=['kstate','kansas-city-chiefs'];
 }
 assert.match(page,/homeSection\(mine,live,'live'\)\+weekHtml\+\(spot\?'':nextUpBox\(todays,coming\)\)/,'the week ahead right after Live now; its spotlight stands in for the countdown box');
