@@ -1,6 +1,8 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 20, 2026 (Central, about 7:10 PM). **The week ahead by level and sport** (user: "you took away the organization by sport with the marque design", then "Let's making sections by middle school, highschool, college, and pro as well"; PR #627, merge `9c1a3c9`, `4.322.2-week-levels`). Design B (spotlight, day buttons, team-color tiles, favorites highlighted; PR #625) now splits each day into College, Pro, High school and Middle school sections (the viewer's levels first), each with its sport marquee signs; in each sport the viewer's games first, then six featured, then Show all. Gate: CI green on `21bc35e`; preview `verify:preview` 69 + 6 PASS, XC 18/20 and 26/21, `check-reference-page` PASS; production `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, page checked in Chromium.
+Last updated: November 20, 2026 (Central, about 8:00 PM). **Customize Home** (user: "Can we set the home screen up so users can choose what they want to see? For example if the only want to see pro football and college basketball?"; chose favorites always show and a Customize panel; PR #629, merge `32721bc`, `4.323.0-home-customize`). A bar on Home ("Showing: …", ⚙ Customize) opens a panel of level rows with sport chips; the choice is `level|sport` pairs saved on the device (`sas-home-filter`) and trims everyone else's games (Live everywhere, the week ahead, featured meets); starred teams always show. Gate: CI green on `a878bc8`; preview `verify:preview` 69 + 6 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, Customize tried in Chromium; production `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, Customize tried in Chromium (saved across a reload).
+
+Earlier today: the week ahead by level and sport (PR #627, `4.322.2-week-levels`; design B in PR #625); see `docs/HOME_WEEK_AHEAD.md`.
 
 Earlier today: rows at the top (PR #623, `4.321.0-week-rows`), replaced by design B.
 
@@ -40,7 +42,7 @@ Older entries moved to `docs/SAS_SPORTS_HISTORY.md` (November 19, "Archived from
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.322.2-week-levels`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.323.0-home-customize`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -364,3 +366,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 20 — The week ahead at the top with today folded in, one slim row per game (PR #623, `4.321.0-week-rows`, verified in production).
 - Nov 20 — The week ahead, design B: spotlight, day buttons, tiles in team colors, one list with favorites highlighted (PR #625, `4.322.0-week-tiles`, verified in production).
 - Nov 20 — The week ahead by level (College, Pro, High school, Middle school) and sport under the marquee signs (PR #627, `4.322.2-week-levels`, verified in production).
+- Nov 20 — Customize Home: pick the levels and sports Home shows, favorites always shown (PR #629, `4.323.0-home-customize`, verified in production).
