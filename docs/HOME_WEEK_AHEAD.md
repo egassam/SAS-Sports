@@ -34,6 +34,14 @@ This design replaces the rows and the separate Everywhere section described abov
 - **Colors:** ESPN's team color (`/live/week` now sends `color` and `alt`), else the catalog theme, else gray; near-black or near-white colors fall back. Badge text is dark on light colors.
 - One section, "The week ahead" (no "★ My Teams" banner, since everyone's games are in it), right after Live now. The jump row's "Upcoming" counts the viewer's games.
 
+## Sports under their marquee signs (November 21, `4.322.1-week-sports`)
+
+**User:** "I'm liking this better but you took away the organization by sport with the marque design." Each day's tiles are now grouped by sport under the marquee signs Live uses (color, mark, a "★2 · 58 games" count), with a row of sport chips to jump between them. Sports the viewer's teams play that day come first, then A to Z. In each sport, the viewer's games come first (highlighted), then the featured others: 6, then "Show all N Football games". A tile repeats its sport only when the tag adds something (Football · HS, M Basketball, NFL).
+
+## Sections by level (November 21, `4.322.2-week-levels`)
+
+**User:** "Let's making sections by middle school, highschool, college, and pro as well." Each day is now split into level sections (College, Pro, High school, Middle school), each with its own colored banner, a "★1 · 243 games" count and a chip at the top to jump to it. Levels where the viewer's teams play that day come first, then the app's usual order: college, pro, high school, middle school. Inside a level, the sport signs work as above. Tile labels no longer add "HS" or "MS", since the banner says it.
+
 ## Source and cost
 
 `/live/week?day=YYYY-MM-DD` (an Eastern date, from yesterday through 14 days ahead) reads each in-season college and pro board for that one day (`liveNowBoards`: the same boards Live now · Everywhere reads; about 17 in November). It returns the games that have not started and that include at least one catalog team, matched as push alerts and Live Everywhere match them (`boardTeamMatcher`).
