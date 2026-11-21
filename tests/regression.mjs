@@ -507,3 +507,12 @@ console.log('SAS Sports regression checks passed');
 contains(page,/const wl=e\.status==='Final'\?resultMark\(e\)\.wl:''/,'A final card must take its W/L/T from resultMark');
 contains(page,/<span class="score-wl">\$\{wl\}<\/span>`:''\}\$\{score\}/,'A final card must show W/L/T in front of the score');
 contains(page,/\.score\.wl-w\{color:#86efac\}\.score\.wl-l\{color:#fca5a5\}/,'W green, L red');
+// A full device storage never breaks a page (user, November 21, 2026: Home,
+// Pro, Steelers showed "Live backend connection failed": saving the last team
+// threw when the phone's storage was full).
+contains(page,/function storeSet\(key,value\)\{/,'Saves go through storeSet, which makes room when storage is full');
+contains(page,/storeSet\('sas-sports-school',id\);/,'Saving the last team must not throw');
+contains(page,/function saveFavoriteSchoolIds\(ids\)\{storeSet\('sas-sports-favorites'/,'Saving favorites must not throw');
+if(/localStorage\.setItem\('sas-sports-school'/.test(page))throw new Error('The last team must be saved through storeSet');
+contains(page,/if\(err\?\.name==='AbortError'\|\|generation!==feedGeneration\)return;/,'A replaced load is not reported as an error');
+contains(page,/if\(!feed\.querySelector\('\.sport,\.home-section,\.card,\.wk-tile'\)\)feed\.innerHTML=/,'An error keeps what already loaded');

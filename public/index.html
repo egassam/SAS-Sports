@@ -505,7 +505,22 @@ function favoriteSchoolIds(){
   try{const saved=JSON.parse(localStorage.getItem('sas-sports-favorites')||'[]');if(Array.isArray(saved))return[...new Set(saved.filter(id=>typeof id==='string'&&id))]}catch{}
   const legacy=localStorage.getItem('sas-sports-favorite');return legacy?[legacy]:[];
 }
-function saveFavoriteSchoolIds(ids){localStorage.setItem('sas-sports-favorites',JSON.stringify([...new Set(ids)]));localStorage.removeItem('sas-sports-favorite');dispatchEvent(new Event('sas-favorites-changed'))}
+// Saving on the device never breaks a page (user, November 21, 2026: Home,
+// Pro, Steelers showed "Live backend connection failed": the phone's storage
+// was full, so saving the last team threw before the team loaded). When the
+// browser's space is used up, the saved copies of feeds, athletes, menus and
+// news (all rebuilt from the network) are dropped, oldest first, and the save
+// is tried again; it fails quietly if there is still no room.
+function storeSet(key,value){
+  try{localStorage.setItem(key,value);return true}catch{}
+  try{
+    const caches=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k!==key&&/^sas-(?:feed:|athletes:|catalog:|news$|featured$)/.test(k)){let at=0;try{at=Date.parse(JSON.parse(localStorage.getItem(k)||'{}')?.at||'')||0}catch{}caches.push([k,at])}}
+    caches.sort((a,b)=>a[1]-b[1]);
+    for(let i=0;i<caches.length;i++){localStorage.removeItem(caches[i][0]);if(i%5===4||i===caches.length-1){try{localStorage.setItem(key,value);return true}catch{}}}
+  }catch{}
+  return false;
+}
+function saveFavoriteSchoolIds(ids){storeSet('sas-sports-favorites',JSON.stringify([...new Set(ids)]));localStorage.removeItem('sas-sports-favorite');dispatchEvent(new Event('sas-favorites-changed'))}
 function applyCurrentSchoolTheme(){
   if(homeView)return applyTheme('home',NEUTRAL_THEME);
   const themeId=school.value||savedSchool()||'sas';
@@ -1623,7 +1638,7 @@ function updateFavorite(){
   const levelOfId=id=>schoolLevel(catalogEntry(id));
   const groups=LEVELS.map(level=>[level,favorites.filter(id=>catalogEntry(id)&&levelOfId(id)===level.id)]).filter(([,ids])=>ids.length);
   const row=(id,ids,k)=>{const item=catalogEntry(id),name=esc(item.short_name||item.name);return`<div class="my-team-row"><button class="favorite-team ${id===school.value&&!homeView?'active':''}" style="${chipColors(item)}" data-favorite-school="${esc(id)}">★ ${name}</button><button class="ghost my-team-act" data-move-up="${esc(id)}" aria-label="Move ${name} up" ${k?'':'disabled'}>↑</button><button class="ghost my-team-act" data-move-down="${esc(id)}" aria-label="Move ${name} down" ${k<ids.length-1?'':'disabled'}>↓</button><button class="ghost my-team-act" data-remove-favorite="${esc(id)}" aria-label="Remove ${name} from My Teams">✕</button></div>`};
-  favoriteTeams.innerHTML=`<button class="ghost my-teams-toggle" aria-expanded="${myTeamsOpen}" aria-controls="myTeamsPanel"><span>★ My Teams</span><b>${current?esc(current.short_name||current.name):homeView?'Home':'Choose a team'}</b><span class="my-teams-count">${favorites.length}</span><span aria-hidden="true">▾</span></button><div class="my-teams-panel" id="myTeamsPanel" ${myTeamsOpen?'':'hidden'}><button class="ghost my-teams-home ${homeView?'active':''}" data-my-home>⌂ Home · all my teams</button>${groups.map(([level,ids])=>`<div class="my-teams-level">${esc(level.label)}</div>${ids.map((id,k)=>row(id,ids,k)).join('')}`).join('')}</div>`;
+  favoriteTeams.innerHTML=`<button class="ghost my-teams-toggle" aria-expanded="${myTeamsOpen}" aria-controls="myTeamsPanel"><span>★ My Teams</span><b>${current?esc(current.short_name||current.name):homeView?(levelHome?esc(HOME_LEVEL_NAMES[levelHome]):'Home'):'Choose a team'}</b><span class="my-teams-count">${favorites.length}</span><span aria-hidden="true">▾</span></button><div class="my-teams-panel" id="myTeamsPanel" ${myTeamsOpen?'':'hidden'}><button class="ghost my-teams-home ${homeView?'active':''}" data-my-home>⌂ Home · all my teams</button>${groups.map(([level,ids])=>`<div class="my-teams-level">${esc(level.label)}</div>${ids.map((id,k)=>row(id,ids,k)).join('')}`).join('')}</div>`;
   const close=()=>{myTeamsOpen=false};
   favoriteTeams.querySelector('.my-teams-toggle').addEventListener('click',()=>{myTeamsOpen=!myTeamsOpen;updateFavorite()});
   favoriteTeams.querySelector('[data-my-home]').addEventListener('click',()=>{close();updateFavorite();$('#levelSwitch [data-home]')?.click()});
@@ -1835,7 +1850,7 @@ function scheduleLiveRefresh(){
 // Last good feed per school and sport on this device (a week at most), for
 // Cloudflare locations that have no saved copy of their own.
 const SAVED_FEED_MS=7*24*60*60*1000;
-function saveFeedCopy(id,sp,groups,at){activityMemo.delete(`${id}|${sp}`);try{localStorage.setItem(`sas-feed:${id}|${sp}`,JSON.stringify({at:at||new Date().toISOString(),groups}))}catch{}}
+function saveFeedCopy(id,sp,groups,at){activityMemo.delete(`${id}|${sp}`);try{storeSet(`sas-feed:${id}|${sp}`,JSON.stringify({at:at||new Date().toISOString(),groups}))}catch{}}
 async function savedFeedCopy(id,sp,path,signal){
   try{
     const r=await apiFetch(path+'&cached=1',2,{signal,transientOnly:true});
@@ -1861,7 +1876,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
   try{
     updateFavorite();
     if(homeView){applyHomeView();status.textContent='Fetching live and upcoming games for your teams…';await loadHome(forceRefresh,automatic,generation,feedController.signal);return}
-    localStorage.setItem('sas-sports-school',id);
+    storeSet('sas-sports-school',id);
     const meta=catalogEntry(id); $('#schoolMeta').textContent=meta?[meta.name,meta.classification,meta.conference].filter(Boolean).join(' · '):'';
     if(!chosen){status.textContent='Fetching live and today\'s games…';await loadHome(forceRefresh,automatic,generation,feedController.signal);return}
     // With no sport chosen the home screen (loadHome) has answered above.
@@ -1928,7 +1943,15 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     if(currentGroups.length)loadFeaturedAthletes(currentGroups,id,generation);
     if(currentGroups.length&&currentView==='news'&&!automatic)loadNews(generation,feedController.signal).catch(()=>{});
     if(currentGroups.length&&!automatic)loadPros(generation,feedController.signal).catch(()=>{});
-  }catch(err){status.textContent='SAS Sports could not reach its live web backend.';feed.innerHTML='<div class="empty">Live backend connection failed. Open SAS Sports from its hosted https:// web address, not from a local index.html file.</div>'}
+  }catch(err){
+    // A load the viewer replaced (a new team, level or sport) is not an error.
+    if(err?.name==='AbortError'||generation!==feedGeneration)return;
+    console.error(err);
+    const network=err instanceof TypeError&&/fetch|load failed|network/i.test(String(err?.message||''));
+    status.textContent=network?'SAS Sports could not reach its live web backend.':`SAS Sports hit a problem loading this page (${String(err?.message||err).slice(0,120)}).`;
+    // Keep what already loaded; only an empty page gets the message.
+    if(!feed.querySelector('.sport,.home-section,.card,.wk-tile'))feed.innerHTML=network?'<div class="empty">Live backend connection failed. Check the connection and tap ↻ to try again.</div>':`<div class="empty">Something went wrong loading this page. Tap ↻ to try again.<br><small>${esc(String(err?.message||err).slice(0,160))}</small></div>`;
+  }
   finally{
     await hideLiveRefreshLoader(loaderShownAt);
     refresh.disabled=false;feedLoading=false;
