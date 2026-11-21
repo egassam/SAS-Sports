@@ -5779,3 +5779,20 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 
 **Production `4.321.0-week-rows`** (merge `aae3e7c`): `verify:prod` 99 PASS for the four schools, XC 18/20 and 26/21, `check-reference-page` PASS, the page in Chromium as on the preview.
 
+## November 20, 2026 — The week ahead, design B (PR #625)
+
+**Conversation.** After #623 the user said: "I don't see how what you just did made it better. It's all list doesn't looking inviting at all. Very poor design." The agent agreed, made three static mockups with the week's real games and team colors (A: color matchup cards; B: next-up spotlight and tiles; C: scoreboard cards in team colors), sent them as images and asked. User: "Let's do B. Can we combine the my teams and all others for the upcoming schedule to save space on the homepage. You could just highlight the teams that were the person's favorites?"
+
+**Built.** One section, "The week ahead", right after Live now.
+- A spotlight for the viewer's next timed game: both teams' colors, a live countdown (the page's `data-countdown-at` ticker), the time, the TV and the line. It stands in for `nextUpBox`.
+- Day buttons (today through next Sunday) with a gold ★ count of the viewer's games and the total.
+- Tiles (2/3/4 across): a team-color bar, abbreviation badges in team colors, names with ranks, the time, the TV and the line. The viewer's games come first with a gold border and ★; then the featured others, 12, then "Show all".
+- Colors come from ESPN (`color`/`alt` added to `/live/week`), else the catalog theme, else gray; near-black and near-white fall back.
+- The separate Everywhere week section and the "★ My Teams" banner for this section were removed.
+
+**Tests.** `tests/home-week.mjs` (tiles, colors, gray fallback, highlight, spotlight and countdown, day buttons, order, Show all, a high school game, a meet, no logos); `tests/regression.mjs` (order). CI `guardrails` green on `9fc0ae9`.
+
+**Gate.** Preview: `check-reference-page` PASS; `verify:preview` 69 PASS (Manhattan, Anthony, Eisenhower, 3 refreshes) and 6 (K-State Football, 36 refreshes); XC 18/20 and 26/21; the page in Chromium (390 px and 1280 px; no sideways scroll, no images, no errors).
+
+**Production `4.322.0-week-tiles`** (merge `75a5edd`): `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, the page as on the preview.
+
