@@ -1,6 +1,8 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 20, 2026 (Central, about 5:15 PM). **The week ahead moved to the top, in rows** (user: "Maybe add rows and move it higher?"; chose the top with Today folded in, and compact rows; PR #623, merge `aae3e7c`, `4.321.0-week-rows`). It follows Live now; today's games not yet started lead it and Today keeps today's finals; one slim row per game (about 3x as many per screen). Gate: CI green on `22412dc`; preview `verify:preview` 69 + 6 PASS, XC 18/20 and 26/21, `check-reference-page` PASS; production `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, page checked in Chromium.
+Last updated: November 20, 2026 (Central, about 6:40 PM). **The week ahead, design B** (user: "It's all list doesn't looking inviting at all. Very poor design"; shown three mockups, chose B and "combine the my teams and all others ... just highlight the teams that were the person's favorites"; PR #625, merge `75a5edd`, `4.322.0-week-tiles`). A spotlight for the next favorite game with a live countdown, day buttons, then tiles in the teams' colors (no logos), the viewer's games first with a gold border and ★, then the featured college and pro games. One combined section; `/live/week` sends ESPN team colors. Gate: CI green on `9fc0ae9`; preview `verify:preview` 69 + 6 PASS, XC 18/20 and 26/21, `check-reference-page` PASS; production `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, page checked in Chromium.
+
+Earlier today: rows at the top (PR #623, `4.321.0-week-rows`), replaced by design B.
 
 Earlier today: **Home: the week ahead** (user: "make upcoming college and pro games more obvious so you know who's playing a weekend in advance", Monday to Sunday, ESPN's matchup look, then "No logos and all levels"; PR #621, merge `bc96e6a`, `4.320.1-week-ahead`; `docs/HOME_WEEK_AHEAD.md`).
 - **My Teams:** every game, meet and race a favorite has after today through next Sunday, every level, from the official schedules; ESPN's same game adds line, total, rank, record and TV. Badges stand where logos would be (the Oct 15 no-logos test unchanged). Coming up keeps only games after next Sunday; `HOME_AHEAD_DAYS` 7 → 14.
@@ -38,7 +40,7 @@ Older entries moved to `docs/SAS_SPORTS_HISTORY.md` (November 19, "Archived from
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.321.0-week-rows`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.322.0-week-tiles`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -360,3 +362,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 20 — Leavenworth, Bourbon, Neosho, Wilson, Elk, Russell, Osborne, Smith and Jewell counties, 33 schools (PR #619, `4.319.0-ks-counties-7`, verified in production).
 - Nov 20 — Home: the week ahead, every level, ESPN's matchup look without logos (PR #621, `4.320.1-week-ahead`, verified in production).
 - Nov 20 — The week ahead at the top with today folded in, one slim row per game (PR #623, `4.321.0-week-rows`, verified in production).
+- Nov 20 — The week ahead, design B: spotlight, day buttons, tiles in team colors, one list with favorites highlighted (PR #625, `4.322.0-week-tiles`, verified in production).
