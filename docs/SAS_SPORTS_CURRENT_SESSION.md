@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 20, 2026 (Central, about 6:40 PM). **The week ahead, design B** (user: "It's all list doesn't looking inviting at all. Very poor design"; shown three mockups, chose B and "combine the my teams and all others ... just highlight the teams that were the person's favorites"; PR #625, merge `75a5edd`, `4.322.0-week-tiles`). A spotlight for the next favorite game with a live countdown, day buttons, then tiles in the teams' colors (no logos), the viewer's games first with a gold border and ★, then the featured college and pro games. One combined section; `/live/week` sends ESPN team colors. Gate: CI green on `9fc0ae9`; preview `verify:preview` 69 + 6 PASS, XC 18/20 and 26/21, `check-reference-page` PASS; production `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, page checked in Chromium.
+Last updated: November 20, 2026 (Central, about 7:10 PM). **The week ahead by level and sport** (user: "you took away the organization by sport with the marque design", then "Let's making sections by middle school, highschool, college, and pro as well"; PR #627, merge `9c1a3c9`, `4.322.2-week-levels`). Design B (spotlight, day buttons, team-color tiles, favorites highlighted; PR #625) now splits each day into College, Pro, High school and Middle school sections (the viewer's levels first), each with its sport marquee signs; in each sport the viewer's games first, then six featured, then Show all. Gate: CI green on `21bc35e`; preview `verify:preview` 69 + 6 PASS, XC 18/20 and 26/21, `check-reference-page` PASS; production `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, page checked in Chromium.
 
 Earlier today: rows at the top (PR #623, `4.321.0-week-rows`), replaced by design B.
 
@@ -40,7 +40,7 @@ Older entries moved to `docs/SAS_SPORTS_HISTORY.md` (November 19, "Archived from
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.322.0-week-tiles`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.322.2-week-levels`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -363,3 +363,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 20 — Home: the week ahead, every level, ESPN's matchup look without logos (PR #621, `4.320.1-week-ahead`, verified in production).
 - Nov 20 — The week ahead at the top with today folded in, one slim row per game (PR #623, `4.321.0-week-rows`, verified in production).
 - Nov 20 — The week ahead, design B: spotlight, day buttons, tiles in team colors, one list with favorites highlighted (PR #625, `4.322.0-week-tiles`, verified in production).
+- Nov 20 — The week ahead by level (College, Pro, High school, Middle school) and sport under the marquee signs (PR #627, `4.322.2-week-levels`, verified in production).
