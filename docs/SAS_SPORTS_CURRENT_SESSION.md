@@ -1,6 +1,8 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 20, 2026 (Central, about 8:25 PM). **Level pages** (user: "Can we make a landing page for each level that you can also customize what you see when you click on middle school, high school, college, and pro?"; PR #630, merge `2ec32f0`, `4.324.0-level-pages`). Each level button opens Home for that level: the favorites at that level, then everyone else's games at that level by sport (ESPN's boards for college and pro; today's Kansas tonight games for high and middle schools), the team finder above ("Choose a school…"), and its own Customize (`sas-home-filter:<level>`). Gate: CI green on `9e14b8a`; preview `verify:preview` 69 + 6 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, all four pages walked in Chromium; production `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, all four pages walked in Chromium.
+Last updated: November 20, 2026 (Central, about 11:05 PM). **Team pages fixed on full phones; finals say who won** (PR #632, merge `8c62a50`, `4.324.2-storage-safe`). User: Home, Pro, Steelers showed "Live backend connection failed", then "None of the pro teams are working for me". Cause: saving the last team (`localStorage.setItem`) threw when the phone's storage was full, before the team loaded; reproduced by filling storage to the byte (iPhone 13 profile). Saves now go through `storeSet` (drops the oldest saved feed/athlete/menu/news copies and retries); replaced loads are not reported as errors; errors name their cause and keep what loaded. Finals show W/L/T before the score (user: "It doesn't tell me who won"). Gate: CI green on `21a0ef3` (first run failed on `tests/last-good-feed.mjs`, which pinned the raw `setItem`; updated); preview `verify:preview` 69 + 6 + 9 (Steelers, Chiefs) PASS, XC 18/20 and 26/21; production `verify:prod` 99 PASS, XC 18/20 and 26/21, the full-storage Steelers path opens in Chromium.
+
+Earlier today: level pages (PR #630), Customize Home (PR #629) and the week ahead (PRs #621–#627); see `docs/HOME_WEEK_AHEAD.md`.
 
 Earlier today: Customize Home (PR #629, `4.323.0-home-customize`) and the week ahead (PRs #621–#627); see `docs/HOME_WEEK_AHEAD.md`.
 
@@ -44,7 +46,7 @@ Older entries moved to `docs/SAS_SPORTS_HISTORY.md` (November 19, "Archived from
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.324.0-level-pages`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.324.2-storage-safe`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -370,3 +372,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 20 — The week ahead by level (College, Pro, High school, Middle school) and sport under the marquee signs (PR #627, `4.322.2-week-levels`, verified in production).
 - Nov 20 — Customize Home: pick the levels and sports Home shows, favorites always shown (PR #629, `4.323.0-home-customize`, verified in production).
 - Nov 20 — Level pages: a customizable landing page for Middle School, High School, College and Pro (PR #630, `4.324.0-level-pages`, verified in production).
+- Nov 20 — Full phone storage no longer breaks team pages; finals say W/L/T (PR #632, `4.324.2-storage-safe`, verified in production).
