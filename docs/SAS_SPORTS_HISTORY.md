@@ -5832,3 +5832,21 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 
 **Open.** The choice is per device (like favorites), not per account.
 
+## November 20, 2026 — Level pages (PR #630)
+
+**Conversation.** User: "Can we make a landing page for each level that you can also customize what you see when you click on middle school, high school, college, and pro?" The level buttons used to open the first team on that level's list. The agent built each level's page as Home for that level. It noted that high and middle schools have no all-schools source for the week, only Kansas tonight (today's games from the saved feeds).
+
+**Built.**
+- `levelHome` (null on Home and team pages) sets `homeTeams()` to the favorites at that level. `homeAllows` keeps that level only, and each level has its own Customize (`sas-home-filter:<level>`, panel listing that level's sports). Favorites' catalog cards are fetched first, since their level is needed.
+- The level switch highlights the level page. The finder shows (`.home-view.level-home .finder`) with a "Choose a school…" option; picking a team leaves the landing page for that team.
+- High and middle school pages add `/live/tonight` games (Today/Upcoming) as the week's others, never highlighted. The subtitle says what each page shows.
+- The ordering slip found on the way: `HOME_LEVEL_NAMES` is declared beside `levelHome`, which runs before the Customize block at startup.
+
+**Mistake.** PR #630 was opened as the docs handoff for #629. The level-pages commit went onto the same branch before #630 merged, so #630 was retitled to carry both and passed the full code gate.
+
+**Tests.** `tests/home-customize.mjs` (level page: that level only, its own panel and key); `tests/home-week.mjs` (Kansas tonight's games as others, not highlighted; the subtitle; harness gets `levelHome`); `tests/regression.mjs` and `tests/home-news.mjs` (`homeTeams()` per level, the school-change handler, favorites' cards first). `npm test` and CI `guardrails` green on `9e14b8a`.
+
+**Gate.** Preview: `check-reference-page` PASS; `verify:preview` 69 PASS (Manhattan, Anthony, Eisenhower, 3 refreshes) and 6 (K-State Football, 36 refreshes); XC 18/20 and 26/21; each level page walked in Chromium (finder, "Choose a…", spotlight, level-only sections, pick a school, back to Home).
+
+**Production `4.324.0-level-pages`** (merge `2ec32f0`): `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, the same walk in Chromium.
+
