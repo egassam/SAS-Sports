@@ -2,7 +2,6 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| uc-santa-barbara | Volleyball | 🔴 on | live 17-20 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1812,6 +1811,7 @@
 | uc-san-diego | Volleyball | ✅ off (passed) | Women's · UC San Diego vs UC Irvine · 2026-10-24T07:12:57.517Z |
 | uc-santa-barbara | Basketball | ✅ off (passed) | Women's · UC Santa Barbara at Pepperdine · 2026-11-06T10:40:22.243Z |
 | uc-santa-barbara | Soccer | ✅ off (passed) | Men's · UC Santa Barbara at UC Irvine · 2026-10-25T06:45:59.266Z |
+| uc-santa-barbara | Volleyball | ✅ off (passed) | Women's · UC Santa Barbara at CA Baptist · 2026-11-21T12:26:28.731Z |
 | ucf | Basketball | ✅ off (passed) | Women's · UCF vs Florida A&M · 2026-11-04T07:24:48.596Z |
 | ucf | Football | ✅ off (passed) | UCF vs BYU · 2026-10-25T01:30:05.285Z |
 | ucf | Soccer | ✅ off (passed) | Women's · UCF vs Oklahoma St · 2026-10-11T22:23:42.554Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1123/1956; on 1; off 830; failing 2.
+Done 1124/1956; on 0; off 830; failing 2.
