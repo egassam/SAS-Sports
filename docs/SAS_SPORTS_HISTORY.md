@@ -5850,3 +5850,21 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 
 **Production `4.324.0-level-pages`** (merge `2ec32f0`): `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, the same walk in Chromium.
 
+## November 20, 2026 — Finals say who won; full phone storage (PR #632)
+
+**Conversation.** The user sent a screenshot of Home's Today card "Men's · K-State vs Campbell 70–80": "It doesn't tell me who won." Then a screenshot of the Steelers chosen under Pro with "Live backend connection failed" ("This is what I see when look at individual teams"; steps "Home, pro, Steelers"), then "None of the pro teams are working for me".
+
+**Diagnosis.** The server answered the Steelers' feed, menu and week (200s). Every Chromium replay (desktop, iPhone 13; from Home, from a team page, fast and slow taps) worked. The screenshot showed `homeView` off but the team header never set: `loadFeed` had thrown at `localStorage.setItem('sas-sports-school',id)`, which sits before the header line. Filling storage to the byte reproduced the user's screen exactly on production. The app keeps a saved copy of every feed viewed (`sas-feed:*`), and Safari allows about 5 MB.
+
+**Built.**
+- `storeSet(key,value)`: tries the save; when full, drops the oldest `sas-feed:`, `sas-athletes:`, `sas-catalog:`, `sas-news` and `sas-featured` copies and retries; fails quietly. Used for the last team, favorites and feed copies.
+- `loadFeed`'s catch: an AbortError or a newer generation returns quietly. A real error names its cause (network errors keep the old wording) and only replaces an empty page.
+- Final cards: W/L/T (from `resultMark`) before the score, green/red/gold, with an aria-label.
+- The My Teams button names the level on a level page.
+
+**Tests.** `tests/regression.mjs` (W/L/T, `storeSet` for the last team and favorites, no raw `setItem` for the last team, replaced loads, errors keep content); `tests/last-good-feed.mjs` updated (it pinned the raw `setItem` for feed copies and failed CI once). `npm test` passed; CI `guardrails` green on `21a0ef3`.
+
+**Gate.** Preview: `check-reference-page` PASS; `verify:preview` 69 (Manhattan, Anthony, Eisenhower), 6 (K-State Football), 9 (Steelers, Chiefs, 3 refreshes); XC 18/20 and 26/21; the full-storage path in Chromium.
+
+**Production `4.324.2-storage-safe`** (merge `8c62a50`): `verify:prod` 99 PASS, XC 18/20 and 26/21; Home, Pro, Steelers with full storage opens the Steelers and saves the last team.
+
