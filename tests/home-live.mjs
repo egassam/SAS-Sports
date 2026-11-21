@@ -17,7 +17,7 @@ const catalog=new Map([
   ['princeton',{id:'princeton',name:'Princeton',short_name:'Princeton',level:'college',time_zone:'America/New_York'}]
 ]);
 const build=(teams,everywhereGames)=>Function('homeTeams','search','catalogEntry','homeView','everywhereGames','currentView','schoolToday',
-  `${consts}\nconst schoolTimeZoneOf=id=>catalogEntry(id)?.time_zone||null;\n${clock}\n${zoned}\n${sections};return homeSections;`)(
+  `${consts}\nconst homeAllows=()=>true;\nconst schoolTimeZoneOf=id=>catalogEntry(id)?.time_zone||null;\n${clock}\n${zoned}\n${sections};return homeSections;`)(
   ()=>teams,{value:''},id=>catalog.get(id)||null,true,everywhereGames,'all',()=> '2026-11-08');
 const board=(id,school,sport,opponent,start_time,start_utc,extra={})=>({id:`live-${id}-${opponent}`,school_id:id,school,sport,status:'Live',title:`${school} vs ${opponent}`,opponent,start_time,start_utc,level:'college',...extra});
 const maine=board('maine','Maine','Basketball','Manhattan','2026-11-08T13:00:00.000Z','2026-11-08T18:00:00.000Z',{team_label:"Men's"});
