@@ -139,6 +139,10 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
         schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
       // Where a coming game is played, as the schedule names it ("Manhattan,
       // Kan."; H/A/N): the game-day forecast's place (src/game-weather.mjs).
+      // Home, away or neutral, as the schedule marks it (H/A/N), finals too
+      // (user, November 22, 2026: "make these obvious if it's a home game or
+      // away for all sports").
+      const side={H:'home',A:'away',N:'neutral'}[game.location_indicator];if(side)event.home_away=side;
       if(!final&&typeof game.location==='string'&&game.location.trim())event.site={place:game.location.replace(/\s+/g,' ').trim(),indicator:game.location_indicator||null};
       // Multi-day events end on their last day; while one is in progress it
       // is today's event, not a past one that drops off the schedule.
