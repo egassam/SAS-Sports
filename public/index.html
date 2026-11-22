@@ -164,6 +164,11 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .spotlight-count b{display:block;font-size:20px}
 .spotlight-count span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted,#9aa7b8)}
 .spotlight-note{margin-top:10px;font-size:12px;color:var(--muted,#9aa7b8);font-style:italic}
+/* Home, away or neutral on every game (user, November 22, 2026: "You need to
+   make these obvious if it's a home game or away for all sports"). */
+.ha{display:inline-block;margin-right:6px;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.06em;border:1px solid;vertical-align:1px;white-space:nowrap}
+.ha-home{background:#123a2c;border-color:#2f7a5c;color:#9ff2c8}.ha-away{background:#3a2a12;border-color:#8a6424;color:#ffd27a}.ha-neutral{background:#1d2a3d;border-color:#4a6488;color:#c6d6ea}
+.spotlight-where{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin:2px 0 6px}.spotlight-where .ha{font-size:12px;padding:4px 11px}.spotlight-place{font-size:13px;color:#dce8f5;font-weight:700}
 
 /* Compact controls and results-first athlete portraits. */
 .hero{padding:12px 14px;border-radius:18px}
@@ -551,14 +556,26 @@ function badge(e){if(e.no_result_posted)return '<span class="status-badge played
 // one row per team with its score, the trailing side dimmed). The side that
 // scored since the last refresh flashes once.
 const lastLiveScores=new Map();
+// Home, away or neutral: the schedule's own mark (home_away, or the site's
+// H/A/N), else the title's "at" (away) or "vs" (home).
+function homeAway(e){
+  if(['home','away','neutral'].includes(e?.home_away))return e.home_away;
+  const i={H:'home',A:'away',N:'neutral'}[e?.site?.indicator];if(i)return i;
+  const m=String(e?.title||'').match(/^(?:[^·]*· )?.*?\s+(vs\.?|at)\s+\S/);
+  return m?(m[1]==='at'?'away':'home'):null;
+}
+const HA_LABEL={home:'Home',away:'Away',neutral:'Neutral'};
+function haPill(e){const h=homeAway(e);return h?`<span class="ha ha-${h}" title="${h==='neutral'?'Neutral site':h==='home'?'Home game':'Away game'}">${HA_LABEL[h]}</span>`:''}
 function liveSides(e){
   const title=String(e.title||'').replace(/^DEMO · /,'').replace(/^(?:Men's|Women's) · /,'');
   const m=title.match(/^(.*?)\s+(vs|at)\s+(.*)$/);
-  return{ours:m?m[1]:(e.school||''),theirs:e.opponent||(m?m[3]:''),away:m?.[2]==='at'};
+  // Home, away or neutral as the schedule marks it, else the title's "at".
+  const where={home:'Home',away:'Away',neutral:'Neutral'}[e.home_away]||{H:'Home',A:'Away',N:'Neutral'}[e.site?.indicator]||(m?.[2]==='at'?'Away':'Home');
+  return{ours:m?m[1]:(e.school||''),theirs:e.opponent||(m?m[3]:''),away:m?.[2]==='at',where};
 }
 function monogram(name){const words=String(name).replace(/[()]/g,' ').split(/[\s-]+/).filter(Boolean);if(words.length===1)return /^[A-Z&]{2,4}$/.test(words[0])?words[0]:words[0].slice(0,3).toUpperCase();return words.slice(0,3).map(w=>w[0]).join('').toUpperCase();}
 function liveCard(e){
-  const {ours,theirs,away}=liveSides(e),a=e.school_score??'',b=e.opponent_score??'';
+  const {ours,theirs,away,where}=liveSides(e),a=e.school_score??'',b=e.opponent_score??'';
   const na=Number(a),nb=Number(b),scored=a!==''&&b!=='';
   const previous=lastLiveScores.get(e.id);lastLiveScores.set(e.id,[String(a),String(b)]);
   const flash=i=>previous&&previous[i]!==String([a,b][i])?' scored':'';
@@ -577,7 +594,7 @@ function liveCard(e){
   const situation=holder?`<div class="live-situation${e.red_zone?' red-zone':''}"><span>${esc(holder)} ball</span>${e.down_distance?`<span>${esc(e.down_distance)}</span>`:''}${e.red_zone?'<span class="live-rz">Red zone</span>':''}</div>`:'';
   const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}${holder?`, ${holder} has the ball${e.down_distance?', '+e.down_distance:''}`:''}`;
   const opp=knownColors(e.opponent_colors);
-  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%8000}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}${e.video?.embed_url?`<div class="live-video-note">▶ Live video above · ${esc(e.video.source)}</div>`:''}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_update_note||(e.live_score_source?'Live score · updates every 15 s':'Official live source'))}</span></div></article>`;
+  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%8000}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,where].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}${e.video?.embed_url?`<div class="live-video-note">▶ Live video above · ${esc(e.video.source)}</div>`:''}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_update_note||(e.live_score_source?'Live score · updates every 15 s':'Official live source'))}</span></div></article>`;
 }
 // Everything else the live board publishes (user, October 16: "update all
 // live cards to show all the data"): the score by period, timeouts, win
@@ -669,7 +686,7 @@ function spotlightCard(e){
   // (user, October 30, Manhattan HS 6A state volleyball: "High school isn't
   // working").
   const count=c?`<div class="spotlight-count" data-countdown-at="${c.t}"><div><b data-unit="d">${c.d}</b><span>days</span></div><div><b data-unit="h">${c.h}</b><span>hours</span></div><div><b data-unit="m">${c.m}</b><span>min</span></div><div><b data-unit="s">${c.s}</b><span>sec</span></div></div>`:!hasPublishedClock(e)&&e.start_time?'<div class="spotlight-note">Start time not posted yet · the countdown starts when it is</div>':'';
-  return`<div class="spotlight" data-event-id="${esc(e.id)}"><div class="spotlight-label">${label}</div><div class="spotlight-title">${rankedTitle(e)}</div><div class="spotlight-meta">${esc(eventTime(e)||'')}${e.event_type==='RACE'&&e.opponent?` · ${esc(e.opponent)}`:''}${e.broadcast?` · TV: ${esc(e.broadcast)}`:''}</div>${count}${weatherBlock(e)}${seriesBlock(e,true)}</div>`;
+  return`<div class="spotlight" data-event-id="${esc(e.id)}"><div class="spotlight-label">${label}</div><div class="spotlight-title">${rankedTitle(e)}</div>${(()=>{const h=haPill(e),place=e.site?.place;return h||place?`<div class="spotlight-where">${h}${place?`<span class="spotlight-place">${homeAway(e)==='neutral'?'Neutral site · ':''}${esc(place)}</span>`:''}</div>`:''})()}<div class="spotlight-meta">${esc(eventTime(e)||'')}${e.event_type==='RACE'&&e.opponent?` · ${esc(e.opponent)}`:''}${e.broadcast?` · TV: ${esc(e.broadcast)}`:''}</div>${count}${weatherBlock(e)}${seriesBlock(e,true)}</div>`;
 }
 // Keep the feed brief while separating divisions and emphasizing team finishes.
 // Full result rows in the expanded event are unchanged.
@@ -686,7 +703,7 @@ function resultPreview(e){
     return `<div class="preview-result-group">${group?`<div class="preview-group-title">${esc(group)}</div>`:''}${team.map(r=>`<div class="result-row preview-team-result"><span>Team finish</span><strong>${value(r)}</strong></div>`).join('')}${people.map(r=>`<div class="result-row preview-individual-result"><span>${esc(r.participant||r.label||'Result')}</span><strong>${value(r)}</strong></div>`).join('')}</div>`;
   }).join('');
 }
-function card(e,kind){if(kind==='live')return e.event_type==='RACE'||e.meet_live?raceLiveCard(e):liveCard(e);if(e.race_table?.length&&kind!=='live')return raceCard(e);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const rows=resultPreview(e);return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${rankedTitle(e)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div>${score?(()=>{const wl=e.status==='Final'?resultMark(e).wl:'';return`<div class="score${wl?` wl-${wl.toLowerCase()}`:''}"${wl?` aria-label="${wl==='W'?'Won':wl==='L'?'Lost':'Tied'} ${score}"`:''}>${wl?`<span class="score-wl">${wl}</span>`:''}${score}</div>`})():''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}${e.status!=='Final'?weatherBlock(e)+seriesBlock(e,false):''}${e.video?.embed_url&&e.status==='Final'?'<div class="video-note">▶ Game video · open for the replay</div>':''}</article>`}
+function card(e,kind){if(kind==='live')return e.event_type==='RACE'||e.meet_live?raceLiveCard(e):liveCard(e);if(e.race_table?.length&&kind!=='live')return raceCard(e);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const rows=resultPreview(e);return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${rankedTitle(e)}</div><div class="small muted">${badge(e)}${haPill(e)}${esc(statusDetails(e))}${e.site?.place&&e.status!=='Final'?` · ${esc(e.site.place)}`:''}</div></div>${score?(()=>{const wl=e.status==='Final'?resultMark(e).wl:'';return`<div class="score${wl?` wl-${wl.toLowerCase()}`:''}"${wl?` aria-label="${wl==='W'?'Won':wl==='L'?'Lost':'Tied'} ${score}"`:''}>${wl?`<span class="score-wl">${wl}</span>`:''}${score}</div>`})():''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}${e.status!=='Final'?weatherBlock(e)+seriesBlock(e,false):''}${e.video?.embed_url&&e.status==='Final'?'<div class="video-note">▶ Game video · open for the replay</div>':''}</article>`}
 function section(label,items,kind=''){if(!items.length)return'';return `<div class="section"><div class="section-label ${kind==='live'?'live':''}">${label}</div>${items.map(e=>card(e,kind)).join('')}</div>`}
 // Pros from a school (user, November 18: "Start 1-4"): its former players on
 // NFL, NBA, WNBA, MLB and NHL rosters, each with the line from the team's
@@ -2043,7 +2060,7 @@ async function openEvent(id){
   const source=e.source?.url?`<p class="small muted">Source: ${recapUrl?esc(e.source.name||'Official athletics source'):`<a class="official-link" href="${esc(e.source.url)}" target="_blank" rel="noopener">${esc(e.source.name||'Official athletics source')}</a>`} · verified ${esc(e.last_verified_at||e.source.updated_at||'now')}</p>`:'';
   // The game's own video from the school's channel: the replay of a final.
   const replay=e.video?.embed_url&&e.status==='Final'?`<div class="replay"><h4>Game video</h4><div class="video-frame"><iframe src="${esc(e.video.embed_url)}" title="${esc(e.video.title||e.title)}" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div class="video-foot"><span>${esc(e.video.source)}</span><a class="official-link" href="${esc(e.video.watch_url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a></div></div>`:'';
-  $('#modalBody').innerHTML=replay+`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>${e.event_type==='RACE'?'Track':e.pro&&e.event_type==='MEET'?'Where':'Opponent'}</span><b>${esc(e.opponent||'—')}</b></div>${e.broadcast?`<div class="detail-box"><span>TV</span><b>${esc(e.broadcast)}</b></div>`:''}</div>${e.headline&&e.school_score==null?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">${esc(resultsTitle)}</div>${rows}`:(highlights?'':'<div class="small muted">No participant-level results available for this event.</div>')}${box.line}${highlights}${!highlights?recapButton:''}${gameStats}${box.stats}${box.plays}${highlightStatus}${source}`;
+  $('#modalBody').innerHTML=replay+`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>${e.event_type==='RACE'?'Track':e.pro&&e.event_type==='MEET'?'Where':'Opponent'}</span><b>${esc(e.opponent||'—')}</b></div>${homeAway(e)?`<div class="detail-box"><span>Site</span><b>${haPill(e)}${esc(e.site?.place||'')}</b></div>`:''}${e.broadcast?`<div class="detail-box"><span>TV</span><b>${esc(e.broadcast)}</b></div>`:''}</div>${e.headline&&e.school_score==null?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">${esc(resultsTitle)}</div>${rows}`:(highlights?'':'<div class="small muted">No participant-level results available for this event.</div>')}${box.line}${highlights}${!highlights?recapButton:''}${gameStats}${box.stats}${box.plays}${highlightStatus}${source}`;
 }
 // A football final's expanded view (user, October 16: "can we clean up the
 // card please"): the score by quarter, team stats, and the scoring plays by

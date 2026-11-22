@@ -5868,3 +5868,18 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 
 **Production `4.324.2-storage-safe`** (merge `8c62a50`): `verify:prod` 99 PASS, XC 18/20 and 26/21; Home, Pro, Steelers with full storage opens the Steelers and saves the last team.
 
+## November 22, 2026 — Home, away or neutral on every game (PR #635)
+
+**Conversation.** The user sent a phone screenshot of K-State women's basketball "Next game · Women's · K-State vs Missouri, Nov 22, 6:30 PM CST" with the series block and standings: "You need to make these obvious if it's a home game or away for all sports."
+
+**Diagnosis.** The game is at a neutral site (Kansas City, Mo.; the K-State page marks it N), but titles use "vs" for home and neutral alike, and no card showed the side. Coming college games already carried `site.indicator` (H/A/N) for the forecast; finals, high schools and pro teams carried nothing.
+
+**Built.**
+- `home_away` on events: `src/sidearm-schedule-reader.mjs` (every game, finals too), `src/sidearm-schedule-data.mjs` enricher (K-State, Oklahoma State, Utah, Colorado, UC Davis, kit schools), `highSchoolEvent` (Bound's `game.site`, MaxPreps' `contest.site`, else "at" = away; "vs" alone is not guessed), `src/pro-sports.mjs` (ESPN `homeAway`/`neutralSite`), the college ESPN live board.
+- Page: `homeAway(e)` (mark, else `site.indicator`, else title "at"/"vs") and `haPill(e)`: a green HOME, amber AWAY or slate NEUTRAL pill on the spotlight (large, with "Neutral site · <city>"), every card beside the status badge (city on coming games), the expanded view's "Site" box; `liveSides` returns the side label for the live board.
+- Version `4.325.0-home-away`.
+
+**Tests.** New `tests/home-away.mjs` (Alabama A&M football's neutral finals, OKC's ESPN schedule, high school marks, the page helper and where it shows), in `npm test` and `test:release`; `tests/kstate-module.mjs` (Missouri Nov 22 neutral, Wichita State home, at Oklahoma State away). First full run caught `tests/live-possession.mjs`, which extracts `liveCard` alone: the label moved into `liveSides`. `npm test` passed.
+
+**Gate.** Preview: K-State Basketball 36/36 refreshes, 13/13 expanded views, the feed 38 home / 19 away / 9 neutral with Missouri neutral; Manhattan, Anthony, Eisenhower all sports 69 PASS (3 refreshes); Steelers 6 PASS; XC 18/20 and 26/21; `check-reference-page` PASS; screenshots (iPhone 13) of the spotlight and cards checked by eye. `diff:feeds` for Manhattan, Anthony, Eisenhower, Junction City and Wamego: the known Sep 10 XC cards; Wamego Golf's Prep.Golf results page read empty once on the preview and matched production on rerun. The 425 px width with the expanded view open on K-State Basketball is the same on production.
+

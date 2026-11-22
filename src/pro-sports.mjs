@@ -414,6 +414,9 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       const week=series?null:game.week?.text||null,postseason=[3,5].includes(Number(game.seasonType?.type))||['3','5'].includes(String(game.seasonType?.id))||/post|playoff|play-in|mls cup/i.test(game.seasonType?.name||'');
       const event=baseEvent({school,sport,status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:`ESPN team schedule (${school.league||'NFL'})`,sourceUrl:config.schedule,now,key:`${game.id}|${status}`});
       event.espn_event_id=game.id;event.espn_date=game.date;
+      // Home, away or neutral, as ESPN marks it (user, November 22, 2026:
+      // "make these obvious if it's a home game or away for all sports").
+      event.home_away=c.neutralSite?'neutral':own.homeAway==='away'?'away':'home';
       if(tv.length)event.broadcast=tv.join(', ');
       // An NBA Cup game (the WNBA's: a Commissioner's Cup game) is a
       // regular-season game with its stage as the round

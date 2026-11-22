@@ -350,7 +350,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.324.2-storage-safe';
+const VERSION='4.325.0-home-away';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4153,7 +4153,7 @@ function gameOverToday({sport,time,opponent,placeholder,now,school}){
   const local=schoolNow(now||new Date(),school),[h,m]=time.split(':').map(Number);
   return local.getUTCHours()*60+local.getUTCMinutes()>=h*60+m+GAME_OVER_HOURS*60;
 }
-function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,results=null,sourceUrl,sourceName='Official school calendar',placeholder=false,schedule=null,now}){
+function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,site=null,results=null,sourceUrl,sourceName='Official school calendar',placeholder=false,schedule=null,now}){
   const today=schoolToday(now,school),day=Date.parse(`${date}T00:00:00Z`),lastDay=endDate?Date.parse(`${endDate}T00:00:00Z`):day;
   const result=contest?.result||null,scored=result&&contest.score!=null&&contest.opponent_score!=null;
   let status,unscored=false;
@@ -4186,6 +4186,10 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   const event={id:'live-'+slug(`${school.id}|${sport}|${team||''}|${dateText}|${opponent}|${status}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:eventType(sport),status,title,start_time:`${date}T${time||'12:00'}:00.000Z`,display_time:highSchoolDisplayTime(date,time),opponent,school_score:scored?String(contest.score):null,opponent_score:scored?String(contest.opponent_score):null,headline,team_summaries:[],results:rows,result_count:rows.length,source:{name:sourceName,url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status],recency_label:{Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status],last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:contest||results?2:1,conflicting_sources:false};
   if(endDate)event.end_time=`${endDate}T23:59:00.000Z`;
   if(team)event.team_label=team;
+  // Home, away or neutral (user, November 22, 2026: "make these obvious if
+  // it's a home game or away for all sports"): Bound's or MaxPreps' own
+  // mark, else the schedule's "at".
+  const side={HOME:'home',AWAY:'away',NEUTRAL:'neutral'}[site||contest?.site]||(relation==='at'?'away':null);if(side)event.home_away=side;
   // A game the team scores live on MaxPreps: the running score and period.
   if(underWay){event.meet_live=true;event.priority_bucket='live';event.recency_label=underWay.label;event.live_latest=[];event.live_score_source=schedule.label?.replace(/^Live results \((.*)\)$/,'$1')||'Official live source';}
   else if(status==='Live'&&!results){
@@ -4852,7 +4856,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // (November 7, 2026), not "vs TBD".
       const gameRelation=game=>isHighSchoolPlaceholder(game.name)&&(!game.h2h||/^tb[ad]$/i.test(String(game.name).trim()))?'·':game.h2h===false||(game.h2h==null&&isNamedEvent(game.name))?(game.site==='HOME'||/\bat\s/.test(game.name)||!game.site&&NAMED_WITHOUT_PLACE.test(game.name)?'·':'at'):game.site==='AWAY'?'at':'vs';
       for(const game of games.filter(g=>g.final&&g.date<=today&&!inMaxPreps(g))){
-        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,opponent:game.name,relation:gameRelation(game),named:false,contest:{...game.final,opponent:game.name,source:'bound',game_url:null,source_url:module.bound.page},sourceUrl,sourceName,now});
+        const event=highSchoolEvent({school,sport,team:label,date:game.date,site:game.site||null,time:game.time,opponent:game.name,relation:gameRelation(game),named:false,contest:{...game.final,opponent:game.name,source:'bound',game_url:null,source_url:module.bound.page},sourceUrl,sourceName,now});
         if(event)events.push(event);
       }
       // Played with no score anywhere (a game MaxPreps and Bound lack; a
@@ -4860,7 +4864,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // round on a day MaxPreps has the game for is that game.
       const finalDays=new Set(finals.map(c=>c.date));
       for(const game of games.filter(g=>g.date<today&&!g.final&&!inMaxPreps(g)&&(g.h2h&&!/^tb[ad]$/i.test(g.name)||!finalDays.has(g.date)))){
-        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl:game.source_url||sourceUrl,sourceName:game.source_name||sourceName,placeholder:game.teams?.length===1,now});
+        const event=highSchoolEvent({school,sport,team:label,date:game.date,site:game.site||null,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl:game.source_url||sourceUrl,sourceName:game.source_name||sourceName,placeholder:game.teams?.length===1,now});
         if(event)events.push(event);
       }
       // A game today that the team scores live on MaxPreps takes its running
@@ -4888,11 +4892,11 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
         const live=liveContest(game),round=booked(game);
         if(round){
           used.add(round);
-          const event=highSchoolEvent({school,sport,team:label,date:game.date,time:round.time||game.time,opponent:round.opponent,relation:contestRelation(round,school),named:true,sourceUrl:round.game_url||`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName:'MaxPreps (team schedule)',...(live?{contest:live}:{}),now});
+          const event=highSchoolEvent({school,sport,team:label,date:game.date,site:game.site||null,time:round.time||game.time,opponent:round.opponent,relation:contestRelation(round,school),named:true,sourceUrl:round.game_url||`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName:'MaxPreps (team schedule)',...(live?{contest:live}:{}),now});
           if(event)events.push(event);
           continue;
         }
-        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl:game.source_url||sourceUrl,sourceName:game.source_name||sourceName,...(live?{contest:live}:{}),now});
+        const event=highSchoolEvent({school,sport,team:label,date:game.date,site:game.site||null,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl:game.source_url||sourceUrl,sourceName:game.source_name||sourceName,...(live?{contest:live}:{}),now});
         if(event)events.push(event);
       }
       // A school that enters few of its games on Bound (`maxprepsSchedule`,
@@ -4953,7 +4957,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // A dual on Bound names the opponent: "Rock Creek vs Abilene".
       const relation=game.h2h?(game.site==='AWAY'?'at':'vs'):named||eventType(sport)==='GAME'&&isHighSchoolPlaceholder(game.name)?(game.site==='HOME'||/\bat\s/.test(game.name)||!game.site&&NAMED_WITHOUT_PLACE.test(game.name)||eventType(sport)==='GAME'&&isHighSchoolPlaceholder(game.name)?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
       const results=gameResults[index]||(team.boundMeet&&game.date<new Date(today).toISOString().slice(0,10)?boundMeetResults(school,module,team,bound,game.date):null)||(game.teams&&game.date<today?boundEntryResults(school,module,team,game):null);
-      const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl:game.source_url||sourceUrl,sourceName:game.source_name||sourceName,schedule:game.midwestTiming?midwestTimingSchedule(game.midwestTiming):game.athleticLive&&game.athleticLive.time&&game.date>=new Date(today).toISOString().slice(0,10)?athleticLiveSchedule(game.athleticLive,game.athleticLiveNotEntered):null,placeholder:game.teams?.length===1&&eventType(sport)==='GAME',now});
+      const event=highSchoolEvent({school,sport,team:label,date:game.date,site:game.site||null,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl:game.source_url||sourceUrl,sourceName:game.source_name||sourceName,schedule:game.midwestTiming?midwestTimingSchedule(game.midwestTiming):game.athleticLive&&game.athleticLive.time&&game.date>=new Date(today).toISOString().slice(0,10)?athleticLiveSchedule(game.athleticLive,game.athleticLiveNotEntered):null,placeholder:game.teams?.length===1&&eventType(sport)==='GAME',now});
       if(event)events.push(event);
     }
     // A MaxPreps-only school: its games without a score are its schedule
@@ -6429,6 +6433,7 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
     const dateText=local.toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'}),timeText=timeValid?`${local.getUTCHours()%12||12}:${String(local.getUTCMinutes()).padStart(2,'0')} ${local.getUTCHours()>=12?'PM':'AM'}`:null;
     const status=state==='in'?'Live':'Final',detail=clean(type.shortDetail||type.detail||(status==='Live'?'Live now':'Final'));
     const event=makeEvent({school,sport,status,relation:ours.homeAway==='away'?'at':'vs',opponent:opponent.team?.shortDisplayName||opponent.team?.displayName||'Opponent',date:dateText,time:timeText,schoolScore:status==='Final'?ours.score:null,oppScore:status==='Final'?opponent.score:null,resultText:null,sourceUrl:url,now});
+    event.home_away=competition?.neutralSite?'neutral':ours.homeAway==='away'?'away':'home';
     if(status==='Live'){
       event.status='Live';event.priority_bucket='live';event.school_score=ours.score??null;event.opponent_score=opponent.score??null;event.headline=detail;event.recency_label=detail||'Live now';event.results=[];event.result_count=0;
       // Who has the ball (football): ESPN names the team id in possession and

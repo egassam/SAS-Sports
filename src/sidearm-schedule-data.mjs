@@ -81,6 +81,10 @@ export function createScheduleDataEnricher({schoolId,host,slug,resultSports=new 
       if(matches.length!==1)continue;
       const tv=tvSports.has(sport)?sidearmBroadcast(matches[0]):null;
       if(tv&&!event.broadcast)event.broadcast=tv;
+      // Home, away or neutral, as the schedule marks it (H/A/N), finals too
+      // (user, November 22, 2026: "make these obvious if it's a home game or
+      // away for all sports").
+      const side={H:'home',A:'away',N:'neutral'}[matches[0].location_indicator];if(side&&!event.home_away)event.home_away=side;
       if(event.status!=='Final'){
         // Where a coming game is played ("Manhattan, Kan."): the game-day
         // forecast's place (src/game-weather.mjs).

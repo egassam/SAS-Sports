@@ -179,6 +179,12 @@ assert.equal(liveMen[0].headline,'2nd Half - 4:12');
   assert.equal(tv('2026-11-22'),null,'vs Missouri: no TV published');
   const coming=events.filter(e=>e.status!=='Final');
   assert.equal(coming.filter(e=>e.broadcast).length,coming.length-2,'every coming game but Missouri and Creighton names its TV');
+  // Home, away or neutral from the page's H/A/N (user, November 22, 2026:
+  // the Missouri spotlight in Kansas City read like a home game).
+  const side=day=>events.find(e=>e.start_time?.startsWith(day))?.home_away??null;
+  assert.equal(side('2026-11-22'),'neutral','vs Missouri, Kansas City');
+  assert.equal(side('2026-11-02'),'home','vs Wichita State');
+  assert.equal(side('2027-02-15'),'away','at Oklahoma State');
   // Another school's page is never read for K-State's TV.
   assert.ok(worker.parseHtml(raw,school,'Basketball','https://www.example.com/sports/womens-basketball/schedule',new Date('2026-11-03T00:50:00Z')).every(e=>!e.broadcast));
 }
