@@ -2,6 +2,7 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| montana | Basketball | 🔴 on | live 3-3 · 7:29 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -417,7 +418,6 @@
 | monmouth | Football | ⚪ off (waiting) |  |
 | monmouth | Lacrosse | ⚪ off (waiting) |  |
 | monmouth | Softball | ⚪ off (waiting) |  |
-| montana | Basketball | ⚪ off (waiting) |  |
 | montana | Football | ⚪ off (waiting) |  |
 | montana | Softball | ⚪ off (waiting) |  |
 | montana-state | Football | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1127/1956; on 0; off 827; failing 2.
+Done 1127/1956; on 1; off 826; failing 2.
