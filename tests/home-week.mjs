@@ -101,21 +101,21 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
     const w=api.weekSections([],tonight);
     assert.deepEqual(w.others.map(x=>x.f?.e.id),['t1'],'tonight\'s game is listed (ESPN\'s college and pro games are not)');
     const tile=api.weekTile(w.others[0]);
-    assert.match(tile,/class="wk-tile"/,'not highlighted: not a favorite');
+    assert.match(tile,/class="wk-tile game-board"/,'not highlighted: not a favorite');
     assert.match(api.weekSection(w),/today's games at every high school/,'the subtitle says what the page shows');
     env.levelHome=null;
   }
   // A tile: both teams in their own colors (no logos), the favorite highlighted.
   const tile=api.weekTile(mine.find(x=>x.g.id==='a'));
-  assert.match(tile,/class="wk-tile fav"[^>]*data-open-team="kstate"[^>]*data-open-sport="Football"/,'the favorite\'s tile, highlighted, opens its football');
-  assert.match(tile,/class="wk-bar"><i style="background:#AB0520"><\/i>/,'the away team\'s ESPN color on the bar');
-  assert.match(tile,/style="background:#AB0520;color:#fff">ARI<\/span><b><small>19<\/small>Arizona<\/b>/,'away: color badge, rank, name');
-  assert.match(tile,/>KAN<\/span><b class="me">Kansas State<\/b>/,'home: the favorite in gold');
-  assert.match(tile,/wk-when">\d{1,2}:\d{2} [AP]M<\/span><span class="wk-pill">FS1</,'time and TV');
-  assert.match(tile,/wk-odds">ARI -7\.5 · O\/U 51\.5</,'the line on the favored team, the total');
-  assert.match(api.weekTile(mine.find(x=>x.g.id==='b')),/wk-tag"><span class="wk-star"[^>]*>★<\/span>NFL</,'a pro game names its league');
+  assert.match(tile,/class="wk-tile game-board fav"[^>]*data-open-team="kstate"[^>]*data-open-sport="Football"/,'the favorite\'s tile, highlighted, opens its football');
+  assert.match(tile,/style="--team-primary:#AB0520"/,'the board wears a known team color');
+  assert.match(tile,/style="background:#AB0520;color:#fff">ARI<\/span><span class="live-name"><span class="rank-badge">#19<\/span> Arizona<\/span>/,'away: color badge, rank, name');
+  assert.match(tile,/>KAN<\/span><span class="live-name me">Kansas State<\/span>/,'home: the favorite in gold');
+  assert.match(tile,/board-pill up">\d{1,2}:\d{2} [AP]M<\/span><span class="live-clock">FS1</,'time and TV in the board head');
+  assert.match(tile,/live-foot"><span><span class="wk-star"[^>]*>★<\/span> Football<\/span><span>ARI -7\.5 · O\/U 51\.5</,'the sport, the line on the favored team, the total');
+  assert.match(api.weekTile(mine.find(x=>x.g.id==='b')),/<span class="wk-star"[^>]*>★<\/span> NFL</,'a pro game names its league');
   const other=api.weekTile(others.find(x=>x.g.id==='c'));
-  assert.match(other,/class="wk-tile"/,'another team\'s game is not highlighted');
+  assert.match(other,/class="wk-tile game-board"/,'another team\'s game is not highlighted');
   assert.match(other,/background:#3b4a5e/,'no color known: gray');
   // Coming up drops a game the week ahead shows.
   const coming=[{school_id:'kstate',sport:'Football',e:{},day:mine.find(x=>x.g.id==='a').day},{school_id:'kstate',sport:'Volleyball',e:{},day:mine[0].day}];
@@ -128,7 +128,7 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   assert.match(section,/data-week-alerts>[\s\S]*?Get alerts</,'the alerts bell');
   assert.equal(api.weekSection({mine:[],others:[]}),'','no games, no section');
   const aDayHtml=(api.setDay(mine.find(x=>x.g.id==='a').day),api.weekSection({mine:mine.filter(x=>x.g.id!=='a'||true),others}));
-  const order=[...aDayHtml.matchAll(/class="wk-tile( fav)?"/g)].map(m=>Boolean(m[1]));
+  const order=[...aDayHtml.matchAll(/class="wk-tile game-board( fav)?"/g)].map(m=>Boolean(m[1]));
   assert.ok(order.indexOf(false)<0||order.lastIndexOf(true)<order.indexOf(false),'the viewer\'s games come first');
   assert.ok(aDayHtml.includes('Duke')&&!aDayHtml.includes('Alpha'),'featured games first; the rest behind Show all');
   assert.match(aDayHtml,/data-week-more="[\d-]+\|college\|Basketball">Show all 2 Basketball games/,'Show all for that day and sport');
@@ -155,13 +155,13 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   assert.ok(mine.some(x=>x.g?.id==='b'),'a game only ESPN lists still shows');
   assert.deepEqual(mine.filter(x=>x.f).map(x=>x.f.e.id).sort(),['m1','m2','m4'],'high school game and meet, today\'s game too (Today folded in); not beyond next Sunday, not other teams');
   const hs=api.weekTile(mine.find(x=>x.f?.e.id==='m1'));
-  assert.match(hs,/class="wk-tile fav"[^>]*data-open-team="manhattan-ks" data-open-sport="Basketball"/,'a favorite\'s tile is highlighted and opens the team');
-  assert.match(hs,/wk-tag"><span class="wk-star"[^>]*>★<\/span>Girls Basketball</);
-  assert.match(hs,/class="wk-chip long"[^>]*>MHS<\/span><b class="me">Manhattan<\/b>[\s\S]*class="wk-chip"[^>]*>HAYS<|class="wk-chip"[^>]*>MHS<\/span><b class="me">Manhattan<\/b>[\s\S]*>HAYS</,'"Manhattan at Hays": the school first, in gold');
-  assert.match(hs,/wk-when">6:00 PM</);
+  assert.match(hs,/class="wk-tile game-board fav"[^>]*data-open-team="manhattan-ks" data-open-sport="Basketball"/,'a favorite\'s tile is highlighted and opens the team');
+  assert.match(hs,/<span class="wk-star"[^>]*>★<\/span> Girls Basketball</);
+  assert.match(hs,/>MHS<\/span><span class="live-name me">Manhattan<\/span>[\s\S]*>HAYS</,'"Manhattan at Hays": the school first, in gold');
+  assert.match(hs,/board-pill up">6:00 PM</);
   const meet=api.weekTile(mine.find(x=>x.f?.e.id==='m2'));
-  assert.equal((meet.match(/class="wk-tm"/g)||[]).length,1,'a meet is one row: its name');
-  assert.match(meet,/Flint Hills Invitational[\s\S]*wk-when tba">TBA</);
+  assert.equal((meet.match(/class="live-team"/g)||[]).length,1,'a meet is one row: its name');
+  assert.match(meet,/board-pill up tba">TBA<[\s\S]*Flint Hills Invitational/);
   assert.ok(!/<img/.test(hs+meet+api.weekTile(mine.find(x=>x.g?.id==='a'))),'no logos');
   const coming=[{school_id:'kstate',sport:'Football',e:{id:'k1'},day:aDay},{school_id:'manhattan-ks',sport:'Basketball',e:{id:'m1'},day:local(3)},{school_id:'manhattan-ks',sport:'Basketball',e:{id:'m3'},day:local(40)}];
   assert.deepEqual(api.withoutWeek(coming,mine).map(x=>x.e.id),['m3'],'Coming up keeps only what is after next Sunday');

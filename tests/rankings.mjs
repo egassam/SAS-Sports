@@ -80,7 +80,7 @@ assert.deepEqual(w.rankingPolls(boards['soccer/usa.ncaa.w.1']).map(p=>p.poll),['
   assert.equal(rankedTitle({title:"Women's · South Carolina at Texas",opponent:'Texas',school_rank:{rank:1,poll:'AP'}}),'Women&#39;s · <span class="rank-badge" title="No. 1 in this week&#39;s AP poll">#1</span> South Carolina at Texas','a team label stays in front');
   assert.equal(rankedTitle({title:'Utah at BYU',opponent:'BYU',opponent_rank:{rank:9,poll:'Top 25'}}),'Utah at <span class="rank-badge" title="No. 9 in the Top 25">#9</span> BYU');
   // Every card and Home row uses it: results, upcoming, live, Home's rows and spotlight.
-  for(const where of ['<span class="home-row-title">${rankedTitle(x.e)}</span>','<div class="spotlight-title">${rankedTitle(e)}</div>','${rk(i)}${esc(name)}'])assert.ok(page.includes(where),`the page ranks ${where}`);
+  for(const where of ['<div class="spotlight-title">${rankedTitle(e)}</div>','${rk(i)}${esc(name)}'])assert.ok(page.includes(where),`the page ranks ${where}`);
 }
 // Home's live games: ESPN's own Top 25 mark first, then the polls (one read per board).
 {

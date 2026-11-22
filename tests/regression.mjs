@@ -322,7 +322,7 @@ contains(page,/\.home-view \.finder,\.home-view #favorite/,'Home must hide the l
 contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
 contains(page,/homeSection\(mine,live,'live'\)\+weekHtml\+\(spot\?'':nextUpBox\(todays,coming\)\)\+homeSection\('Today',todayFinals\)\+homeSection\('Recent results',recent\)\+homeSection\('Coming up',coming,'upcoming'\)\+homeSection\('News',news\)\+everywhereHtml\+noFavorites/,'Home must lead with the favorites (user, November 2): Live now, the week ahead with today folded in (user, November 20: "move it higher"), the countdown, the finals of today, Recent results, Coming up and News, then every other live game and the week ahead everywhere');
 contains(page,/bucket==='results'&&!isToday\(x\)&&day\(x\)<\(today\.get[^\n]*day\(x\)>=since\(x\.school_id\)/,'Recent results must hold the finals of the last days before today only');
-contains(page,/class="home-row home-result" data-event-id/,'Each recent result must be one row that opens the game');
+contains(page,/return boardDays\(items\.map\(x=>\(\{x,day:String\(x\.e\.start_time\|\|''\)\.slice\(0,10\)\}\)\),'results'\)/,'Recent results must read as day headings with a scoreboard card per final (Nov 22)');
 contains(page,/apiFetch\(`\/live\/news\?school=/,'Home must read its news from /live/news');
 contains(worker,/if\(url\.pathname==='\/live\/news'\)\{[\s\S]{0,900}feedCacheKey\(url,school,sport\)[\s\S]{0,200}lastGoodFeedKey/,'/live/news must read only the feed copy already built, never rebuild a feed');
 contains(page,/inBatches\(reread,4,/,'Home feeds the single request left must load four at a time');
@@ -330,11 +330,13 @@ contains(page,/inBatches\(reread,4,/,'Home feeds the single request left must lo
 contains(page,/const live=\[\.\.\.ownLive,\.\.\.fromBoards\]\.sort\(\(a,b\)=>bySport\(a,b\)\|\|byTeam\(a,b\)\)/,'My Teams live games must read sports A to Z');
 contains(page,/\.sort\(\(a,b\)=>bySport\(a,b\)\|\|levelRank/,'Everywhere live games must read sports A to Z');
 contains(page,/\.home-grid\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/,'Home live boxes must sit three across');
-contains(page,/kind==='live'&&homeView\?liveTeamVars\(x\)/,'Each live box on Home must wear its team\'s colors');
+contains(page,/\$\{homeView\?liveTeamVars\(x\):''\}/,'Each live box on Home must wear its team\'s colors');
 contains(page,/--opp:\$\{opp\.main\}/,'The opponent\'s side must wear the opponent\'s colors');
 contains(page,/bucket==='upcoming'&&!isToday\(x\)&&day\(x\)>\(today\.get\(x\.school_id\)\|\|schoolToday\(x\.school_id\)\)/,'Coming up must never list a day already past, a featured meet\'s school included (Nov 1: the KAS state meet of Oct 31 under Coming up)');
-contains(page,/if\(title==='Coming up'\)return[^\n]*comingRows\(items\)/,'Coming up must read as day headings with one slim row per game');
-contains(page,/class="home-row" data-event-id/,'Each coming game must be one row: time, sport, matchup');
+contains(page,/if\(title==='Coming up'\)return[^\n]*comingRows\(items\)/,'Coming up must read as day headings with its games');
+contains(page,/return boardDays\(rows,'upcoming'\)/,'Each coming game must be a scoreboard card under its day (Nov 22)');
+contains(page,/<article class="card game-board board-\$\{cls\}" data-event-id=/,'Finals and coming games must read as the live board (Nov 22)');
+contains(page,/const sides=boardSides\(e\);if\(sides\)return gameBoard\(e,sides\)/,'Every two-team game card must use the board (Nov 22)');
 // Live now · Everywhere (PR 2): one shared endpoint, never per-school ESPN reads.
 contains(worker,/if\(url\.pathname==='\/live\/now'\)\{[\s\S]{0,300}max-age=60/,'/live/now must be cached a minute for every visitor');
 contains(worker,/const url=`\$\{ESPN_SITE\}\$\{board\.path\}\/scoreboard\?\$\{scoreboardQuery\(board\)\}`/,'/live/now must read each ESPN board once, for every school');
