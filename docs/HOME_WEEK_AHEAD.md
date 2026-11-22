@@ -79,3 +79,13 @@ Tests: `tests/home-week.mjs`, with saved copies of ESPN's college football board
 - Each level page has its own Customize, showing only that level's sports, saved on the device as `sas-home-filter:<level>`. Home keeps `sas-home-filter`.
 - `homeTeams()` returns the favorites at that level. Favorites' catalog cards are fetched first, since their level is needed.
 - Tests: `tests/home-customize.mjs` (a level page: that level only, its own panel and key); `tests/home-week.mjs` (Kansas tonight's games as others, never highlighted; the subtitle).
+
+## Every game as a scoreboard card (November 22, `4.325.0-game-boards`)
+
+**User, November 22, 2026** (with a screenshot of Home's live K-State–Arizona card): "Can we make all games upcoming and results look like the live game set up?"
+
+- Every two-team game that is not live now reads as the live card does: a head with the state (a white **FINAL**, a blue **UPCOMING**, a gray **PLAYED**, an amber **POSTPONED**/**CANCELED**) and the W/L/T, date, time or TV, then one row per team with its badge, rank and score (the loser dimmed), then the sport. Below the board: the result rows the old card showed (less the "Result L, 70-80" line the board already shows), the forecast and series on coming games, the video note.
+- Where: team pages (every section), and on Home: Today, Recent results and Coming up. On Home they sit under their day headings, two across on a phone and three on wide screens, each in its team's colors, the same size as the live boxes. Coming games still open the team; finals open the game.
+- The week ahead's tiles are boards too: the time in the head pill, the TV beside it, each team's row with its color badge, rank and record, the favorite in gold with the gold border, and the sport and line at the foot.
+- Meets, races and tournaments (no single opponent) keep their own cards. Live cards are unchanged (only they pulse and glow).
+- Code: `boardSides`, `gameBoard`, `boardDays` and `weekTile` in `public/index.html`. Tests: `tests/regression.mjs`, `tests/home-week.mjs`, `tests/rankings.mjs`.

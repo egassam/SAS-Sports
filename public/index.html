@@ -55,6 +55,12 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .live-pts{font-size:36px;font-weight:950;line-height:1;font-variant-numeric:tabular-nums;color:#fff;padding:2px 6px;border-radius:8px}
 .live-team.trailing .live-name,.live-team.trailing .live-pts{opacity:.58}
 .live-pts.scored{animation:sasScored 2.4s ease-out 1}
+.game-board{position:relative;padding:0!important;overflow:hidden;border:1.5px solid color-mix(in srgb,var(--team-primary,var(--accent2)) 60%,#ffffff 8%)!important;background:radial-gradient(130% 150% at 0% 0%,color-mix(in srgb,var(--team-primary,var(--accent2)) 22%,transparent),transparent 62%),linear-gradient(160deg,#10243a,#07121e)!important;box-shadow:0 10px 28px rgba(0,0,0,.4)!important}
+.board-pill{display:inline-flex;align-items:center;flex:0 0 auto;padding:4px 10px;border-radius:999px;background:#334155;color:#fff;font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}.board-pill.final{background:#e2e8f0;color:#0b1622}.board-pill.up{background:#2563eb}.board-pill.played{background:#475569}.board-pill.off{background:#b45309}
+.board-wl{margin-right:7px;font-weight:950}.board-wl.wl-w{color:#86efac}.board-wl.wl-l{color:#fca5a5}.board-wl.wl-t{color:#fde68a}
+.live-team.won .live-pts{color:#fff}.live-name.me{color:var(--warn)}.board-extra{padding:0 14px 10px}.board-extra:empty{display:none}
+.game-board.fav{border:2px solid var(--warn)!important;box-shadow:0 0 0 3px rgba(255,210,122,.14),0 10px 28px rgba(0,0,0,.4)!important}
+@media(forced-colors:active){.board-pill{border:2px solid CanvasText}}
 .live-ball{display:inline-block;vertical-align:-1px;margin-right:6px}
 .live-ball svg{display:block}
 .live-situation{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:7px 14px;font-size:12px;font-weight:850;color:#eef5fc;background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums}
@@ -282,8 +288,8 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 @media(max-width:560px){.home-row{grid-template-columns:64px minmax(0,1fr);gap:2px 10px;padding:8px 10px}.home-row-time,.home-row-result{grid-row:1/3;font-size:12px}.home-row.home-result{grid-template-columns:84px minmax(0,1fr)}.home-row-result{white-space:normal;line-height:1.2}.home-row-sport{font-size:10px}.home-row-title{grid-column:2;font-size:13px}.home-row-tv{display:none}}
 .home-grid .home-item{display:flex;flex-direction:column;min-width:0}.home-grid .home-item>.card{flex:1;margin:0}
 .home-grid .home-tag{margin:0 2px 4px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.home-grid .live-more,.home-grid .live-foot{display:none}
-.home-grid .live-head{padding:6px 10px;gap:6px}.home-grid .live-pill{font-size:9px;padding:3px 7px;gap:5px;letter-spacing:.1em}.home-grid .live-pill i{width:6px;height:6px}.home-grid .live-clock{font-size:11px}
+.home-grid .live-more,.home-grid .live-foot,.home-grid .board-extra{display:none}
+.home-grid .live-head{padding:6px 10px;gap:6px}.home-grid .live-pill{font-size:9px;padding:3px 7px;gap:5px;letter-spacing:.1em}.home-grid .live-pill i{width:6px;height:6px}.home-grid .live-clock{font-size:11px}.home-grid .board-pill{font-size:9px;padding:3px 7px;letter-spacing:.1em}
 .home-grid .live-board{padding:2px 10px 4px}.home-grid .live-team{grid-template-columns:28px minmax(0,1fr) auto;gap:8px;padding:5px 0}
 .home-grid .live-mono{width:28px;height:28px;border-radius:8px;font-size:9px}.home-grid .live-name{font-size:14px}.home-grid .live-name small{font-size:9px;letter-spacing:.06em}.home-grid .live-pts{font-size:24px;padding:1px 4px}
 .home-grid .live-situation{padding:5px 10px;font-size:11px;gap:4px 8px}.home-grid .live-ball svg{width:18px;height:11px}
@@ -316,6 +322,7 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .wk-day .wk-bell{display:inline-flex;align-items:center;gap:6px;width:auto;background:none;border:0;border-radius:8px;box-shadow:none;padding:4px 2px;color:#4aa3ff;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}.wk-day .wk-bell.on{color:#9ff2d3}
 .wk-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(min-width:760px){.wk-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(min-width:1100px){.wk-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .wk-tile{min-width:0;border-radius:16px;overflow:hidden;background:#111b27;border:1px solid #22334a;cursor:pointer;transition:transform .12s,border-color .12s}.wk-tile:hover{transform:translateY(-1px);border-color:#3a5272}.wk-tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wk-tile.game-board .live-name{font-size:14px}.wk-tile.game-board .live-team{grid-template-columns:28px minmax(0,1fr);gap:8px;padding:5px 0}.wk-tile.game-board .live-mono{width:28px;height:28px;border-radius:8px;font-size:9px}.wk-tile.game-board .live-head{padding:6px 10px;gap:6px}.wk-tile.game-board .board-pill{font-size:10px;padding:3px 8px;letter-spacing:.08em}.wk-tile.game-board .live-clock{font-size:11px}.wk-tile.game-board .live-board{padding:2px 10px 4px}.wk-tile.game-board .live-foot{padding:6px 10px 8px;font-size:10px}.wk-tile.game-board .live-foot span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wk-tile.fav{border:2px solid var(--warn);background:linear-gradient(180deg,rgba(255,210,122,.10),#111b27 55%);box-shadow:0 0 0 3px rgba(255,210,122,.12)}
 .wk-bar{display:grid;grid-template-columns:1fr 1fr;height:6px}.wk-bar i{display:block}
 .wk-in{padding:9px 11px 11px}.wk-tag{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#9db0c7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wk-star{color:var(--warn);font-size:12px}
@@ -686,7 +693,35 @@ function resultPreview(e){
     return `<div class="preview-result-group">${group?`<div class="preview-group-title">${esc(group)}</div>`:''}${team.map(r=>`<div class="result-row preview-team-result"><span>Team finish</span><strong>${value(r)}</strong></div>`).join('')}${people.map(r=>`<div class="result-row preview-individual-result"><span>${esc(r.participant||r.label||'Result')}</span><strong>${value(r)}</strong></div>`).join('')}</div>`;
   }).join('');
 }
-function card(e,kind){if(kind==='live')return e.event_type==='RACE'||e.meet_live?raceLiveCard(e):liveCard(e);if(e.race_table?.length&&kind!=='live')return raceCard(e);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const rows=resultPreview(e);return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${rankedTitle(e)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div>${score?(()=>{const wl=e.status==='Final'?resultMark(e).wl:'';return`<div class="score${wl?` wl-${wl.toLowerCase()}`:''}"${wl?` aria-label="${wl==='W'?'Won':wl==='L'?'Lost':'Tied'} ${score}"`:''}>${wl?`<span class="score-wl">${wl}</span>`:''}${score}</div>`})():''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}${e.status!=='Final'?weatherBlock(e)+seriesBlock(e,false):''}${e.video?.embed_url&&e.status==='Final'?'<div class="video-note">▶ Game video · open for the replay</div>':''}</article>`}
+// Every game reads like the live board (user, November 22, 2026: "Can we
+// make all games upcoming and results look like the live game set up?"): a
+// head with the state (FINAL, UPCOMING, PLAYED, POSTPONED) and the time or
+// the W/L, one row per team with its badge and score, the loser dimmed.
+// Meets, races and tournaments keep their own cards.
+function boardSides(e){
+  if(e.race_table?.length||e.meet_live||/^(?:MEET|RACE)$/i.test(e.event_type||''))return null;
+  const title=String(e.title||'').replace(/^DEMO · /,'').replace(/^(?:[^·]{0,30}·\s*)+/,''),m=title.match(/^(.*?)\s+(vs\.?|at)\s+(.*)$/i);
+  const theirs=String(e.opponent||'').trim()||m?.[3]||'';
+  if(!m||!m[1].trim()||!theirs||/^tba$/i.test(theirs))return null;
+  return{ours:m[1].trim(),theirs,away:/^at$/i.test(m[2])};
+}
+function gameBoard(e,sides){
+  const {ours,theirs,away}=sides,fin=e.status==='Final',a=e.school_score??'',b=e.opponent_score??'';
+  const scored=fin&&a!==''&&b!=='',na=Number(a),nb=Number(b),r=fin?resultMark(e):{wl:'',text:''};
+  const side=i=>!scored||na===nb?'':(i===0?na>nb:nb>na)?' won':' trailing';
+  const status=String(e.status||'').trim(),off=/postpon|cancel|suspend|delay|forfeit/i.test(status);
+  const [cls,word]=e.no_result_posted?['played','Played']:fin?['final','Final']:off?['off',status]:['up',/^(?:scheduled|upcoming|)$/i.test(status)?'Upcoming':status];
+  const rk=i=>{const x=i===0?e.school_rank:e.opponent_rank;return x?.rank&&!/#\s*\d|\bNo\.\s*\d/i.test(i===0?ours:theirs)?rankBadge(x):''};
+  const mono=(i,name)=>{const t=e.live_details?.teams?.[i===0?'ours':'theirs'];return/^[A-Za-z0-9&.'-]{1,5}$/.test(t||'')?String(t).toUpperCase():monogram(String(name).replace(/^\s*(?:\([\d\/\s]+\)|#\s*\d+|No\.\s*\d+)\s*/i,''))};
+  const team=(k,name,note,score,i)=>`<div class="live-team ${k}${side(i)}"><span class="live-mono" aria-hidden="true">${esc(mono(i,name))}</span><span class="live-name">${rk(i)}${esc(name)}${note?`<small>${esc(note)}</small>`:''}</span><span class="live-pts">${scored?esc(i===0?a:b):''}</span></div>`;
+  const detail=statusDetails(e),result=fin&&r.wl?`<span class="board-wl wl-${r.wl.toLowerCase()}">${r.wl}</span>`:'',unscored=fin&&!scored&&!e.no_result_posted&&r.text&&r.text!=='Final'?esc(r.text)+(detail?' · ':''):'';
+  const clock=result+unscored+esc(e.no_result_posted?['No score posted',detail].filter(Boolean).join(' · '):detail);
+  const rows=fin?resultPreview(scored?{...e,results:(e.results||[]).filter(x=>!(/^(?:result|final|score)$/i.test(x.label||'')&&!x.participant&&!x.group))}:e):'',opp=knownColors(e.opponent_colors);
+  const extra=`${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}${!fin?weatherBlock(e)+seriesBlock(e,false):''}${e.video?.embed_url&&fin?'<div class="video-note">▶ Game video · open for the replay</div>':''}`;
+  const label=`${word}: ${ours}${scored?` ${a}`:''}, ${theirs}${scored?` ${b}`:''}${r.wl?`, ${r.wl==='W'?'won':r.wl==='L'?'lost':'tied'}`:''}${detail?`, ${detail}`:''}`;
+  return`<article class="card game-board board-${cls}" data-event-id="${esc(e.id)}"${opp?` style="--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}"`:''} aria-label="${esc(label)}"><div class="live-head"><span class="board-pill ${cls}">${esc(word)}</span><span class="live-clock">${clock}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div><div class="board-extra">${extra}</div><div class="live-foot"><span>${esc(e.sport||'')}</span><span>${fin&&e.recap_url?'Recap':''}</span></div></article>`;
+}
+function card(e,kind){if(kind==='live')return e.event_type==='RACE'||e.meet_live?raceLiveCard(e):liveCard(e);if(e.race_table?.length&&kind!=='live')return raceCard(e);const sides=boardSides(e);if(sides)return gameBoard(e,sides);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const rows=resultPreview(e);return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${rankedTitle(e)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div>${score?(()=>{const wl=e.status==='Final'?resultMark(e).wl:'';return`<div class="score${wl?` wl-${wl.toLowerCase()}`:''}"${wl?` aria-label="${wl==='W'?'Won':wl==='L'?'Lost':'Tied'} ${score}"`:''}>${wl?`<span class="score-wl">${wl}</span>`:''}${score}</div>`})():''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}${e.status!=='Final'?weatherBlock(e)+seriesBlock(e,false):''}${e.video?.embed_url&&e.status==='Final'?'<div class="video-note">▶ Game video · open for the replay</div>':''}</article>`}
 function section(label,items,kind=''){if(!items.length)return'';return `<div class="section"><div class="section-label ${kind==='live'?'live':''}">${label}</div>${items.map(e=>card(e,kind)).join('')}</div>`}
 // Pros from a school (user, November 18: "Start 1-4"): its former players on
 // NFL, NBA, WNBA, MLB and NHL rosters, each with the line from the team's
@@ -1095,7 +1130,7 @@ function homeSections(groups){
 // A live card on Home wears its own team's colors (the page itself stays
 // neutral): the school's catalog colors, or those /live/now carries.
 function liveTeamVars(x){const c=knownColors(x.e.school_colors||catalogEntry(x.e.school_id)?.theme||catalogEntry(x.school_id)?.theme);return c?` style="--team-primary:${c.main};--team-secondary:${c.edge};--theme-on-accent:${c.ink}"`:''}
-function homeItem(x,kind,grid,grouped){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${kind==='live'&&homeView?liveTeamVars(x):''}><div class="home-tag">${grouped?`<b>${esc(x.school)}</b>`:grid?`<span class="home-tag-sport">${esc(x.sport)}</span> · <b>${esc(x.school)}</b>`:`<b>${esc(x.school)}</b> · ${esc(x.sport)}`}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
+function homeItem(x,kind,grid,grouped){return`<div class="home-item"${(kind==='live'||kind==='upcoming')&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${homeView?liveTeamVars(x):''}><div class="home-tag">${grouped?`<b>${esc(x.school)}</b>`:grid?`<span class="home-tag-sport">${esc(x.sport)}</span> · <b>${esc(x.school)}</b>`:`<b>${esc(x.school)}</b> · ${esc(x.sport)}`}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
 // Home's live games: one grid, sports A to Z, each box naming its sport.
 // The favorites' grid also leads with their SAS Scorer games (homeField).
 // Each sport's live games under their own marquee sign (user, November 10:
@@ -1123,9 +1158,12 @@ function homeLiveGrid(items,field=[],{capped=false,scope='mine'}={}){
 // day's timed games.
 function comingDay(x){const zone=schoolTimeZoneOf(x.e.school_id||x.school_id),t=zone&&x.e.start_time&&hasPublishedClock(x.e)?zonedWallClockToInstant(x.e.start_time,zone):NaN;const tz=viewerTimeZone?{timeZone:viewerTimeZone}:{};if(Number.isFinite(t))return{at:t,day:new Date(t).toLocaleDateString('en-CA',tz),time:new Date(t).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',...tz})};const d=String(x.e.start_time||'').slice(0,10);return{at:Date.parse(`${d}T12:00:00Z`)||Infinity,day:d,time:null}}
 function dayHeading(day){const today=new Date().toLocaleDateString('en-CA',viewerTimeZone?{timeZone:viewerTimeZone}:{}),date=new Date(`${day}T12:00:00Z`);if(!Number.isFinite(date.getTime()))return'Date to be announced';const label=date.toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'}),diff=Math.round((date-new Date(`${today}T12:00:00Z`))/864e5);return diff===0?`Today<small>${label}</small>`:diff===1?`Tomorrow<small>${label}</small>`:diff===-1?`Yesterday<small>${label}</small>`:label}
+// Each day's games as scoreboard cards, two or three across (user,
+// November 22: upcoming and results look like the live cards).
+function boardDays(list,kind){let html='',last,cards=[];const flush=()=>{if(cards.length)html+=`<div class="home-grid">${cards.join('')}</div>`;cards=[]};for(const{x,day}of list){if(day!==last){flush();html+=`<div class="home-day">${dayHeading(day)}</div>`;last=day}cards.push(homeItem(x,kind,true))}flush();return html}
 function comingRows(items){
-  const rows=items.map(x=>({x,...comingDay(x)})).sort((a,b)=>a.day.localeCompare(b.day)||(a.time?a.at:Infinity)-(b.time?b.at:Infinity));let last=null;
-  return rows.map(({x,day,time})=>{const c=knownColors(catalogEntry(x.school_id)?.theme),head=day!==last?`<div class="home-day">${dayHeading(day)}</div>`:'';last=day;return`${head}<div class="home-row" data-event-id="${esc(x.e.id)}"${x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${c?` style="--team-primary:${c.main}"`:''}><span class="home-row-time${time?'':' tba'}">${esc(time||'TBA')}</span><span class="home-row-sport">${esc(x.sport)}</span><span class="home-row-title">${rankedTitle(x.e)}</span>${x.e.broadcast?`<span class="home-row-tv">TV: ${esc(x.e.broadcast)}</span>`:'<span></span>'}</div>`}).join('');
+  const rows=items.map(x=>({x,...comingDay(x)})).sort((a,b)=>a.day.localeCompare(b.day)||(a.time?a.at:Infinity)-(b.time?b.at:Infinity));
+  return boardDays(rows,'upcoming');
 }
 // Recent results: one heading per day, newest first, then a slim row per
 // final with its result in front (W 3-1, L 1-3, a meet's place). A row
@@ -1140,8 +1178,7 @@ function resultMark(e){
   return{wl:'',text:h&&h.length<=28&&!/^completed$/i.test(h)?h:team?String(team.result||team.place||team.value||'Final'):'Final'};
 }
 function resultRows(items){
-  let last=null;
-  return items.map(x=>{const d=String(x.e.start_time||'').slice(0,10),c=knownColors(catalogEntry(x.school_id)?.theme),head=d!==last?`<div class="home-day">${dayHeading(d)}</div>`:'';last=d;const r=resultMark(x.e);return`${head}<div class="home-row home-result" data-event-id="${esc(x.e.id)}"${c?` style="--team-primary:${c.main}"`:''}><span class="home-row-result${r.wl?` wl-${r.wl.toLowerCase()}`:''}">${esc(r.text)}</span><span class="home-row-sport">${esc(homeView?`${catalogEntry(x.school_id)?.short_name||x.school} · ${x.sport}`:x.sport)}</span><span class="home-row-title">${rankedTitle(x.e)}</span>${x.e.recap_url?'<span class="home-row-tv">Recap</span>':'<span></span>'}</div>`}).join('');
+  return boardDays(items.map(x=>({x,day:String(x.e.start_time||'').slice(0,10)})),'results');
 }
 // News: the official stories about the favorites' recent games, newest
 // first, each opening the school's own page.
@@ -1161,7 +1198,7 @@ function sectionHead(title,sub=''){
   return`<div class="sport-head fav-banner fav-${kind}"><span class="fav-mark" aria-hidden="true">${mark}</span><div><div class="fav-pill">★ My Teams</div><h2 class="sport-title">${esc(label)}</h2>${sub?`<div class="sport-school">${esc(sub)}</div>`:''}</div></div>`;
 }
 function homeSectionOpen(title,id){return`<section class="sport home-section${homeView&&FAV_BANNERS[title]?' fav-section':''}" id="${id||`home-${slug(title)}`}">`}
-function homeSection(title,items,kind){const field=kind==='live'&&homeView&&title!=='Live now · Everywhere'?homeField:[];if(!items.length&&!field.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items,field,title==='Live now · Everywhere'?{capped:true,scope:'everywhere'}:{}):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
+function homeSection(title,items,kind){const field=kind==='live'&&homeView&&title!=='Live now · Everywhere'?homeField:[];if(!items.length&&!field.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items,field,title==='Live now · Everywhere'?{capped:true,scope:'everywhere'}:{}):title==='Today'?`<div class="home-grid">${items.map(x=>homeItem(x,kind,true)).join('')}</div>`:items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 // The week ahead (user, November 20, 2026: "make upcoming college and pro
 // games more obvious so you know who's playing a weekend in advance", Monday
 // to Sunday "because of Monday night and Thursday night football and all
@@ -1256,10 +1293,14 @@ const weekTv=x=>x.g?(x.g.tv||[]).join(', '):x.f.e.broadcast||'';
 const weekOpen=x=>x.team||(catalogEntry(x.g?.home?.id)?x.g.home.id:catalogEntry(x.g?.away?.id)?x.g.away.id:x.g?.home?.id||x.g?.away?.id)||'';
 const weekSportOf=x=>x.g?x.g.sport:x.f.sport;
 function weekLabel(x){const sides=weekSides(x),tv=weekTv(x);return`${sides.length>1?`${sides[0].name} ${x.g?.neutral?'vs':'at'} ${sides[1].name}`:sides[0].name}, ${weekShortSport(x)}, ${weekTime(x)}${tv?`, on ${tv}`:''}`}
+// A tile is a scoreboard card too (user, November 22: "make all games
+// upcoming and results look like the live game set up"): the time in the
+// head, the TV beside it, one row per team in its colors, the sport and the
+// line at the foot.
 function weekTile(x){
-  const sides=weekSides(x),fav=sides.some(t=>t.mine),open=weekOpen(x),tv=weekTv(x),odds=weekOdds(x),bar=sides.length>1?sides:[sides[0],sides[0]];
-  const row=t=>`<div class="wk-tm"><span class="wk-chip${String(t.abbr).length>3?' long':''}" style="background:${t.color};color:${weekInk(t.color)}">${esc(t.abbr)}</span><b${t.mine?' class="me"':''}>${t.rank?`<small>${esc(t.rank)}</small>`:''}${esc(t.name)}</b></div>`;
-  return`<div class="wk-tile${fav?' fav':''}" role="button" tabindex="0" aria-label="${esc((fav?'Your team: ':'')+weekLabel(x))}"${open?` data-open-team="${esc(open)}" data-open-sport="${esc(weekSportOf(x))}"`:''}><div class="wk-bar"><i style="background:${bar[0].color}"></i><i style="background:${bar[1].color}"></i></div><div class="wk-in">${fav||weekShortSport(x)!==weekSportOf(x)?`<div class="wk-tag">${fav?'<span class="wk-star" aria-hidden="true">★</span>':''}${weekShortSport(x)!==weekSportOf(x)?esc(weekShortSport(x)):''}</div>`:''}${sides.map(row).join('')}<div class="wk-bt"><span class="wk-when${weekTime(x)==='TBA'?' tba':''}">${esc(weekTime(x))}</span>${tv?`<span class="wk-pill">${esc(tv)}</span>`:''}</div>${odds?`<div class="wk-odds">${esc(odds)}</div>`:''}</div></div>`;
+  const sides=weekSides(x),fav=sides.some(t=>t.mine),open=weekOpen(x),tv=weekTv(x),odds=weekOdds(x),lead=sides.find(t=>t.mine&&t.color!==WEEK_GRAY)||sides.find(t=>t.color!==WEEK_GRAY)||sides[0],tag=weekShortSport(x)!==weekSportOf(x)?weekShortSport(x):weekSportOf(x);
+  const row=t=>`<div class="live-team"><span class="live-mono" aria-hidden="true" style="background:${t.color};color:${weekInk(t.color)}">${esc(t.abbr)}</span><span class="live-name${t.mine?' me':''}">${t.rank?`<span class="rank-badge">#${esc(String(t.rank).replace(/^#/,''))}</span> `:''}${esc(t.name)}${t.record?`<small>${esc(t.record)}</small>`:''}</span></div>`;
+  return`<div class="wk-tile game-board${fav?' fav':''}" role="button" tabindex="0" style="--team-primary:${lead.color}" aria-label="${esc((fav?'Your team: ':'')+weekLabel(x))}"${open?` data-open-team="${esc(open)}" data-open-sport="${esc(weekSportOf(x))}"`:''}><div class="live-head"><span class="board-pill up${weekTime(x)==='TBA'?' tba':''}">${esc(weekTime(x))}</span><span class="live-clock">${esc(tv)}</span></div><div class="live-board">${sides.map(row).join('')}</div><div class="live-foot"><span>${fav?'<span class="wk-star" aria-hidden="true">★</span> ':''}${esc(tag)}</span><span>${esc(odds)}</span></div></div>`;
 }
 // The spotlight: the viewer's next game with a published time.
 function weekSpotlight(mine){return mine.filter(x=>!(x.g?x.g.time_tba:!x.time)&&Number.isFinite(x.at)&&x.at>Date.now()).sort((a,b)=>a.at-b.at)[0]||null}
