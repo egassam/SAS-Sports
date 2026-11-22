@@ -569,11 +569,13 @@ function haPill(e){const h=homeAway(e);return h?`<span class="ha ha-${h}" title=
 function liveSides(e){
   const title=String(e.title||'').replace(/^DEMO · /,'').replace(/^(?:Men's|Women's) · /,'');
   const m=title.match(/^(.*?)\s+(vs|at)\s+(.*)$/);
-  return{ours:m?m[1]:(e.school||''),theirs:e.opponent||(m?m[3]:''),away:m?.[2]==='at'};
+  // Home, away or neutral as the schedule marks it, else the title's "at".
+  const where={home:'Home',away:'Away',neutral:'Neutral'}[e.home_away]||{H:'Home',A:'Away',N:'Neutral'}[e.site?.indicator]||(m?.[2]==='at'?'Away':'Home');
+  return{ours:m?m[1]:(e.school||''),theirs:e.opponent||(m?m[3]:''),away:m?.[2]==='at',where};
 }
 function monogram(name){const words=String(name).replace(/[()]/g,' ').split(/[\s-]+/).filter(Boolean);if(words.length===1)return /^[A-Z&]{2,4}$/.test(words[0])?words[0]:words[0].slice(0,3).toUpperCase();return words.slice(0,3).map(w=>w[0]).join('').toUpperCase();}
 function liveCard(e){
-  const {ours,theirs,away}=liveSides(e),a=e.school_score??'',b=e.opponent_score??'';
+  const {ours,theirs,away,where}=liveSides(e),a=e.school_score??'',b=e.opponent_score??'';
   const na=Number(a),nb=Number(b),scored=a!==''&&b!=='';
   const previous=lastLiveScores.get(e.id);lastLiveScores.set(e.id,[String(a),String(b)]);
   const flash=i=>previous&&previous[i]!==String([a,b][i])?' scored':'';
@@ -592,7 +594,7 @@ function liveCard(e){
   const situation=holder?`<div class="live-situation${e.red_zone?' red-zone':''}"><span>${esc(holder)} ball</span>${e.down_distance?`<span>${esc(e.down_distance)}</span>`:''}${e.red_zone?'<span class="live-rz">Red zone</span>':''}</div>`:'';
   const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}${holder?`, ${holder} has the ball${e.down_distance?', '+e.down_distance:''}`:''}`;
   const opp=knownColors(e.opponent_colors);
-  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%8000}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,HA_LABEL[homeAway(e)]||(away?'Away':'Home')].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}${e.video?.embed_url?`<div class="live-video-note">▶ Live video above · ${esc(e.video.source)}</div>`:''}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_update_note||(e.live_score_source?'Live score · updates every 15 s':'Official live source'))}</span></div></article>`;
+  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%8000}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,where].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}${e.video?.embed_url?`<div class="live-video-note">▶ Live video above · ${esc(e.video.source)}</div>`:''}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_update_note||(e.live_score_source?'Live score · updates every 15 s':'Official live source'))}</span></div></article>`;
 }
 // Everything else the live board publishes (user, October 16: "update all
 // live cards to show all the data"): the score by period, timeouts, win

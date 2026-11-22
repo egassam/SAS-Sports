@@ -71,6 +71,6 @@ const worker=Function(...Object.keys(deps),source+';return {parseHtml,highSchool
   assert.equal(homeAway({title:'Manhattan · Manhattan Invite',home_away:'home'}),'home');
   assert.match(haPill({title:'K-State vs Missouri',site:{indicator:'N'}}),/class="ha ha-neutral"[^>]*>Neutral</);
   assert.equal(haPill({title:'Manhattan · Invite'}),'');
-  for(const where of ['spotlight-where','${badge(e)}${haPill(e)}','HA_LABEL[homeAway(e)]','<span>Site</span>'])assert.ok(page.includes(where),`the pill is shown: ${where}`);
+  for(const where of ['spotlight-where','${badge(e)}${haPill(e)}','away,where}=liveSides(e)','<span>Site</span>'])assert.ok(page.includes(where),`the pill is shown: ${where}`);
 }
 console.log('home-away tests passed');
