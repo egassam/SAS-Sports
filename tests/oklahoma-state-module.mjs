@@ -132,7 +132,14 @@ const bare=()=>worker.parseHtml(footballPage.replace(/<script\b[^>]*id="__NUXT_D
 assert.deepEqual(bare().map(e=>e.headline),['41-24','59-0','39-31','10-24'],'without page data the cards keep their previous output');
 for(const [target,sport,url] of [[{id:'kstate'},'Football',footballUrl],[school,'Soccer',footballUrl],[school,'Football','https://example.org/sports/football/schedule']]){
   const events=bare().map(e=>({...e}));
-  assert.deepEqual(payloadHandlers.enrichScheduleEvents(events,footballPage,target,sport,url),bare(),'other schools, sports not yet verified, and unofficial hosts are unchanged');
+  // The page's H/A/N mark is where the matched game is played, not a
+  // result: a sport not yet verified for results still takes it (user,
+  // November 22, 2026: home or away on every game); other schools and
+  // unofficial hosts never do.
+  const out=payloadHandlers.enrichScheduleEvents(events,footballPage,target,sport,url);
+  if(sport==='Soccer'){assert.ok(out.every(e=>['home','away','neutral'].includes(e.home_away)));for(const e of out)delete e.home_away;}
+  else assert.ok(out.every(e=>!('home_away' in e)),'no mark from another school or host');
+  assert.deepEqual(out,bare(),'other schools, sports not yet verified, and unofficial hosts are unchanged');
 }
 
 // Soccer: published start times; results keep the K-State format they had.
