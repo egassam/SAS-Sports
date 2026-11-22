@@ -8767,25 +8767,13 @@
    "state": "off"
   },
   "usc-upstate|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-21T19:50:21.640Z",
-   "last_detail": "live 34-29 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "usc-upstate|Basketball|Women's|2026-11-21|1",
-    "title": "Women's · USC Upstate at Tennessee Tech",
-    "started_seen": "2026-11-21T19:42:13.854Z",
-    "live_passes": [
-     "2026-11-21T19:42:13.854Z",
-     "2026-11-21T19:43:35.335Z",
-     "2026-11-21T19:44:36.357Z",
-     "2026-11-21T19:45:37.260Z",
-     "2026-11-21T19:46:58.487Z",
-     "2026-11-21T19:47:59.397Z",
-     "2026-11-21T19:49:20.513Z",
-     "2026-11-21T19:50:21.640Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-21T23:58:14.648Z",
+   "last_detail": "final L, 60-73",
+   "game": null,
+   "verified_at": "2026-11-21T23:58:14.648Z",
+   "verified_game": "Women's · USC Upstate at Tennessee Tech",
+   "verified_detail": "final L, 60-73"
   },
   "usc-upstate|Soccer": {
    "state": "off"
@@ -11611,25 +11599,13 @@
    "verified_detail": "final W, 85-44"
   },
   "chattanooga|Football": {
-   "state": "on",
-   "last_check": "2026-11-21T19:50:21.102Z",
-   "last_detail": "live 0-12 · 11:38 - 2nd · ball: school (4th & 2 at UTC 33) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "chattanooga|Football||2026-11-21|1",
-    "title": "Chattanooga at Alabama",
-    "started_seen": "2026-11-21T19:42:10.927Z",
-    "live_passes": [
-     "2026-11-21T19:42:10.927Z",
-     "2026-11-21T19:43:15.127Z",
-     "2026-11-21T19:44:36.274Z",
-     "2026-11-21T19:45:57.440Z",
-     "2026-11-21T19:46:58.458Z",
-     "2026-11-21T19:48:19.907Z",
-     "2026-11-21T19:49:20.492Z",
-     "2026-11-21T19:50:21.102Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-21T23:58:13.917Z",
+   "last_detail": "final L, 0-47",
+   "game": null,
+   "verified_at": "2026-11-21T23:58:13.917Z",
+   "verified_game": "Chattanooga at Alabama",
+   "verified_detail": "final L, 0-47"
   },
   "chattanooga|Soccer": {
    "state": "done",
@@ -11770,7 +11746,13 @@
    "verified_detail": "final L, 79-88"
   },
   "samford|Football": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-11-22T00:04:45.030Z",
+   "last_detail": "final L, 17-59",
+   "game": null,
+   "verified_at": "2026-11-22T00:04:45.030Z",
+   "verified_game": "Samford at Auburn",
+   "verified_detail": "final L, 17-59"
   },
   "samford|Soccer": {
    "state": "done",
@@ -12824,6 +12806,6 @@
   }
  },
  "version": "4.324.2-storage-safe",
- "updated_at": "2026-11-21T19:50:21.644Z",
+ "updated_at": "2026-11-22T00:04:45.036Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

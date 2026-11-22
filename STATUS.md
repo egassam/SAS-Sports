@@ -2,8 +2,6 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| chattanooga | Football | 🔴 on | live 0-12 · 11:38 - 2nd · ball: school (4th & 2 at UTC 33) · official_schedule+live_scoreboard |
-| usc-upstate | Basketball | 🔴 on | live 34-29 · Halftime · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -595,7 +593,6 @@
 | sam-houston | Baseball | ⚪ off (waiting) |  |
 | sam-houston | Softball | ⚪ off (waiting) |  |
 | samford | Baseball | ⚪ off (waiting) |  |
-| samford | Football | ⚪ off (waiting) |  |
 | samford | Softball | ⚪ off (waiting) |  |
 | san-diego-state | Baseball | ⚪ off (waiting) |  |
 | san-diego-state | Lacrosse | ⚪ off (waiting) |  |
@@ -987,6 +984,7 @@
 | charlotte | Soccer | ✅ off (passed) | Men's · Charlotte at Tulsa · 2026-10-23T07:27:21.431Z |
 | charlotte | Volleyball | ✅ off (passed) | Charlotte vs Temple · 2026-10-23T20:40:15.724Z |
 | chattanooga | Basketball | ✅ off (passed) | Women's · Chattanooga vs UVA Wise · 2026-11-03T06:08:42.774Z |
+| chattanooga | Football | ✅ off (passed) | Chattanooga at Alabama · 2026-11-21T23:58:13.917Z |
 | chattanooga | Soccer | ✅ off (passed) | Chattanooga at Mercer · 2026-11-01T21:08:44.335Z |
 | chattanooga | Volleyball | ✅ off (passed) | Chattanooga vs Tennessee Tech · 2026-10-28T02:25:42.001Z |
 | chicago-state | Basketball | ✅ off (passed) | Women's · Chicago State vs Texas St · 2026-11-08T02:26:31.186Z |
@@ -1642,6 +1640,7 @@
 | sam-houston | Soccer | ✅ off (passed) | Sam Houston vs FIU · 2026-10-23T07:27:21.757Z |
 | sam-houston | Volleyball | ✅ off (passed) | Sam Houston at Liberty · 2026-10-23T23:39:29.330Z |
 | samford | Basketball | ✅ off (passed) | Men's · Samford at UNLV · 2026-11-07T23:06:19.384Z |
+| samford | Football | ✅ off (passed) | Samford at Auburn · 2026-11-22T00:04:45.030Z |
 | samford | Soccer | ✅ off (passed) | Samford vs UNC Greensboro · 2026-10-30T02:51:00.287Z |
 | samford | Volleyball | ✅ off (passed) | Samford vs Tennessee Tech · 2026-10-24T23:24:11.923Z |
 | san-diego-state | Basketball | ✅ off (passed) | Women's · San Diego State vs Colorado · 2026-11-12T11:55:40.400Z |
@@ -1853,6 +1852,7 @@
 | usc | Football | ✅ off (passed) | USC at Wisconsin · 2026-10-25T06:45:59.527Z |
 | usc | Soccer | ✅ off (passed) | USC at Northwestern · 2026-10-17T21:44:24.750Z |
 | usc | Volleyball | ✅ off (passed) | USC vs Penn State · 2026-10-18T01:31:23.379Z |
+| usc-upstate | Basketball | ✅ off (passed) | Women's · USC Upstate at Tennessee Tech · 2026-11-21T23:58:14.648Z |
 | ut-arlington | Basketball | ✅ off (passed) | Women's · UT Arlington vs Sacramento St · 2026-11-04T07:24:47.997Z |
 | ut-arlington | Volleyball | ✅ off (passed) | UT Arlington vs North Alabama · 2026-10-24T21:15:40.326Z |
 | ut-martin | Basketball | ✅ off (passed) | Women's · UT Martin vs Christian Bros · 2026-11-06T10:40:23.353Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1124/1956; on 2; off 828; failing 2.
+Done 1127/1956; on 0; off 827; failing 2.
