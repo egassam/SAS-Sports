@@ -7189,5 +7189,360 @@
     "Softball",
     "Track & Field",
     "Volleyball"
+  ],
+  "arma-northeast-ks": [
+    "Baseball",
+    "Basketball",
+    "Football",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "cherokee-southeast-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Volleyball"
+  ],
+  "frontenac-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "girard-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "pittsburg-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "st-mary-s-colgan-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Volleyball"
+  ],
+  "frontenac-ms-ks": [
+    "Basketball",
+    "Football",
+    "Volleyball"
+  ],
+  "girard-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Volleyball"
+  ],
+  "pittsburg-st-mary-s-ms-ks": [
+    "Basketball",
+    "Football",
+    "Volleyball"
+  ],
+  "baxter-springs-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "columbus-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "galena-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "riverton-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "columbus-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "galena-ms-ks": [
+    "Basketball",
+    "Football",
+    "Volleyball"
+  ],
+  "chetopa-ks": [
+    "Baseball",
+    "Basketball",
+    "Football",
+    "Softball",
+    "Volleyball"
+  ],
+  "labette-county-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "oswego-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Volleyball"
+  ],
+  "parsons-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "caney-valley-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "cherryvale-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "field-kindley-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "independence-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "caney-valley-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "cherryvale-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "cedar-vale-ks": [
+    "Basketball",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "sedan-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "ellis-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "hays-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "thomas-more-prep-marian-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "victoria-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Tennis",
+    "Volleyball"
+  ],
+  "ellis-ms-ks": [
+    "Cross Country",
+    "Wrestling"
+  ],
+  "hays-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "thomas-more-prep-marian-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "victoria-ms-ks": [
+    "Basketball",
+    "Volleyball"
+  ],
+  "palco-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Volleyball"
+  ],
+  "plainville-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "stockton-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "logan-ks": [
+    "Basketball",
+    "Football",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "phillipsburg-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ]
 }

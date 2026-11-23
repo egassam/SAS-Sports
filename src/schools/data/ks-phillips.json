@@ -1,0 +1,69 @@
+{
+ "state": "ks",
+ "counties": [
+  "Phillips"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH8_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "logan-ks",
+   "name": "Logan High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452004811aeab585222a44",
+    "slug": "loganhs"
+   },
+   "maxpreps": {
+    "schoolId": "5e6d5671-d7f0-4ddd-b2e7-158ea688cce8",
+    "path": "logan/logan-trojans"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Track & Field",
+     "Football",
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "Logan",
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "phillipsburg-ks",
+   "name": "Phillipsburg High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452022619d3776962b2845",
+    "slug": "phillipsburghs"
+   },
+   "maxpreps": {
+    "schoolId": "31411a7b-37c3-486c-b2ef-c669f832795e",
+    "path": "phillipsburg/phillipsburg-panthers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Phillipsburg",
+    "tennis": "Phillipsburg HS",
+    "milesplit": 21887,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

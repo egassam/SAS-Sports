@@ -1,0 +1,252 @@
+{
+ "state": "ks",
+ "counties": [
+  "Ellis"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH8_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "ellis-ks",
+   "name": "Ellis High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045158009a2b37cdd390145",
+    "slug": "ellishs"
+   },
+   "maxpreps": {
+    "schoolId": "e6569c07-ec69-4c1d-8c27-ab22467f00a6",
+    "path": "ellis/ellis-railroaders"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 208,
+    "code": "EL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Ellis",
+    "milesplit": 21990,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "hays-ks",
+   "name": "Hays High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451590574f733048058341",
+    "slug": "hayshs"
+   },
+   "maxpreps": {
+    "schoolId": "27ff8c00-cc2f-4925-a482-bbc3e9cae781",
+    "path": "hays/hays-indians"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 94,
+    "code": "HAYS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Hays",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Hays HS",
+    "milesplit": 21788,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "thomas-more-prep-marian-ks",
+   "name": "Thomas More Prep-Marian High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520731299ca317183b94c",
+    "slug": "tmpmarian"
+   },
+   "maxpreps": {
+    "schoolId": "0980e880-9db5-41ef-b98c-21bbc587b0dc",
+    "path": "hays/thomas-more-prep-marian-monarchs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Thomas More Prep Marian",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "milesplit": 21889,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "victoria-ks",
+   "name": "Victoria High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520874313e54b55d7bd42",
+    "slug": "victoriahs"
+   },
+   "maxpreps": {
+    "schoolId": "3789b2a9-647a-48c8-9c3f-dbb31dc15649",
+    "path": "victoria/victoria-knights"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Girls Tennis"
+    ],
+    "meetTeam": "Victoria",
+    "tennis": "Victoria HS",
+    "milesplit": 21912,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "ellis-ms-ks",
+   "name": "Ellis Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045158009a2b37cdd390145",
+    "slug": "ellishs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Cross Country",
+     "Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Ellis",
+    "milesplit": 32805
+   }
+  },
+  {
+   "id": "hays-ms-ks",
+   "name": "Hays Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250612073120894aa0cce98b92849",
+    "slug": "haysms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Hays MS",
+    "milesplit": 32824
+   }
+  },
+  {
+   "id": "thomas-more-prep-marian-ms-ks",
+   "name": "Thomas More Prep-Marian Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h2025020404520731299ca317183b94c",
+    "slug": "tmpmarian"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Thomas More Prep Marian",
+    "milesplit": 32828
+   }
+  },
+  {
+   "id": "victoria-ms-ks",
+   "name": "Victoria Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h2025020404520874313e54b55d7bd42",
+    "slug": "victoriahs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "Victoria"
+   }
+  }
+ ]
+}

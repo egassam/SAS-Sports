@@ -1,0 +1,102 @@
+{
+ "state": "ks",
+ "counties": [
+  "Rooks"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH8_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "palco-ks",
+   "name": "Palco High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452021025a2039d9204846",
+    "slug": "palcohs"
+   },
+   "maxpreps": {
+    "schoolId": "1c69e9e4-a76f-4ede-ad10-b5efad829c6c",
+    "path": "palco/palco-roosters"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country"
+    ],
+    "meetTeam": "Palco",
+    "milesplit": 21986,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "plainville-ks",
+   "name": "Plainville High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045202390340c7044553e42",
+    "slug": "plainvillehs"
+   },
+   "maxpreps": {
+    "schoolId": "596a0500-d1c1-40df-822b-371c323a046f",
+    "path": "plainville/plainville-cardinals"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 236,
+    "code": "PL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Plainville",
+    "milesplit": 22020,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "stockton-ks",
+   "name": "Stockton High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520705509f337c3c47149",
+    "slug": "stocktonhs"
+   },
+   "maxpreps": {
+    "schoolId": "06bd6ec9-1870-4f21-a6a2-e42410ffea85",
+    "path": "stockton/stockton-tigers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Football",
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "Stockton",
+    "milesplit": 22036,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

@@ -1,0 +1,287 @@
+{
+ "state": "ks",
+ "counties": [
+  "Crawford"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH8_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "arma-northeast-ks",
+   "name": "Arma Northeast High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520138101616c8631094b",
+    "slug": "northeasths"
+   },
+   "maxpreps": {
+    "schoolId": "5880c23f-9216-437b-9223-f73a4b54eacf",
+    "path": "arma/northeast-vikings"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Track & Field"
+    ],
+    "meetTeam": "Northeast",
+    "milesplit": 22014,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "cherokee-southeast-ks",
+   "name": "Cherokee Southeast High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452065164c5876f148914a",
+    "slug": "southeastcherokeehs"
+   },
+   "maxpreps": {
+    "schoolId": "89f9de36-9f1c-43e2-9371-dde765c9dd14",
+    "path": "cherokee/southeast-lancers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country"
+    ],
+    "meetTeam": "Southeast Cherokee",
+    "milesplit": 21894,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "frontenac-ks",
+   "name": "Frontenac High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045158482e0cceebf77b745",
+    "slug": "frontenachs"
+   },
+   "maxpreps": {
+    "schoolId": "5c8bd1ee-027a-41ec-80c6-ba964867739c",
+    "path": "frontenac/frontenac-raidernation"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 89,
+    "code": "FRON"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Frontenac",
+    "milesplit": 23157,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "girard-ks",
+   "name": "Girard High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045158587f80b4cff5a854f",
+    "slug": "girardhs"
+   },
+   "maxpreps": {
+    "schoolId": "98038dda-2f6f-4bb8-9fa3-7acb94fa4c16",
+    "path": "girard/girard-trojans"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 91,
+    "code": "GIR"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Girard",
+    "milesplit": 21810,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "pittsburg-ks",
+   "name": "Pittsburg High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452023522348763af37345",
+    "slug": "pittsburghs"
+   },
+   "maxpreps": {
+    "schoolId": "5fdad11b-03d1-45e5-b5ab-29b324c3bc4d",
+    "path": "pittsburg/pittsburg-purple-dragons"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 53,
+    "code": "PITT"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Pittsburg",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Pittsburg HS",
+    "milesplit": 21794,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "st-mary-s-colgan-ks",
+   "name": "St. Mary's Colgan High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206844ef8b29740ad54f",
+    "slug": "stmaryscolganhs"
+   },
+   "maxpreps": {
+    "schoolId": "72d1dcec-ae00-4cc6-8dc7-4c8cb34b6057",
+    "path": "pittsburg/st-marys-colgan-panthers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 256,
+    "code": "SMC"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf"
+    ],
+    "meetTeam": "St. Mary's Colgan",
+    "milesplit": 22003,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "frontenac-ms-ks",
+   "name": "Frontenac Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045158482e0cceebf77b745",
+    "slug": "frontenachs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "Frontenac",
+    "milesplit": 47761
+   }
+  },
+  {
+   "id": "girard-ms-ks",
+   "name": "Girard Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045158587f80b4cff5a854f",
+    "slug": "girardhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country"
+    ],
+    "meetTeam": "Girard",
+    "milesplit": 39966
+   }
+  },
+  {
+   "id": "pittsburg-st-mary-s-ms-ks",
+   "name": "Pittsburg St. Mary's Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045206844ef8b29740ad54f",
+    "slug": "stmaryscolganhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "St. Mary's Colgan",
+    "milesplit": 47760
+   }
+  }
+ ]
+}

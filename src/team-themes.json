@@ -5966,5 +5966,325 @@
     "panelDark": "#1c0204",
     "line": "#aa4750",
     "onAccent": "#ffffff"
+  },
+  "arma-northeast-ks": {
+    "primary": "#000000",
+    "secondary": "#301007",
+    "panel": "#000000",
+    "panelDark": "#000000",
+    "line": "#404040",
+    "onAccent": "#ffffff"
+  },
+  "cherokee-southeast-ks": {
+    "primary": "#96C5ED",
+    "secondary": "#000000",
+    "panel": "#44596b",
+    "panelDark": "#1e272f",
+    "line": "#b0d4f2",
+    "onAccent": "#111111"
+  },
+  "frontenac-ks": {
+    "primary": "#000000",
+    "secondary": "#FFFFFF",
+    "panel": "#000000",
+    "panelDark": "#000000",
+    "line": "#404040",
+    "onAccent": "#ffffff"
+  },
+  "girard-ks": {
+    "primary": "#660606",
+    "secondary": "#F8C326",
+    "panel": "#2e0303",
+    "panelDark": "#140101",
+    "line": "#8c4444",
+    "onAccent": "#ffffff"
+  },
+  "pittsburg-ks": {
+    "primary": "#59428E",
+    "secondary": "#000000",
+    "panel": "#281e40",
+    "panelDark": "#120d1c",
+    "line": "#8371aa",
+    "onAccent": "#ffffff"
+  },
+  "st-mary-s-colgan-ks": {
+    "primary": "#0A233E",
+    "secondary": "#000000",
+    "panel": "#05101c",
+    "panelDark": "#02070c",
+    "line": "#475a6e",
+    "onAccent": "#ffffff"
+  },
+  "frontenac-ms-ks": {
+    "primary": "#000000",
+    "secondary": "#FFFFFF",
+    "panel": "#000000",
+    "panelDark": "#000000",
+    "line": "#404040",
+    "onAccent": "#ffffff"
+  },
+  "girard-ms-ks": {
+    "primary": "#660606",
+    "secondary": "#F8C326",
+    "panel": "#2e0303",
+    "panelDark": "#140101",
+    "line": "#8c4444",
+    "onAccent": "#ffffff"
+  },
+  "pittsburg-st-mary-s-ms-ks": {
+    "primary": "#0A233E",
+    "secondary": "#000000",
+    "panel": "#05101c",
+    "panelDark": "#02070c",
+    "line": "#475a6e",
+    "onAccent": "#ffffff"
+  },
+  "baxter-springs-ks": {
+    "primary": "#E3151A",
+    "secondary": "#000000",
+    "panel": "#66090c",
+    "panelDark": "#2d0405",
+    "line": "#ea5053",
+    "onAccent": "#ffffff"
+  },
+  "columbus-ks": {
+    "primary": "#CC0000",
+    "secondary": "#000000",
+    "panel": "#5c0000",
+    "panelDark": "#290000",
+    "line": "#d94040",
+    "onAccent": "#ffffff"
+  },
+  "galena-ks": {
+    "primary": "#0C0D3B",
+    "secondary": "#000000",
+    "panel": "#05061b",
+    "panelDark": "#02030c",
+    "line": "#494a6c",
+    "onAccent": "#ffffff"
+  },
+  "riverton-ks": {
+    "primary": "#003D7A",
+    "secondary": "#CAC46B",
+    "panel": "#001b37",
+    "panelDark": "#000c18",
+    "line": "#406e9b",
+    "onAccent": "#ffffff"
+  },
+  "columbus-ms-ks": {
+    "primary": "#CC0000",
+    "secondary": "#000000",
+    "panel": "#5c0000",
+    "panelDark": "#290000",
+    "line": "#d94040",
+    "onAccent": "#ffffff"
+  },
+  "galena-ms-ks": {
+    "primary": "#0C0D3B",
+    "secondary": "#000000",
+    "panel": "#05061b",
+    "panelDark": "#02030c",
+    "line": "#494a6c",
+    "onAccent": "#ffffff"
+  },
+  "chetopa-ks": {
+    "primary": "#2B7138",
+    "secondary": "#E9E61B",
+    "panel": "#133319",
+    "panelDark": "#09170b",
+    "line": "#60956a",
+    "onAccent": "#ffffff"
+  },
+  "labette-county-ks": {
+    "primary": "#FFDA4B",
+    "secondary": "#F11A2C",
+    "panel": "#736222",
+    "panelDark": "#332c0f",
+    "line": "#ffe378",
+    "onAccent": "#111111"
+  },
+  "oswego-ks": {
+    "primary": "#D9232A",
+    "secondary": "#000000",
+    "panel": "#621013",
+    "panelDark": "#2b0708",
+    "line": "#e35a5f",
+    "onAccent": "#ffffff"
+  },
+  "parsons-ks": {
+    "primary": "#0066CC",
+    "secondary": "#000000",
+    "panel": "#002e5c",
+    "panelDark": "#001429",
+    "line": "#408cd9",
+    "onAccent": "#ffffff"
+  },
+  "caney-valley-ks": {
+    "primary": "#290FE6",
+    "secondary": "#E30304",
+    "panel": "#120768",
+    "panelDark": "#08032e",
+    "line": "#5f4bec",
+    "onAccent": "#ffffff"
+  },
+  "cherryvale-ks": {
+    "primary": "#0C09E3",
+    "secondary": "#000000",
+    "panel": "#050466",
+    "panelDark": "#02022d",
+    "line": "#4947ea",
+    "onAccent": "#ffffff"
+  },
+  "field-kindley-ks": {
+    "primary": "#663366",
+    "secondary": "#FFCC00",
+    "panel": "#2e172e",
+    "panelDark": "#140a14",
+    "line": "#8c668c",
+    "onAccent": "#ffffff"
+  },
+  "independence-ks": {
+    "primary": "#F78F1E",
+    "secondary": "#261D04",
+    "panel": "#6f400e",
+    "panelDark": "#311d06",
+    "line": "#f9ab56",
+    "onAccent": "#ffffff"
+  },
+  "caney-valley-ms-ks": {
+    "primary": "#290FE6",
+    "secondary": "#E30304",
+    "panel": "#120768",
+    "panelDark": "#08032e",
+    "line": "#5f4bec",
+    "onAccent": "#ffffff"
+  },
+  "cherryvale-ms-ks": {
+    "primary": "#0C09E3",
+    "secondary": "#000000",
+    "panel": "#050466",
+    "panelDark": "#02022d",
+    "line": "#4947ea",
+    "onAccent": "#ffffff"
+  },
+  "cedar-vale-ks": {
+    "primary": "#7D21F0",
+    "secondary": "#FFFFFF",
+    "panel": "#380f6c",
+    "panelDark": "#190730",
+    "line": "#9e59f4",
+    "onAccent": "#ffffff"
+  },
+  "sedan-ks": {
+    "primary": "#05009E",
+    "secondary": "#000000",
+    "panel": "#020047",
+    "panelDark": "#010020",
+    "line": "#4440b6",
+    "onAccent": "#ffffff"
+  },
+  "ellis-ks": {
+    "primary": "#FF6600",
+    "secondary": "#A2AAAD",
+    "panel": "#732e00",
+    "panelDark": "#331400",
+    "line": "#ff8c40",
+    "onAccent": "#ffffff"
+  },
+  "hays-ks": {
+    "primary": "#FCC426",
+    "secondary": "#4A0221",
+    "panel": "#715811",
+    "panelDark": "#322708",
+    "line": "#fdd35c",
+    "onAccent": "#111111"
+  },
+  "thomas-more-prep-marian-ks": {
+    "primary": "#004386",
+    "secondary": "#D4D6D8",
+    "panel": "#001e3c",
+    "panelDark": "#000d1b",
+    "line": "#4072a4",
+    "onAccent": "#ffffff"
+  },
+  "victoria-ks": {
+    "primary": "#FEC80E",
+    "secondary": "#870115",
+    "panel": "#725a06",
+    "panelDark": "#332803",
+    "line": "#fed64a",
+    "onAccent": "#111111"
+  },
+  "ellis-ms-ks": {
+    "primary": "#FF6600",
+    "secondary": "#A2AAAD",
+    "panel": "#732e00",
+    "panelDark": "#331400",
+    "line": "#ff8c40",
+    "onAccent": "#ffffff"
+  },
+  "hays-ms-ks": {
+    "primary": "#FDC526",
+    "secondary": "#4A0021",
+    "panel": "#725911",
+    "panelDark": "#332708",
+    "line": "#fed45c",
+    "onAccent": "#111111"
+  },
+  "thomas-more-prep-marian-ms-ks": {
+    "primary": "#004386",
+    "secondary": "#D4D6D8",
+    "panel": "#001e3c",
+    "panelDark": "#000d1b",
+    "line": "#4072a4",
+    "onAccent": "#ffffff"
+  },
+  "victoria-ms-ks": {
+    "primary": "#FEC80E",
+    "secondary": "#870115",
+    "panel": "#725a06",
+    "panelDark": "#332803",
+    "line": "#fed64a",
+    "onAccent": "#111111"
+  },
+  "palco-ks": {
+    "primary": "#ECC501",
+    "secondary": "#000000",
+    "panel": "#6a5900",
+    "panelDark": "#2f2700",
+    "line": "#f1d441",
+    "onAccent": "#111111"
+  },
+  "plainville-ks": {
+    "primary": "#C8002F",
+    "secondary": "#FFC931",
+    "panel": "#5a0015",
+    "panelDark": "#280009",
+    "line": "#d64063",
+    "onAccent": "#ffffff"
+  },
+  "stockton-ks": {
+    "primary": "#FF5D00",
+    "secondary": "#0032A0",
+    "panel": "#732a00",
+    "panelDark": "#331300",
+    "line": "#ff8640",
+    "onAccent": "#ffffff"
+  },
+  "logan-ks": {
+    "primary": "#CF1A2E",
+    "secondary": "#000000",
+    "panel": "#5d0c15",
+    "panelDark": "#290509",
+    "line": "#db5362",
+    "onAccent": "#ffffff"
+  },
+  "phillipsburg-ks": {
+    "primary": "#B5AF01",
+    "secondary": "#000000",
+    "panel": "#514f00",
+    "panelDark": "#242300",
+    "line": "#c8c341",
+    "onAccent": "#ffffff"
   }
 }

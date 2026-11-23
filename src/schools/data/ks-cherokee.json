@@ -1,0 +1,187 @@
+{
+ "state": "ks",
+ "counties": [
+  "Cherokee"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH8_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "baxter-springs-ks",
+   "name": "Baxter Springs High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045154894e55e139753f448",
+    "slug": "baxterspringshs"
+   },
+   "maxpreps": {
+    "schoolId": "0c50349d-6041-4e60-8553-a50ddcddd480",
+    "path": "baxter-springs/baxter-springs-lions"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 73,
+    "code": "BXS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Baxter Springs",
+    "milesplit": 21871
+   }
+  },
+  {
+   "id": "columbus-ks",
+   "name": "Columbus High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045157211862e2c2bcdb14a",
+    "slug": "columbushs"
+   },
+   "maxpreps": {
+    "schoolId": "49bbd163-35b9-428e-89f5-5d58197d3978",
+    "path": "columbus/columbus-titans"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 83,
+    "code": "COL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Columbus",
+    "milesplit": 21848
+   }
+  },
+  {
+   "id": "galena-ks",
+   "name": "Galena High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451585100f48f36ff5bc4a",
+    "slug": "galenahs"
+   },
+   "maxpreps": {
+    "schoolId": "e96bcaf3-7f25-4a7c-bfa2-ca0389deac84",
+    "path": "galena/galena-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Galena",
+    "milesplit": 15263,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "riverton-ks",
+   "name": "Riverton High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520435671f4510ddf3948",
+    "slug": "rivertonhs"
+   },
+   "maxpreps": {
+    "schoolId": "0da63c73-de0b-4b61-9df7-d7b2d722bffa",
+    "path": "riverton/riverton-rams"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 178,
+    "code": "RIV"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Riverton",
+    "milesplit": 21845
+   }
+  },
+  {
+   "id": "columbus-ms-ks",
+   "name": "Columbus Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045157211862e2c2bcdb14a",
+    "slug": "columbushs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Columbus"
+   }
+  },
+  {
+   "id": "galena-ms-ks",
+   "name": "Galena Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040451585100f48f36ff5bc4a",
+    "slug": "galenahs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "Galena"
+   }
+  }
+ ]
+}

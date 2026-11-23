@@ -1,0 +1,154 @@
+{
+ "state": "ks",
+ "counties": [
+  "Labette"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH8_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "chetopa-ks",
+   "name": "Chetopa High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045156243a90c62ec02724e",
+    "slug": "chetopahs"
+   },
+   "maxpreps": {
+    "schoolId": "029714c5-1ca4-4cc3-9f95-95b27f422182",
+    "path": "chetopa/chetopa-hornets"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball"
+    ],
+    "meetTeam": "Chetopa",
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "labette-county-ks",
+   "name": "Labette County High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200057dabb1e2f777148",
+    "slug": "labettecountyhs"
+   },
+   "maxpreps": {
+    "schoolId": "c1654b31-4b5e-4839-bf99-f34b8d83919c",
+    "path": "altamont/labette-county-grizzlies"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Swimming & Diving",
+     "Girls Swimming"
+    ],
+    "meetTeam": "Labette County",
+    "tennis": "Labette County HS",
+    "milesplit": 21815,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "oswego-ks",
+   "name": "Oswego High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045201954d042b93512d348",
+    "slug": "oswegohs"
+   },
+   "maxpreps": {
+    "schoolId": "48cab446-71a9-488f-abed-53cdc7c6b487",
+    "path": "oswego/oswego-indians"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 234,
+    "code": "OWG"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf"
+    ],
+    "meetTeam": "Oswego",
+    "milesplit": 21999,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "parsons-ks",
+   "name": "Parsons High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045202156a2db323573c048",
+    "slug": "parsonshs"
+   },
+   "maxpreps": {
+    "schoolId": "9329a31f-6de3-4501-a2c1-7ffac2b7934f",
+    "path": "parsons/parsons-vikings"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 114,
+    "code": "PSN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Parsons",
+    "tennis": "Parsons HS",
+    "milesplit": 21825,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}
