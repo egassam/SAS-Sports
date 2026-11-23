@@ -349,8 +349,9 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
+import {feedbackRoute} from './feedback.mjs';
 
-const VERSION='4.328.0-indycar';
+const VERSION='4.329.0-get-page';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7799,6 +7800,7 @@ async function routeRequest(request,env,ctx){
     // run now (2 feeds, no gap) with the source key.
     if(url.pathname==='/api/refresh-status'){let status=null,paused=null;try{status=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_STATUS_KEY,url.hostname),'json');paused=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_PAUSE_KEY,url.hostname))}catch{}return json({version:VERSION,schedule:'every 10 minutes',batch:REFRESH_BATCH,gap_seconds:REFRESH_GAP_MS/1000,feeds:refreshFeeds(HIGH_SCHOOL_MODULES).length,paused:Boolean(paused),status});}
     if(url.pathname.startsWith('/api/push/'))return pushRoute(request,env,url);
+    if(url.pathname==='/api/feedback')return feedbackRoute(request,env,url,{json,sameSecret});
     if(url.pathname==='/api/refresh-control'){
       const secret=env?.SOURCE_FETCH_KEY,given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
       if(!secret)return json({detail:'Not found'},404);

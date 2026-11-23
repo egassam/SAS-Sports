@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>Get SAS Sports</title>
+<meta name="description" content="SAS Sports: live scores, schedules and results for middle school, high school, college and pro teams. Free, installs from your browser in seconds.">
+<meta property="og:title" content="Get SAS Sports">
+<meta property="og:description" content="Every sport. Every level. All live. Install it free from your browser and follow your teams.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/icons/icon-512.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SAS Sports">
+<style>
+:root{--bg:#07111f;--bg2:#0b1a2e;--card:#0f2138;--line:#1d3654;--text:#f8fafc;--muted:#9db0c7;--mint:#7cf7c4;--sky:#42d3ff;--gold:#ffd166;--red:#ff6b6b;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:var(--bg);color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% -10%,#123659 0,var(--bg) 45%,#050b14 100%) no-repeat,var(--bg);line-height:1.5;-webkit-text-size-adjust:100%}
+a{color:var(--sky)}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+.top{display:flex;align-items:center;gap:10px;padding:14px 0}
+.mark{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:950;font-size:14px;letter-spacing:-.5px;color:var(--bg);background:linear-gradient(135deg,var(--mint),var(--sky))}
+.top b{font-size:17px}.top .open{margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:12px 18px;font:inherit;font-weight:850;cursor:pointer;text-decoration:none;color:var(--bg);background:linear-gradient(135deg,var(--mint),var(--sky));min-height:44px}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.small{padding:8px 14px;min-height:36px;font-size:14px}
+.btn:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible,.tab:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.hero{text-align:center;padding:28px 0 12px}
+.hero .mark{width:76px;height:76px;border-radius:22px;font-size:24px;margin:0 auto 16px;box-shadow:0 10px 40px rgba(66,211,255,.25)}
+h1{font-size:clamp(30px,7vw,46px);line-height:1.08;margin:0 0 10px;letter-spacing:-1px}
+.lead{color:var(--muted);font-size:clamp(16px,3.8vw,19px);max-width:560px;margin:0 auto 20px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.note{color:var(--muted);font-size:14px;margin:12px 0 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:26px 0 8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center}
+.stat b{display:block;font-size:22px}.stat span{color:var(--muted);font-size:13px}
+section{padding:26px 0 6px}
+h2{font-size:24px;margin:0 0 6px;letter-spacing:-.3px}
+.sub{color:var(--muted);margin:0 0 16px}
+.tabs{display:flex;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;margin:0 0 14px}
+.tab{flex:1;border:0;border-radius:9px;padding:10px 6px;font:inherit;font-weight:800;font-size:14px;color:var(--muted);background:transparent;cursor:pointer}
+.tab[aria-selected="true"]{color:var(--bg);background:linear-gradient(135deg,var(--mint),var(--sky))}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding:4px 0 12px 42px}
+ol.steps>li:last-child{padding-bottom:2px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:14px;color:var(--bg);background:var(--mint)}
+.i{width:16px;height:16px;vertical-align:-3px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.key .i{margin-right:3px}
+.ph{font-size:16px;margin:18px 0 8px}.panel>.ph:first-of-type{margin-top:2px}
+ul.plain{margin:0 0 6px;padding-left:20px;color:var(--text)}ul.plain li{margin:0 0 8px}
+ul.plain.sm{margin-top:8px;list-style:disc;color:var(--muted);font-size:15px}ul.plain.sm li{margin-bottom:6px}
+.plain-p{margin:0 0 8px}.sm{font-size:15px;color:var(--muted)}
+.mini{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;font-size:8px;font-weight:950;color:var(--bg);background:linear-gradient(135deg,var(--mint),var(--sky));vertical-align:-5px}
+.alert{margin:0 0 12px;padding:12px 14px;border-radius:12px;border:1px solid #6b5d35;background:rgba(255,209,102,.1);color:#f3d98b;font-weight:700}
+.alert[hidden]{display:none}
+#iosLink{word-break:break-all}
+.key{display:inline-block;padding:1px 8px;border-radius:7px;background:var(--bg2);border:1px solid var(--line);font-weight:800;font-size:14px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.card h3{margin:0 0 6px;font-size:17px;display:flex;align-items:center;gap:8px}
+.card p{margin:0;color:var(--muted);font-size:15px}
+.ico{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--bg2);border:1px solid var(--line);font-size:15px}
+.pill{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.5px;padding:2px 7px;border-radius:999px;vertical-align:1px}
+.pill.home{background:rgba(124,247,196,.16);color:var(--mint)}.pill.away{background:rgba(66,211,255,.16);color:var(--sky)}.pill.w{background:rgba(124,247,196,.16);color:var(--mint)}.pill.live{background:rgba(255,107,107,.16);color:var(--red)}
+.howto{display:grid;gap:12px}
+.howto .card{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.howto .num{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:900;color:var(--bg);background:linear-gradient(135deg,var(--gold),#ffb347)}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 16px;margin:0 0 8px}
+summary{cursor:pointer;font-weight:800;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:900}
+details[open] summary::after{content:"−"}
+details p{margin:0 0 14px;color:var(--muted)}
+form{display:grid;gap:12px}
+label{display:grid;gap:6px;font-weight:800;font-size:14px}
+label small{font-weight:600;color:var(--muted)}
+select,textarea,input{width:100%;font:inherit;font-size:16px;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+textarea{min-height:130px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips input{position:absolute;left:0;top:0;width:1px;height:1px;margin:0;padding:0;border:0;opacity:0;pointer-events:none}
+.chips label{position:relative;display:inline-flex;cursor:pointer;font-weight:800;font-size:14px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--muted)}
+.chips input:checked+span{color:var(--bg)}
+.chips label:has(input:checked){background:linear-gradient(135deg,var(--mint),var(--sky));border-color:transparent;color:var(--bg)}
+.chips label:has(input:focus-visible){outline:2px solid var(--sky);outline-offset:2px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.status{min-height:22px;margin:0;font-weight:700}
+.status.ok{color:var(--mint)}.status.err{color:var(--red)}
+.share{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.share code{flex:1 1 220px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;font-size:14px;color:var(--muted)}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
+.installed .if-browser{display:none}.if-installed{display:none}.installed .if-installed{display:block}
+@media (max-width:620px){.grid,.row2{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.top .open{padding:8px 12px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="mark" aria-hidden="true">SAS</div><b>SAS Sports</b>
+    <a class="btn ghost small open" href="/">Open the app</a>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="mark" aria-hidden="true">SAS</div>
+      <h1>Every sport. Every level.<br>All live.</h1>
+      <p class="lead">Scores, schedules and results for your middle school, high school, college and pro teams, in one free app. Straight from the official sources.</p>
+      <div class="cta">
+        <button type="button" class="btn if-browser" id="installTop">Install the app</button>
+        <a class="btn ghost" href="/">Try it in your browser</a>
+      </div>
+      <p class="note if-browser">Free. No app store and no account. Installs in about 10 seconds.</p>
+      <p class="note if-installed">You're in the installed app. Share this page to get your friends set up.</p>
+      <div class="stats" aria-label="What's in the app">
+        <div class="stat"><b>250+</b><span>pro teams</span></div>
+        <div class="stat"><b>360+</b><span>colleges</span></div>
+        <div class="stat"><b>180+</b><span>high schools</span></div>
+        <div class="stat"><b>80+</b><span>middle schools</span></div>
+      </div>
+    </div>
+
+    <section id="install" aria-labelledby="installTitle">
+      <h2 id="installTitle">Install it</h2>
+      <p class="sub">SAS Sports installs from your web browser and sits on your home screen like any other app. It updates itself.</p>
+      <div class="tabs" role="tablist" aria-label="Your device">
+        <button type="button" class="tab" role="tab" id="tab-iphone" aria-controls="pane-iphone" aria-selected="true">iPhone / iPad</button>
+        <button type="button" class="tab" role="tab" id="tab-android" aria-controls="pane-android" aria-selected="false" tabindex="-1">Android</button>
+        <button type="button" class="tab" role="tab" id="tab-computer" aria-controls="pane-computer" aria-selected="false" tabindex="-1">Computer</button>
+      </div>
+      <div class="panel" role="tabpanel" id="pane-iphone" aria-labelledby="tab-iphone">
+        <p class="alert" id="inAppNote" hidden></p>
+        <h3 class="ph">Before you start</h3>
+        <ul class="plain">
+          <li>Use <b>Safari</b>, the iPhone's own browser (the blue compass). It's the surest way. If someone texted you this link, tapping it in Messages opens Safari already.</li>
+          <li>Opened the link inside <b>Instagram, Facebook, Snapchat, TikTok or X</b>? Those apps use their own browser, which can't install apps. Tap the <span class="key">···</span> menu (top or bottom right) and choose <span class="key">Open in Safari</span> or <span class="key">Open in external browser</span>. Or copy this link and paste it into Safari: <b id="iosLink">sas-sports.lovetogivepain.workers.dev/get/</b></li>
+        </ul>
+
+        <h3 class="ph">Install on iPhone</h3>
+        <ol class="steps">
+          <li>In Safari, find the <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg> Share</span> button (a square with an arrow pointing up).
+            <ul class="plain sm">
+              <li><b>Bottom toolbar</b> (most iPhones): it's in the middle of the bar at the bottom of the screen. If the bar is hidden, tap the bottom of the screen or scroll up a little to bring it back.</li>
+              <li><b>iOS 26</b>, or when the address bar is at the bottom with no toolbar: tap <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="7.8" cy="12" r=".9" fill="currentColor"/><circle cx="12" cy="12" r=".9" fill="currentColor"/><circle cx="16.2" cy="12" r=".9" fill="currentColor"/></svg></span> next to the address, then tap <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg> Share</span>.</li>
+            </ul>
+          </li>
+          <li>A sheet slides up. <b>Scroll down</b> past the row of contacts and apps to the list of actions, and tap <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M12 8.5v7M8.5 12h7"/></svg> Add to Home Screen</span>.
+            <ul class="plain sm"><li>Don't see it? Scroll all the way down, tap <b>Edit Actions…</b>, and add <b>Add to Home Screen</b>.</li></ul>
+          </li>
+          <li>Leave the name as <b>SAS Sports</b>. If you see <b>Open as Web App</b>, leave it switched <b>on</b>. Tap <span class="key">Add</span> at the top right.</li>
+          <li>The <span class="mini">SAS</span> icon is now on your home screen (swipe over if your first page is full). <b>Always open SAS Sports from that icon</b>, not from Safari: that's what makes it the app, full screen and with alerts.</li>
+        </ol>
+
+        <h3 class="ph">iPad</h3>
+        <p class="plain-p">The same steps, but the <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg> Share</span> button is at the <b>top right</b>, next to the address bar.</p>
+
+        <h3 class="ph">Turn on game alerts (optional)</h3>
+        <ol class="steps">
+          <li>Open SAS Sports <b>from the home screen icon</b> and star your teams with <span class="key">☆ Favorite</span>.</li>
+          <li>Tap <span class="key">Alerts</span> at the top, then <span class="key">Allow</span> when your iPhone asks.</li>
+          <li>You'll get one alert when a favorite's game starts and one with the final score.</li>
+        </ol>
+        <p class="plain-p sm">Alerts need iOS 16.4 or newer (Settings → General → About → iOS Version). Tapped <b>Don't Allow</b> by mistake? Go to Settings → Notifications → SAS Sports and turn on Allow Notifications.</p>
+
+        <h3 class="ph">Using Chrome on iPhone?</h3>
+        <p class="plain-p sm">It works too on iOS 16.4 or newer: tap <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg></span> in the address bar, then <span class="key">Add to Home Screen</span>. If you don't see it, use Safari.</p>
+      </div>
+      <div class="panel" role="tabpanel" id="pane-android" aria-labelledby="tab-android" hidden>
+        <ol class="steps">
+          <li>Open this page in <b>Chrome</b>.</li>
+          <li>Tap <span class="key">Install the app</span> at the top of this page, or open Chrome's <span class="key">⋮</span> menu and tap <span class="key">Install app</span> (or <span class="key">Add to Home screen</span>).</li>
+          <li>Tap <span class="key">Install</span>. SAS Sports shows up with your other apps.</li>
+        </ol>
+      </div>
+      <div class="panel" role="tabpanel" id="pane-computer" aria-labelledby="tab-computer" hidden>
+        <ol class="steps">
+          <li>Open this page in <b>Chrome</b> or <b>Edge</b>.</li>
+          <li>Click <span class="key">Install the app</span> at the top of this page, or the install icon at the right end of the address bar.</li>
+          <li>Click <span class="key">Install</span>. It opens in its own window. On a Mac with Safari, use <span class="key">File → Add to Dock</span>.</li>
+        </ol>
+      </div>
+      <p class="note">Don't want to install? Everything works at <a href="/">the website</a> too. Bookmark it.</p>
+    </section>
+
+    <section id="how" aria-labelledby="howTitle">
+      <h2 id="howTitle">How it works</h2>
+      <p class="sub">Pick a team and it's all there: what's next, what happened, and what's live.</p>
+      <div class="grid">
+        <div class="card"><h3><span class="ico" aria-hidden="true">🏟</span>Four levels</h3><p>Tap <b>Middle School</b>, <b>High School</b>, <b>College</b> or <b>Pro</b> at the top. Each one opens that level's own page with this week's games, then pick a conference or city and a team.</p></div>
+        <div class="card"><h3><span class="ico" aria-hidden="true">⌂</span>Home</h3><p><b>Live now</b> across every level, your teams' next game, and <b>the week ahead</b> (Monday to Sunday) with times, TV, lines and records where they're published.</p></div>
+        <div class="card"><h3><span class="ico" aria-hidden="true">📋</span>Team pages</h3><p>Choose a sport, then <b>Live</b>, <b>Results</b>, <b>Upcoming</b>, <b>News</b> and <b>Roster</b>. Tap any game to open it: box score, recap, where it's played and more.</p></div>
+        <div class="card"><h3><span class="ico" aria-hidden="true">✓</span>Easy to read</h3><p>Finals say who won (<span class="pill w">W</span> 28–21), every game is marked <span class="pill home">HOME</span> or <span class="pill away">AWAY</span>, and live games show <span class="pill live">LIVE</span> with the score as it happens.</p></div>
+        <div class="card"><h3><span class="ico" aria-hidden="true">🔗</span>Official sources</h3><p>Schedules and results come from the schools' and leagues' own sites and scoring services, checked and refreshed all day. Tap <b>↻</b> to check again right now.</p></div>
+        <div class="card"><h3><span class="ico" aria-hidden="true">🏃</span>Every sport</h3><p>Football to cross country, golf, tennis, wrestling, swimming and track: meets show places and times, not just scores.</p></div>
+      </div>
+    </section>
+
+    <section id="customize" aria-labelledby="customizeTitle">
+      <h2 id="customizeTitle">Make it yours</h2>
+      <p class="sub">Five minutes of setup and the app opens on exactly what you care about. Your choices stay on your phone.</p>
+      <div class="howto">
+        <div class="card"><div class="num">1</div><div><h3>Star your teams</h3><p>Open a team and tap <span class="key">☆ Favorite</span>. Star as many as you like, at any level. Your teams lead Home with a gold <b>★ My Teams</b> banner.</p></div></div>
+        <div class="card"><div class="num">2</div><div><h3>Put them in order</h3><p>Open the <b>My Teams</b> list to jump straight to a team, move teams <b>↑</b> up or <b>↓</b> down, or remove one with <b>✕</b>.</p></div></div>
+        <div class="card"><div class="num">3</div><div><h3>Choose what Home shows</h3><p>Tap <span class="key">⚙ Customize</span> at the top of Home and pick the sports you want at each level, say <b>Pro Football</b> and <b>College Basketball</b>. Everyone else's games follow your picks; your starred teams always show. Each level page has its own Customize. <b>Show everything</b> resets it.</p></div></div>
+        <div class="card"><div class="num">4</div><div><h3>Turn on alerts</h3><p>Tap <span class="key">Alerts</span> to get a notification when a favorite's game starts and another with the final score. Works for pro, college, high school and middle school teams. On iPhone, install the app first.</p></div></div>
+        <div class="card"><div class="num">5</div><div><h3>Add games to your calendar</h3><p>Tap <span class="key">Calendar</span> to subscribe to your teams' schedules in Apple, Google or Outlook. Times update on their own and finals add their scores.</p></div></div>
+      </div>
+    </section>
+
+    <section id="faq" aria-labelledby="faqTitle">
+      <h2 id="faqTitle">Questions</h2>
+      <details><summary>Does it cost anything?</summary><p>No. It's free, with no account and no sign-in.</p></details>
+      <details><summary>Why isn't it in the App Store or Google Play?</summary><p>It installs straight from your browser instead, so it's the same app on every phone and computer, and it updates the moment something new ships. No downloads to manage.</p></details>
+      <details><summary>Will it use up my phone's storage?</summary><p>Barely. It keeps a small copy of your teams' last results so pages open fast, and cleans that up on its own.</p></details>
+      <details><summary>My school or team isn't in it. Can you add it?</summary><p>Very likely. Use the form below, pick <b>Missing team</b>, and tell us the school, the city and state, and the sports.</p></details>
+      <details><summary>A score or time looks wrong.</summary><p>Tap <b>↻</b> on the team page to check the official source again. If it's still wrong, send it below with the team, the sport and the game date.</p></details>
+      <details><summary>How do I remove it?</summary><p>Delete it like any other app: press and hold the icon, then Remove (iPhone) or Uninstall (Android). On a computer, open the app's menu and choose Uninstall.</p></details>
+    </section>
+
+    <section id="feedback" aria-labelledby="feedbackTitle">
+      <h2 id="feedbackTitle">Send feedback</h2>
+      <p class="sub">This is an early version and your notes shape what gets built next: bugs, ideas, missing teams, anything.</p>
+      <div class="panel">
+        <form id="feedbackForm" novalidate>
+          <fieldset style="border:0;padding:0;margin:0">
+            <legend style="font-weight:800;font-size:14px;margin-bottom:8px">What's it about?</legend>
+            <div class="chips">
+              <label><input type="radio" name="kind" value="idea" checked><span>Idea</span></label>
+              <label><input type="radio" name="kind" value="bug"><span>Something's wrong</span></label>
+              <label><input type="radio" name="kind" value="missing"><span>Missing team</span></label>
+              <label><input type="radio" name="kind" value="praise"><span>What I like</span></label>
+              <label><input type="radio" name="kind" value="other"><span>Other</span></label>
+            </div>
+          </fieldset>
+          <label>Your feedback<textarea name="message" id="fbMessage" maxlength="2000" required placeholder="What would make SAS Sports better for you?"></textarea></label>
+          <div class="row2">
+            <label>Team or page <small>(optional)</small><input name="team" maxlength="120" autocomplete="off" placeholder="e.g. Manhattan HS volleyball"></label>
+            <label>Email or phone <small>(optional, if you'd like a reply)</small><input name="contact" maxlength="120" autocomplete="email" inputmode="email"></label>
+          </div>
+          <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+          <div class="cta" style="justify-content:flex-start"><button type="submit" class="btn" id="fbSend">Send feedback</button></div>
+          <p class="status" id="fbStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="share" aria-labelledby="shareTitle">
+      <h2 id="shareTitle">Share it</h2>
+      <p class="sub">Know a parent, player, coach or fan who'd use it? Send them this page.</p>
+      <div class="share">
+        <code id="shareUrl">sas-sports.lovetogivepain.workers.dev/get/</code>
+        <button type="button" class="btn" id="shareBtn">Share</button>
+        <button type="button" class="btn ghost" id="copyBtn">Copy link</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>SAS Sports · Every sport. Every level. All live. · <a href="/">Open the app</a></footer>
+</div>
+
+<script>
+(()=>{
+  const $=s=>document.querySelector(s);
+  const installed=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  if(installed)document.body.classList.add('installed');
+  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+
+  // Device tabs: open on the visitor's own device.
+  const ua=navigator.userAgent;
+  const ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const android=/android/i.test(ua);
+  const tabs=[...document.querySelectorAll('.tab')];
+  const select=tab=>{for(const t of tabs){const on=t===tab;t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1;document.getElementById(t.getAttribute('aria-controls')).hidden=!on}};
+  tabs.forEach((t,i)=>{
+    t.addEventListener('click',()=>select(t));
+    t.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();const n=tabs[(i+d+tabs.length)%tabs.length];select(n);n.focus()});
+  });
+  select(ios?tabs[0]:android?tabs[1]:/mobile/i.test(ua)?tabs[0]:tabs[2]);
+
+  // iPhone: name the in-app browser that can't install, and the link to paste.
+  const shareLink=location.origin+'/get/';
+  $('#iosLink').textContent=shareLink.replace(/^https?:\/\//,'');
+  const inApp=(ua.match(/Instagram|FBAN|FBAV|FB_IAB|Snapchat|TikTok|musical_ly|Twitter|LinkedInApp|Pinterest|GSA\//)||[])[0];
+  if(ios&&inApp){const names={FBAN:'Facebook',FBAV:'Facebook',FB_IAB:'Facebook',musical_ly:'TikTok',Twitter:'X',LinkedInApp:'LinkedIn','GSA/':'the Google app'};const n=$('#inAppNote');n.textContent=`You're in ${names[inApp]||inApp}'s browser, which can't install apps. Tap the ··· menu and choose Open in Safari (or Open in external browser), then follow the steps below.`;n.hidden=false}
+  if(ios)$('#installTop').textContent='How to install on iPhone';
+  // Install: the browser's own prompt where it offers one, else the steps.
+  let deferred=null;const top=$('#installTop');
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e});
+  addEventListener('appinstalled',()=>{deferred=null;document.body.classList.add('installed')});
+  top.addEventListener('click',async()=>{
+    if(deferred){const p=deferred;deferred=null;p.prompt();try{await p.userChoice}catch{}return}
+    $('#install').scrollIntoView({block:'start'});
+  });
+
+  // Share
+  const link=shareLink;$('#shareUrl').textContent=link.replace(/^https?:\/\//,'');
+  const copy=async btn=>{try{await navigator.clipboard.writeText(link);btn.textContent='Copied'}catch{btn.textContent='Copy failed'}setTimeout(()=>btn.textContent='Copy link',2000)};
+  $('#copyBtn').addEventListener('click',e=>copy(e.currentTarget));
+  const shareBtn=$('#shareBtn');
+  if(!navigator.share)shareBtn.hidden=true;
+  shareBtn.addEventListener('click',()=>navigator.share({title:'SAS Sports',text:'Scores, schedules and results for every level, from middle school to pro. Free app:',url:link}).catch(()=>{}));
+
+  // Feedback
+  const form=$('#feedbackForm'),status=$('#fbStatus'),send=$('#fbSend');
+  const params=new URLSearchParams(location.search);
+  if(params.get('team'))form.team.value=params.get('team').slice(0,120);
+  const say=(text,cls)=>{status.textContent=text;status.className='status'+(cls?' '+cls:'')};
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const message=form.message.value.trim();
+    if(message.length<3){say('Write a few words of feedback first.','err');form.message.focus();return}
+    send.disabled=true;say('Sending…');
+    const body={kind:form.kind.value,message,team:form.team.value.trim(),contact:form.contact.value.trim(),website:form.website.value,
+      device:`${installed?'installed':'browser'} · ${ios?'iOS':android?'Android':'computer'} · ${innerWidth}px`};
+    try{
+      const r=await fetch('/api/feedback',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(data.detail||`HTTP ${r.status}`);
+      form.reset();say('Thanks! Your feedback was sent.','ok');
+    }catch(err){say(`It didn't send (${err.message}). Please try again.`,'err')}
+    finally{send.disabled=false}
+  });
+})();
+</script>
+</body>
+</html>
