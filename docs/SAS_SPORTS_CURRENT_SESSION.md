@@ -31,6 +31,7 @@ Earlier: November 19, 2026. PR #616 (`4.317.3-mlb-season`): ESPN's MLB team sche
 Older entries moved to `docs/SAS_SPORTS_HISTORY.md` (November 19, "Archived from the current-session file").
 
 **Open:**
+- Install page: whether the app's own header **Install app** button (Nov 9) should also go (user, Nov 23: "There's no purpose to have an install option within the app"); asked, not changed. Feedback is read in the D1 console (`docs/DOWNLOAD_PAGE.md`).
 - "Hay Tournament" (Manhattan boys basketball, Dec 3) is the calendar's typo.
 - Washburn Rural MS and North wrestling stay on Bound: WRMS's boys PDF is still 2025-26 and the girls' PDFs name meets only by their field (`KS_COUNTIES_BATCH3_MODULE.md`).
 - Baseball and softball college polls (not on ESPN).
