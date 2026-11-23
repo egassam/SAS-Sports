@@ -5963,3 +5963,7 @@ User: "Can we track how many people are using the app?" Offered (1) our own coun
 
 **Production** (merge `95de97b`): `/api/status` `4.331.0-usage`; `verify:prod` Manhattan Basketball PASS, XC 18/20 and 26/21; `check-reference-page` PASS; check-in code on `/` and `/get/`; stats non-owner 403; cross-origin check-in 403. No test check-in was posted to production (it would count as a device).
 
+## November 23, 2026 — Owner bar (PR #650)
+
+User: "Can I see it on my phone without tapping SAS Sports logo five times?", then "Perfect" to the proposed bar. Built (`4.332.0-owner-strip`): `#ownerStrip` (a hidden `ghost` button under the header) filled by `refreshOwnerStrip` when the page has a push subscription and `sas-feedback-owner` is set: "📊 N using today · N this week · N new notes ›" from `/api/push/stats` and `/api/push/feedback` (new = id above `sas-feedback-seen`, written when the full view opens); refreshed on `visibilitychange`; tapping opens `showFeedback`; a 403 clears the owner flag. Tests: `tests/push-alerts.mjs` (hidden start, owner-only refresh); Chromium iPhone 13 (owner: the bar, the full view, seen marked; other phone: no bar; 390 px). CI `guardrails` green on `c17bc97`. Preview: XC 18/20 and 26/21, Manhattan/Anthony/Eisenhower all sports 3 refreshes PASS, `check-reference-page` PASS. Production (merge `592fd1f`): `verify:prod` Manhattan Basketball PASS, XC 18/20 and 26/21, `check-reference-page` PASS, `#ownerStrip` served hidden.
+
