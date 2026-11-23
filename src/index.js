@@ -350,8 +350,9 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 import {feedbackRoute,FEEDBACK_TABLE_SQL} from './feedback.mjs';
+import {usageRoute,usageStats} from './usage.mjs';
 
-const VERSION='4.330.1-owner-taps';
+const VERSION='4.331.0-usage';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7161,6 +7162,14 @@ async function pushRoute(request,env,url){
     let sent=false;try{sent=(await sendPush(sub,{title:'Feedback alerts are on',body:"You'll get an alert on this phone for each feedback note.",url:'/?feedback=1',tag:'feedback-on'},{...await pushKeys(env),fetchImpl:fetch})).ok}catch{}
     return json({owner:true,sent});
   }
+  // How many people use the app (user, November 23: "Can we track how many
+  // people are using the app?"): the owner's phone only.
+  if(path==='/api/push/stats'){
+    const owner=await db.prepare('SELECT 1 AS ok FROM push_owners WHERE scope=? AND endpoint=?').bind(scope,endpoint).first();
+    if(!owner)return json({detail:'Not the owner'},403);
+    const alerts=Number((await db.prepare('SELECT COUNT(*) AS n FROM push_subscriptions WHERE scope=?').bind(scope).first())?.n)||0;
+    return json({...await usageStats(db,scope),alerts_on:alerts});
+  }
   if(path==='/api/push/feedback'){
     const owner=await db.prepare('SELECT 1 AS ok FROM push_owners WHERE scope=? AND endpoint=?').bind(scope,endpoint).first();
     if(!owner)return json({detail:'Not the owner'},403);
@@ -7835,6 +7844,7 @@ async function routeRequest(request,env,ctx){
     // run now (2 feeds, no gap) with the source key.
     if(url.pathname==='/api/refresh-status'){let status=null,paused=null;try{status=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_STATUS_KEY,url.hostname),'json');paused=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_PAUSE_KEY,url.hostname))}catch{}return json({version:VERSION,schedule:'every 10 minutes',batch:REFRESH_BATCH,gap_seconds:REFRESH_GAP_MS/1000,feeds:refreshFeeds(HIGH_SCHOOL_MODULES).length,paused:Boolean(paused),status});}
     if(url.pathname.startsWith('/api/push/'))return pushRoute(request,env,url);
+    if(url.pathname==='/api/ping')return usageRoute(request,env,url,{json});
     if(url.pathname==='/api/feedback')return feedbackRoute(request,env,url,{json,sameSecret,notify:(note,scope)=>notifyFeedbackOwners(env,scope,note)});
     if(url.pathname==='/api/refresh-control'){
       const secret=env?.SOURCE_FETCH_KEY,given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
