@@ -228,6 +228,10 @@ assert.equal((await call('/api/push/test',{endpoint:subscription.endpoint})).sta
   const list=await (await call('/api/push/feedback',{endpoint:subscription.endpoint})).json();
   assert.equal(list.feedback.length,1);assert.equal(list.feedback[0].team,'Wamego');
   assert.equal((await call('/api/push/feedback',{endpoint:'https://push.example/other'})).status,403);
+  // Usage totals: the owner's phone only.
+  assert.equal((await call('/api/push/stats',{endpoint:'https://push.example/other'})).status,403);
+  const stats=await (await call('/api/push/stats',{endpoint:subscription.endpoint})).json();
+  assert.equal(stats.alerts_on,1);assert.deepEqual(stats.app,{today:0,week:0,month:0,installed_month:0});assert.equal(stats.days.length,14);
   // A failed alert never loses the note.
   pushStatus=500;
   assert.equal((await call('/api/feedback',{message:'Second note'},{headers:{origin:`https://${host}`}})).status,200);
