@@ -1,0 +1,213 @@
+{
+ "state": "ks",
+ "counties": [
+  "Montgomery"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH8_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "caney-valley-ks",
+   "name": "Caney Valley High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451557288747d95d4e1743",
+    "slug": "caneyvalleyhs"
+   },
+   "maxpreps": {
+    "schoolId": "0e41bb10-f9f4-4159-86ff-c82e44be61ae",
+    "path": "caney/caney-valley-bullpups"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 134,
+    "code": "CV"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Caney Valley",
+    "milesplit": 21850,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "cherryvale-ks",
+   "name": "Cherryvale High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515621829828bb9c57a44",
+    "slug": "cherryvalehs"
+   },
+   "maxpreps": {
+    "schoolId": "9ad98a91-ca7b-461c-93bd-0c553a6ae217",
+    "path": "cherryvale/cherryvale-chargers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Cherryvale",
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "field-kindley-ks",
+   "name": "Field Kindley High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515829699195790b1554b",
+    "slug": "fieldkindleyhs"
+   },
+   "maxpreps": {
+    "schoolId": "7042bb91-b7f4-4845-be0b-5fbc6f61065e",
+    "path": "coffeyville/field-kindley-golden-tornado"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Field Kindley",
+    "tennis": "Field Kindley HS",
+    "milesplit": 21830,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "independence-ks",
+   "name": "Independence High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515961388d47530c3184f",
+    "slug": "independencehs"
+   },
+   "maxpreps": {
+    "schoolId": "c4db9c5c-2c3d-47d9-8659-5b987ac83c77",
+    "path": "independence/independence-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 98,
+    "code": "INDE"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Independence",
+    "tennis": "Independence HS",
+    "milesplit": 21814,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "caney-valley-ms-ks",
+   "name": "Caney Valley Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040451557288747d95d4e1743",
+    "slug": "caneyvalleyhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Caney Valley",
+    "milesplit": 37859
+   }
+  },
+  {
+   "id": "cherryvale-ms-ks",
+   "name": "Cherryvale Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h2025020404515621829828bb9c57a44",
+    "slug": "cherryvalehs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Cherryvale"
+   }
+  }
+ ]
+}

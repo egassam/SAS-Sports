@@ -2040,7 +2040,7 @@
     "athletics_url": "https://hawaiiathletics.com",
     "aliases": [
       "Hawai'i",
-      "Hawai\u02bbi",
+      "Hawaiʻi",
       "University of Hawaii",
       "University of Hawai'i",
       "Hawaii at Manoa"
@@ -2103,9 +2103,9 @@
     "division": "NCAA Division I",
     "athletics_url": "https://sjsuspartans.com",
     "aliases": [
-      "San Jos\u00e9 State",
+      "San José State",
       "San Jose St.",
-      "San Jos\u00e9 St.",
+      "San José St.",
       "SJSU",
       "San Jose State University"
     ],
@@ -6751,7 +6751,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC East",
+    "division": "NFL · AFC East",
     "athletics_url": "https://www.buffalobills.com",
     "aliases": [
       "Bills",
@@ -6775,7 +6775,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC East",
+    "division": "NFL · AFC East",
     "athletics_url": "https://www.miamidolphins.com",
     "aliases": [
       "Dolphins",
@@ -6799,7 +6799,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC East",
+    "division": "NFL · AFC East",
     "athletics_url": "https://www.patriots.com",
     "aliases": [
       "Patriots",
@@ -6823,7 +6823,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC East",
+    "division": "NFL · AFC East",
     "athletics_url": "https://www.newyorkjets.com",
     "aliases": [
       "Jets",
@@ -6847,7 +6847,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC North",
+    "division": "NFL · AFC North",
     "athletics_url": "https://www.baltimoreravens.com",
     "aliases": [
       "Ravens",
@@ -6871,7 +6871,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC North",
+    "division": "NFL · AFC North",
     "athletics_url": "https://www.bengals.com",
     "aliases": [
       "Bengals",
@@ -6895,7 +6895,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC North",
+    "division": "NFL · AFC North",
     "athletics_url": "https://www.clevelandbrowns.com",
     "aliases": [
       "Browns",
@@ -6919,7 +6919,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC North",
+    "division": "NFL · AFC North",
     "athletics_url": "https://www.steelers.com",
     "aliases": [
       "Steelers",
@@ -6943,7 +6943,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC South",
+    "division": "NFL · AFC South",
     "athletics_url": "https://www.houstontexans.com",
     "aliases": [
       "Texans",
@@ -6967,7 +6967,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC South",
+    "division": "NFL · AFC South",
     "athletics_url": "https://www.colts.com",
     "aliases": [
       "Colts",
@@ -6991,7 +6991,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC South",
+    "division": "NFL · AFC South",
     "athletics_url": "https://www.jaguars.com",
     "aliases": [
       "Jaguars",
@@ -7015,7 +7015,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC South",
+    "division": "NFL · AFC South",
     "athletics_url": "https://www.tennesseetitans.com",
     "aliases": [
       "Titans",
@@ -7039,7 +7039,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC West",
+    "division": "NFL · AFC West",
     "athletics_url": "https://www.denverbroncos.com",
     "aliases": [
       "Broncos",
@@ -7063,7 +7063,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC West",
+    "division": "NFL · AFC West",
     "athletics_url": "https://www.chiefs.com",
     "aliases": [
       "Chiefs",
@@ -7087,7 +7087,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC West",
+    "division": "NFL · AFC West",
     "athletics_url": "https://www.raiders.com",
     "aliases": [
       "Raiders",
@@ -7111,7 +7111,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 AFC West",
+    "division": "NFL · AFC West",
     "athletics_url": "https://www.chargers.com",
     "aliases": [
       "Chargers",
@@ -7135,7 +7135,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC East",
+    "division": "NFL · NFC East",
     "athletics_url": "https://www.dallascowboys.com",
     "aliases": [
       "Cowboys",
@@ -7159,7 +7159,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC East",
+    "division": "NFL · NFC East",
     "athletics_url": "https://www.giants.com",
     "aliases": [
       "Giants",
@@ -7183,7 +7183,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC East",
+    "division": "NFL · NFC East",
     "athletics_url": "https://www.philadelphiaeagles.com",
     "aliases": [
       "Eagles",
@@ -7207,7 +7207,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC East",
+    "division": "NFL · NFC East",
     "athletics_url": "https://www.commanders.com",
     "aliases": [
       "Commanders",
@@ -7231,7 +7231,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC North",
+    "division": "NFL · NFC North",
     "athletics_url": "https://www.chicagobears.com",
     "aliases": [
       "Bears",
@@ -7255,7 +7255,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC North",
+    "division": "NFL · NFC North",
     "athletics_url": "https://www.detroitlions.com",
     "aliases": [
       "Lions",
@@ -7279,7 +7279,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC North",
+    "division": "NFL · NFC North",
     "athletics_url": "https://www.packers.com",
     "aliases": [
       "Packers",
@@ -7303,7 +7303,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC North",
+    "division": "NFL · NFC North",
     "athletics_url": "https://www.vikings.com",
     "aliases": [
       "Vikings",
@@ -7327,7 +7327,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC South",
+    "division": "NFL · NFC South",
     "athletics_url": "https://www.atlantafalcons.com",
     "aliases": [
       "Falcons",
@@ -7351,7 +7351,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC South",
+    "division": "NFL · NFC South",
     "athletics_url": "https://www.panthers.com",
     "aliases": [
       "Panthers",
@@ -7375,7 +7375,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC South",
+    "division": "NFL · NFC South",
     "athletics_url": "https://www.neworleanssaints.com",
     "aliases": [
       "Saints",
@@ -7399,7 +7399,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC South",
+    "division": "NFL · NFC South",
     "athletics_url": "https://www.buccaneers.com",
     "aliases": [
       "Buccaneers",
@@ -7423,7 +7423,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC West",
+    "division": "NFL · NFC West",
     "athletics_url": "https://www.azcardinals.com",
     "aliases": [
       "Cardinals",
@@ -7447,7 +7447,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC West",
+    "division": "NFL · NFC West",
     "athletics_url": "https://www.therams.com",
     "aliases": [
       "Rams",
@@ -7471,7 +7471,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC West",
+    "division": "NFL · NFC West",
     "athletics_url": "https://www.49ers.com",
     "aliases": [
       "49ers",
@@ -7495,7 +7495,7 @@
     "league": "NFL",
     "pro_sport": "Football",
     "level": "pro",
-    "division": "NFL \u00b7 NFC West",
+    "division": "NFL · NFC West",
     "athletics_url": "https://www.seahawks.com",
     "aliases": [
       "Seahawks",
@@ -7620,7 +7620,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.atlutd.com",
     "aliases": [
       "Atlanta United",
@@ -7645,7 +7645,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.charlottefootballclub.com",
     "aliases": [
       "Charlotte FC",
@@ -7669,7 +7669,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.chicagofirefc.com",
     "aliases": [
       "Fire",
@@ -7686,18 +7686,18 @@
   },
   {
     "id": "cf-montreal",
-    "name": "CF Montr\u00e9al",
-    "short_name": "CF Montr\u00e9al",
+    "name": "CF Montréal",
+    "short_name": "CF Montréal",
     "state": "Quebec",
-    "city": "Montr\u00e9al",
+    "city": "Montréal",
     "conference": "Eastern Conference",
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://en.cfmontreal.com",
     "aliases": [
-      "CF Montr\u00e9al",
+      "CF Montréal",
       "MTL"
     ],
     "providers": [
@@ -7718,7 +7718,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.columbuscrew.com",
     "aliases": [
       "Crew",
@@ -7743,7 +7743,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.dcunited.com",
     "aliases": [
       "D.C. United",
@@ -7767,7 +7767,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.fccincinnati.com",
     "aliases": [
       "FC Cincinnati",
@@ -7791,7 +7791,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.intermiamicf.com",
     "aliases": [
       "Inter Miami",
@@ -7816,7 +7816,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.nashvillesc.com",
     "aliases": [
       "Nashville SC",
@@ -7840,7 +7840,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.revolutionsoccer.net",
     "aliases": [
       "Revolution",
@@ -7865,7 +7865,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.newyorkcityfc.com",
     "aliases": [
       "NYCFC",
@@ -7890,7 +7890,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.newyorkredbulls.com",
     "aliases": [
       "Red Bulls",
@@ -7915,7 +7915,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.orlandocitysc.com",
     "aliases": [
       "Orlando City",
@@ -7940,7 +7940,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.philadelphiaunion.com",
     "aliases": [
       "Union",
@@ -7965,7 +7965,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Eastern Conference",
+    "division": "MLS · Eastern Conference",
     "athletics_url": "https://www.torontofc.ca",
     "aliases": [
       "Toronto FC",
@@ -7989,7 +7989,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.austinfc.com",
     "aliases": [
       "Austin FC",
@@ -8013,7 +8013,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.coloradorapids.com",
     "aliases": [
       "Rapids",
@@ -8038,7 +8038,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.fcdallas.com",
     "aliases": [
       "FC Dallas",
@@ -8062,7 +8062,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.houstondynamofc.com",
     "aliases": [
       "Dynamo",
@@ -8087,7 +8087,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.lagalaxy.com",
     "aliases": [
       "Galaxy",
@@ -8112,7 +8112,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.lafc.com",
     "aliases": [
       "LAFC"
@@ -8135,7 +8135,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.mnufc.com",
     "aliases": [
       "Minnesota United",
@@ -8160,7 +8160,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.timbers.com",
     "aliases": [
       "Timbers",
@@ -8185,7 +8185,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.rsl.com",
     "aliases": [
       "Real Salt Lake",
@@ -8209,7 +8209,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.sandiegofc.com",
     "aliases": [
       "San Diego FC",
@@ -8233,7 +8233,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.sjearthquakes.com",
     "aliases": [
       "Earthquakes",
@@ -8258,7 +8258,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.soundersfc.com",
     "aliases": [
       "Sounders",
@@ -8283,7 +8283,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.sportingkc.com",
     "aliases": [
       "Sporting KC",
@@ -8308,7 +8308,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.stlcitysc.com",
     "aliases": [
       "St. Louis CITY",
@@ -8333,7 +8333,7 @@
     "league": "MLS",
     "pro_sport": "Soccer",
     "level": "pro",
-    "division": "MLS \u00b7 Western Conference",
+    "division": "MLS · Western Conference",
     "athletics_url": "https://www.whitecapsfc.com",
     "aliases": [
       "Whitecaps",
@@ -8358,7 +8358,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL East",
+    "division": "MLB · AL East",
     "athletics_url": "https://www.mlb.com/orioles",
     "aliases": [
       "Orioles",
@@ -8383,7 +8383,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL East",
+    "division": "MLB · AL East",
     "athletics_url": "https://www.mlb.com/redsox",
     "aliases": [
       "Red Sox",
@@ -8408,7 +8408,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL East",
+    "division": "MLB · AL East",
     "athletics_url": "https://www.mlb.com/yankees",
     "aliases": [
       "Yankees",
@@ -8433,7 +8433,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL East",
+    "division": "MLB · AL East",
     "athletics_url": "https://www.mlb.com/rays",
     "aliases": [
       "Rays",
@@ -8458,7 +8458,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL East",
+    "division": "MLB · AL East",
     "athletics_url": "https://www.mlb.com/bluejays",
     "aliases": [
       "Blue Jays",
@@ -8483,7 +8483,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL Central",
+    "division": "MLB · AL Central",
     "athletics_url": "https://www.mlb.com/whitesox",
     "aliases": [
       "White Sox",
@@ -8508,7 +8508,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL Central",
+    "division": "MLB · AL Central",
     "athletics_url": "https://www.mlb.com/guardians",
     "aliases": [
       "Guardians",
@@ -8533,7 +8533,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL Central",
+    "division": "MLB · AL Central",
     "athletics_url": "https://www.mlb.com/tigers",
     "aliases": [
       "Tigers",
@@ -8558,7 +8558,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL Central",
+    "division": "MLB · AL Central",
     "athletics_url": "https://www.mlb.com/royals",
     "aliases": [
       "Royals",
@@ -8583,7 +8583,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL Central",
+    "division": "MLB · AL Central",
     "athletics_url": "https://www.mlb.com/twins",
     "aliases": [
       "Twins",
@@ -8608,7 +8608,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL West",
+    "division": "MLB · AL West",
     "athletics_url": "https://www.mlb.com/athletics",
     "aliases": [
       "Athletics",
@@ -8632,7 +8632,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL West",
+    "division": "MLB · AL West",
     "athletics_url": "https://www.mlb.com/astros",
     "aliases": [
       "Astros",
@@ -8657,7 +8657,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL West",
+    "division": "MLB · AL West",
     "athletics_url": "https://www.mlb.com/angels",
     "aliases": [
       "Angels",
@@ -8682,7 +8682,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL West",
+    "division": "MLB · AL West",
     "athletics_url": "https://www.mlb.com/mariners",
     "aliases": [
       "Mariners",
@@ -8707,7 +8707,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 AL West",
+    "division": "MLB · AL West",
     "athletics_url": "https://www.mlb.com/rangers",
     "aliases": [
       "Rangers",
@@ -8732,7 +8732,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL East",
+    "division": "MLB · NL East",
     "athletics_url": "https://www.mlb.com/braves",
     "aliases": [
       "Braves",
@@ -8757,7 +8757,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL East",
+    "division": "MLB · NL East",
     "athletics_url": "https://www.mlb.com/marlins",
     "aliases": [
       "Marlins",
@@ -8782,7 +8782,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL East",
+    "division": "MLB · NL East",
     "athletics_url": "https://www.mlb.com/mets",
     "aliases": [
       "Mets",
@@ -8807,7 +8807,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL East",
+    "division": "MLB · NL East",
     "athletics_url": "https://www.mlb.com/phillies",
     "aliases": [
       "Phillies",
@@ -8832,7 +8832,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL East",
+    "division": "MLB · NL East",
     "athletics_url": "https://www.mlb.com/nationals",
     "aliases": [
       "Nationals",
@@ -8857,7 +8857,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL Central",
+    "division": "MLB · NL Central",
     "athletics_url": "https://www.mlb.com/cubs",
     "aliases": [
       "Cubs",
@@ -8882,7 +8882,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL Central",
+    "division": "MLB · NL Central",
     "athletics_url": "https://www.mlb.com/reds",
     "aliases": [
       "Reds",
@@ -8907,7 +8907,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL Central",
+    "division": "MLB · NL Central",
     "athletics_url": "https://www.mlb.com/brewers",
     "aliases": [
       "Brewers",
@@ -8932,7 +8932,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL Central",
+    "division": "MLB · NL Central",
     "athletics_url": "https://www.mlb.com/pirates",
     "aliases": [
       "Pirates",
@@ -8957,7 +8957,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL Central",
+    "division": "MLB · NL Central",
     "athletics_url": "https://www.mlb.com/cardinals",
     "aliases": [
       "Cardinals",
@@ -8982,7 +8982,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL West",
+    "division": "MLB · NL West",
     "athletics_url": "https://www.mlb.com/dbacks",
     "aliases": [
       "Diamondbacks",
@@ -9007,7 +9007,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL West",
+    "division": "MLB · NL West",
     "athletics_url": "https://www.mlb.com/rockies",
     "aliases": [
       "Rockies",
@@ -9032,7 +9032,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL West",
+    "division": "MLB · NL West",
     "athletics_url": "https://www.mlb.com/dodgers",
     "aliases": [
       "Dodgers",
@@ -9057,7 +9057,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL West",
+    "division": "MLB · NL West",
     "athletics_url": "https://www.mlb.com/padres",
     "aliases": [
       "Padres",
@@ -9082,7 +9082,7 @@
     "league": "MLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MLB \u00b7 NL West",
+    "division": "MLB · NL West",
     "athletics_url": "https://www.mlb.com/giants",
     "aliases": [
       "Giants",
@@ -9107,7 +9107,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Atlantic",
+    "division": "NBA · Atlantic",
     "athletics_url": "https://www.nba.com/celtics",
     "aliases": [
       "Celtics",
@@ -9132,7 +9132,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Atlantic",
+    "division": "NBA · Atlantic",
     "athletics_url": "https://www.nba.com/nets",
     "aliases": [
       "Nets",
@@ -9157,7 +9157,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Atlantic",
+    "division": "NBA · Atlantic",
     "athletics_url": "https://www.nba.com/knicks",
     "aliases": [
       "Knicks",
@@ -9182,7 +9182,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Atlantic",
+    "division": "NBA · Atlantic",
     "athletics_url": "https://www.nba.com/sixers",
     "aliases": [
       "76ers",
@@ -9207,7 +9207,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Atlantic",
+    "division": "NBA · Atlantic",
     "athletics_url": "https://www.nba.com/raptors",
     "aliases": [
       "Raptors",
@@ -9232,7 +9232,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Central",
+    "division": "NBA · Central",
     "athletics_url": "https://www.nba.com/bulls",
     "aliases": [
       "Bulls",
@@ -9257,7 +9257,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Central",
+    "division": "NBA · Central",
     "athletics_url": "https://www.nba.com/cavaliers",
     "aliases": [
       "Cavaliers",
@@ -9282,7 +9282,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Central",
+    "division": "NBA · Central",
     "athletics_url": "https://www.nba.com/pistons",
     "aliases": [
       "Pistons",
@@ -9307,7 +9307,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Central",
+    "division": "NBA · Central",
     "athletics_url": "https://www.nba.com/pacers",
     "aliases": [
       "Pacers",
@@ -9332,7 +9332,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Central",
+    "division": "NBA · Central",
     "athletics_url": "https://www.nba.com/bucks",
     "aliases": [
       "Bucks",
@@ -9357,7 +9357,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southeast",
+    "division": "NBA · Southeast",
     "athletics_url": "https://www.nba.com/hawks",
     "aliases": [
       "Hawks",
@@ -9382,7 +9382,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southeast",
+    "division": "NBA · Southeast",
     "athletics_url": "https://www.nba.com/hornets",
     "aliases": [
       "Hornets",
@@ -9407,7 +9407,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southeast",
+    "division": "NBA · Southeast",
     "athletics_url": "https://www.nba.com/heat",
     "aliases": [
       "Heat",
@@ -9432,7 +9432,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southeast",
+    "division": "NBA · Southeast",
     "athletics_url": "https://www.nba.com/magic",
     "aliases": [
       "Magic",
@@ -9457,7 +9457,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southeast",
+    "division": "NBA · Southeast",
     "athletics_url": "https://www.nba.com/wizards",
     "aliases": [
       "Wizards",
@@ -9482,7 +9482,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Northwest",
+    "division": "NBA · Northwest",
     "athletics_url": "https://www.nba.com/nuggets",
     "aliases": [
       "Nuggets",
@@ -9507,7 +9507,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Northwest",
+    "division": "NBA · Northwest",
     "athletics_url": "https://www.nba.com/timberwolves",
     "aliases": [
       "Timberwolves",
@@ -9532,7 +9532,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Northwest",
+    "division": "NBA · Northwest",
     "athletics_url": "https://www.nba.com/thunder",
     "aliases": [
       "Thunder",
@@ -9557,7 +9557,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Northwest",
+    "division": "NBA · Northwest",
     "athletics_url": "https://www.nba.com/blazers",
     "aliases": [
       "Trail Blazers",
@@ -9582,7 +9582,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Northwest",
+    "division": "NBA · Northwest",
     "athletics_url": "https://www.nba.com/jazz",
     "aliases": [
       "Jazz",
@@ -9607,7 +9607,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Pacific",
+    "division": "NBA · Pacific",
     "athletics_url": "https://www.nba.com/warriors",
     "aliases": [
       "Warriors",
@@ -9632,7 +9632,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Pacific",
+    "division": "NBA · Pacific",
     "athletics_url": "https://www.nba.com/clippers",
     "aliases": [
       "Clippers",
@@ -9657,7 +9657,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Pacific",
+    "division": "NBA · Pacific",
     "athletics_url": "https://www.nba.com/lakers",
     "aliases": [
       "Lakers",
@@ -9682,7 +9682,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Pacific",
+    "division": "NBA · Pacific",
     "athletics_url": "https://www.nba.com/suns",
     "aliases": [
       "Suns",
@@ -9707,7 +9707,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Pacific",
+    "division": "NBA · Pacific",
     "athletics_url": "https://www.nba.com/kings",
     "aliases": [
       "Kings",
@@ -9732,7 +9732,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southwest",
+    "division": "NBA · Southwest",
     "athletics_url": "https://www.nba.com/mavs",
     "aliases": [
       "Mavericks",
@@ -9757,7 +9757,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southwest",
+    "division": "NBA · Southwest",
     "athletics_url": "https://www.nba.com/rockets",
     "aliases": [
       "Rockets",
@@ -9782,7 +9782,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southwest",
+    "division": "NBA · Southwest",
     "athletics_url": "https://www.nba.com/grizzlies",
     "aliases": [
       "Grizzlies",
@@ -9807,7 +9807,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southwest",
+    "division": "NBA · Southwest",
     "athletics_url": "https://www.nba.com/pelicans",
     "aliases": [
       "Pelicans",
@@ -9832,7 +9832,7 @@
     "league": "NBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "NBA \u00b7 Southwest",
+    "division": "NBA · Southwest",
     "athletics_url": "https://www.nba.com/spurs",
     "aliases": [
       "Spurs",
@@ -9857,7 +9857,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Atlantic Division",
+    "division": "NHL · Atlantic Division",
     "athletics_url": "https://www.nhl.com/bruins",
     "aliases": [
       "Bruins",
@@ -9882,7 +9882,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Atlantic Division",
+    "division": "NHL · Atlantic Division",
     "athletics_url": "https://www.nhl.com/sabres",
     "aliases": [
       "Sabres",
@@ -9907,7 +9907,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Atlantic Division",
+    "division": "NHL · Atlantic Division",
     "athletics_url": "https://www.nhl.com/redwings",
     "aliases": [
       "Red Wings",
@@ -9932,7 +9932,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Atlantic Division",
+    "division": "NHL · Atlantic Division",
     "athletics_url": "https://www.nhl.com/panthers",
     "aliases": [
       "Panthers",
@@ -9952,12 +9952,12 @@
     "name": "Montreal Canadiens",
     "short_name": "Canadiens",
     "state": "Quebec",
-    "city": "Montr\u00e9al",
+    "city": "Montréal",
     "conference": "Atlantic Division",
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Atlantic Division",
+    "division": "NHL · Atlantic Division",
     "athletics_url": "https://www.nhl.com/canadiens",
     "aliases": [
       "Canadiens",
@@ -9982,7 +9982,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Atlantic Division",
+    "division": "NHL · Atlantic Division",
     "athletics_url": "https://www.nhl.com/senators",
     "aliases": [
       "Senators",
@@ -10007,7 +10007,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Atlantic Division",
+    "division": "NHL · Atlantic Division",
     "athletics_url": "https://www.nhl.com/lightning",
     "aliases": [
       "Lightning",
@@ -10032,7 +10032,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Atlantic Division",
+    "division": "NHL · Atlantic Division",
     "athletics_url": "https://www.nhl.com/mapleleafs",
     "aliases": [
       "Maple Leafs",
@@ -10057,7 +10057,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Metropolitan Division",
+    "division": "NHL · Metropolitan Division",
     "athletics_url": "https://www.nhl.com/hurricanes",
     "aliases": [
       "Hurricanes",
@@ -10082,7 +10082,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Metropolitan Division",
+    "division": "NHL · Metropolitan Division",
     "athletics_url": "https://www.nhl.com/bluejackets",
     "aliases": [
       "Blue Jackets",
@@ -10107,7 +10107,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Metropolitan Division",
+    "division": "NHL · Metropolitan Division",
     "athletics_url": "https://www.nhl.com/devils",
     "aliases": [
       "Devils",
@@ -10132,7 +10132,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Metropolitan Division",
+    "division": "NHL · Metropolitan Division",
     "athletics_url": "https://www.nhl.com/islanders",
     "aliases": [
       "Islanders",
@@ -10157,7 +10157,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Metropolitan Division",
+    "division": "NHL · Metropolitan Division",
     "athletics_url": "https://www.nhl.com/rangers",
     "aliases": [
       "Rangers",
@@ -10182,7 +10182,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Metropolitan Division",
+    "division": "NHL · Metropolitan Division",
     "athletics_url": "https://www.nhl.com/flyers",
     "aliases": [
       "Flyers",
@@ -10207,7 +10207,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Metropolitan Division",
+    "division": "NHL · Metropolitan Division",
     "athletics_url": "https://www.nhl.com/penguins",
     "aliases": [
       "Penguins",
@@ -10232,7 +10232,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Metropolitan Division",
+    "division": "NHL · Metropolitan Division",
     "athletics_url": "https://www.nhl.com/capitals",
     "aliases": [
       "Capitals",
@@ -10257,7 +10257,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Central Division",
+    "division": "NHL · Central Division",
     "athletics_url": "https://www.nhl.com/blackhawks",
     "aliases": [
       "Blackhawks",
@@ -10282,7 +10282,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Central Division",
+    "division": "NHL · Central Division",
     "athletics_url": "https://www.nhl.com/avalanche",
     "aliases": [
       "Avalanche",
@@ -10307,7 +10307,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Central Division",
+    "division": "NHL · Central Division",
     "athletics_url": "https://www.nhl.com/stars",
     "aliases": [
       "Stars",
@@ -10332,7 +10332,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Central Division",
+    "division": "NHL · Central Division",
     "athletics_url": "https://www.nhl.com/wild",
     "aliases": [
       "Wild",
@@ -10357,7 +10357,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Central Division",
+    "division": "NHL · Central Division",
     "athletics_url": "https://www.nhl.com/predators",
     "aliases": [
       "Predators",
@@ -10382,7 +10382,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Central Division",
+    "division": "NHL · Central Division",
     "athletics_url": "https://www.nhl.com/blues",
     "aliases": [
       "Blues",
@@ -10407,7 +10407,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Central Division",
+    "division": "NHL · Central Division",
     "athletics_url": "https://www.nhl.com/utah",
     "aliases": [
       "Mammoth",
@@ -10432,7 +10432,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Central Division",
+    "division": "NHL · Central Division",
     "athletics_url": "https://www.nhl.com/jets",
     "aliases": [
       "Jets",
@@ -10457,7 +10457,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Pacific Division",
+    "division": "NHL · Pacific Division",
     "athletics_url": "https://www.nhl.com/ducks",
     "aliases": [
       "Ducks",
@@ -10482,7 +10482,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Pacific Division",
+    "division": "NHL · Pacific Division",
     "athletics_url": "https://www.nhl.com/flames",
     "aliases": [
       "Flames",
@@ -10507,7 +10507,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Pacific Division",
+    "division": "NHL · Pacific Division",
     "athletics_url": "https://www.nhl.com/oilers",
     "aliases": [
       "Oilers",
@@ -10532,7 +10532,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Pacific Division",
+    "division": "NHL · Pacific Division",
     "athletics_url": "https://www.nhl.com/kings",
     "aliases": [
       "Kings",
@@ -10557,7 +10557,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Pacific Division",
+    "division": "NHL · Pacific Division",
     "athletics_url": "https://www.nhl.com/kraken",
     "aliases": [
       "Kraken",
@@ -10582,7 +10582,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Pacific Division",
+    "division": "NHL · Pacific Division",
     "athletics_url": "https://www.nhl.com/sharks",
     "aliases": [
       "Sharks",
@@ -10607,7 +10607,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Pacific Division",
+    "division": "NHL · Pacific Division",
     "athletics_url": "https://www.nhl.com/canucks",
     "aliases": [
       "Canucks",
@@ -10632,7 +10632,7 @@
     "league": "NHL",
     "pro_sport": "Hockey",
     "level": "pro",
-    "division": "NHL \u00b7 Pacific Division",
+    "division": "NHL · Pacific Division",
     "athletics_url": "https://www.nhl.com/goldenknights",
     "aliases": [
       "Golden Knights",
@@ -18189,6 +18189,1158 @@
     ]
   },
   {
+    "id": "arma-northeast-ks",
+    "name": "Arma Northeast High School",
+    "short_name": "Arma Northeast",
+    "state": "Kansas",
+    "city": "Arma",
+    "county": "Crawford County",
+    "conference": "Three Rivers League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd246.net",
+    "aliases": [
+      "Arma Northeast High School",
+      "Arma Northeast",
+      "Northeast",
+      "Arma Northeast Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/northeasths",
+        "provider_school_id": "h2025020404520138101616c8631094b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/arma/northeast-vikings",
+        "provider_school_id": "5880c23f-9216-437b-9223-f73a4b54eacf"
+      }
+    ]
+  },
+  {
+    "id": "cherokee-southeast-ks",
+    "name": "Cherokee Southeast High School",
+    "short_name": "Cherokee Southeast",
+    "state": "Kansas",
+    "city": "Cherokee",
+    "county": "Crawford County",
+    "conference": "Three Rivers League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd247.com",
+    "aliases": [
+      "Cherokee Southeast High School",
+      "Cherokee Southeast",
+      "Southeast Cherokee",
+      "Cherokee Southeast Lancers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/southeastcherokeehs",
+        "provider_school_id": "h202502040452065164c5876f148914a"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/cherokee/southeast-lancers",
+        "provider_school_id": "89f9de36-9f1c-43e2-9371-dde765c9dd14"
+      }
+    ]
+  },
+  {
+    "id": "frontenac-ks",
+    "name": "Frontenac High School",
+    "short_name": "Frontenac",
+    "state": "Kansas",
+    "city": "Frontenac",
+    "county": "Crawford County",
+    "conference": "CNC League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.frontenac249.org",
+    "aliases": [
+      "Frontenac High School",
+      "Frontenac",
+      "Frontenac Raiders"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/frontenachs",
+        "provider_school_id": "h20250204045158482e0cceebf77b745"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/frontenac/frontenac-raidernation",
+        "provider_school_id": "5c8bd1ee-027a-41ec-80c6-ba964867739c"
+      }
+    ]
+  },
+  {
+    "id": "girard-ks",
+    "name": "Girard High School",
+    "short_name": "Girard",
+    "state": "Kansas",
+    "city": "Girard",
+    "county": "Crawford County",
+    "conference": "CNC League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.girard248.org",
+    "aliases": [
+      "Girard High School",
+      "Girard",
+      "Girard Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/girardhs",
+        "provider_school_id": "h20250204045158587f80b4cff5a854f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/girard/girard-trojans",
+        "provider_school_id": "98038dda-2f6f-4bb8-9fa3-7acb94fa4c16"
+      }
+    ]
+  },
+  {
+    "id": "pittsburg-ks",
+    "name": "Pittsburg High School",
+    "short_name": "Pittsburg",
+    "state": "Kansas",
+    "city": "Pittsburg",
+    "county": "Crawford County",
+    "conference": "Southeast Kansas League",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.usd250.org",
+    "aliases": [
+      "Pittsburg High School",
+      "Pittsburg",
+      "Pittsburg Purple Dragons"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/pittsburghs",
+        "provider_school_id": "h202502040452023522348763af37345"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/pittsburg/pittsburg-purple-dragons",
+        "provider_school_id": "5fdad11b-03d1-45e5-b5ab-29b324c3bc4d"
+      }
+    ]
+  },
+  {
+    "id": "st-mary-s-colgan-ks",
+    "name": "St. Mary's Colgan High School",
+    "short_name": "St. Mary's Colgan",
+    "state": "Kansas",
+    "city": "Pittsburg",
+    "county": "Crawford County",
+    "conference": "CNC League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.ollsmc.com",
+    "aliases": [
+      "St. Mary's Colgan High School",
+      "St. Mary's Colgan",
+      "St. Mary's Colgan Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/stmaryscolganhs",
+        "provider_school_id": "h20250204045206844ef8b29740ad54f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/pittsburg/st-marys-colgan-panthers",
+        "provider_school_id": "72d1dcec-ae00-4cc6-8dc7-4c8cb34b6057"
+      }
+    ]
+  },
+  {
+    "id": "frontenac-ms-ks",
+    "name": "Frontenac Junior High",
+    "short_name": "Frontenac",
+    "state": "Kansas",
+    "city": "Frontenac",
+    "county": "Crawford County",
+    "conference": "CCC League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.frontenac249.org",
+    "aliases": [
+      "Frontenac Junior High",
+      "Frontenac",
+      "Frontenac Raiders"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/frontenachs",
+        "provider_school_id": "h20250204045158482e0cceebf77b745"
+      }
+    ]
+  },
+  {
+    "id": "girard-ms-ks",
+    "name": "Girard Middle School",
+    "short_name": "Girard",
+    "state": "Kansas",
+    "city": "Girard",
+    "county": "Crawford County",
+    "conference": "CCC League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "http:www.girard248.org",
+    "aliases": [
+      "Girard Middle School",
+      "Girard",
+      "Girard Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/girardhs",
+        "provider_school_id": "h20250204045158587f80b4cff5a854f"
+      }
+    ]
+  },
+  {
+    "id": "pittsburg-st-mary-s-ms-ks",
+    "name": "Pittsburg St. Mary's Junior High",
+    "short_name": "Pittsburg St. Mary's",
+    "state": "Kansas",
+    "city": "Pittsburg",
+    "county": "Crawford County",
+    "conference": "CCC League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.ollsmc.com",
+    "aliases": [
+      "Pittsburg St. Mary's Junior High",
+      "Pittsburg St. Mary's",
+      "St. Mary's Colgan",
+      "Pittsburg St. Mary's Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/stmaryscolganhs",
+        "provider_school_id": "h20250204045206844ef8b29740ad54f"
+      }
+    ]
+  },
+  {
+    "id": "baxter-springs-ks",
+    "name": "Baxter Springs High School",
+    "short_name": "Baxter Springs",
+    "state": "Kansas",
+    "city": "Baxter Springs",
+    "county": "Cherokee County",
+    "conference": "CNC League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd508.org",
+    "aliases": [
+      "Baxter Springs High School",
+      "Baxter Springs",
+      "Baxter Springs Lions"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/baxterspringshs",
+        "provider_school_id": "h20250204045154894e55e139753f448"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/baxter-springs/baxter-springs-lions",
+        "provider_school_id": "0c50349d-6041-4e60-8553-a50ddcddd480"
+      }
+    ]
+  },
+  {
+    "id": "columbus-ks",
+    "name": "Columbus High School",
+    "short_name": "Columbus",
+    "state": "Kansas",
+    "city": "Columbus",
+    "county": "Cherokee County",
+    "conference": "CNC League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://usd493.com",
+    "aliases": [
+      "Columbus High School",
+      "Columbus",
+      "Columbus Titans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/columbushs",
+        "provider_school_id": "h20250204045157211862e2c2bcdb14a"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/columbus/columbus-titans",
+        "provider_school_id": "49bbd163-35b9-428e-89f5-5d58197d3978"
+      }
+    ]
+  },
+  {
+    "id": "galena-ks",
+    "name": "Galena High School",
+    "short_name": "Galena",
+    "state": "Kansas",
+    "city": "Galena",
+    "county": "Cherokee County",
+    "conference": "CNC League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.galena499.org",
+    "aliases": [
+      "Galena High School",
+      "Galena",
+      "Galena Bulldog"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/galenahs",
+        "provider_school_id": "h202502040451585100f48f36ff5bc4a"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/galena/galena-bulldogs",
+        "provider_school_id": "e96bcaf3-7f25-4a7c-bfa2-ca0389deac84"
+      }
+    ]
+  },
+  {
+    "id": "riverton-ks",
+    "name": "Riverton High School",
+    "short_name": "Riverton",
+    "state": "Kansas",
+    "city": "Riverton",
+    "county": "Cherokee County",
+    "conference": "CNC League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd404.org",
+    "aliases": [
+      "Riverton High School",
+      "Riverton",
+      "Riverton Rams"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/rivertonhs",
+        "provider_school_id": "h2025020404520435671f4510ddf3948"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/riverton/riverton-rams",
+        "provider_school_id": "0da63c73-de0b-4b61-9df7-d7b2d722bffa"
+      }
+    ]
+  },
+  {
+    "id": "columbus-ms-ks",
+    "name": "Columbus Junior High",
+    "short_name": "Columbus",
+    "state": "Kansas",
+    "city": "Columbus",
+    "county": "Cherokee County",
+    "conference": "CCC League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd493.com",
+    "aliases": [
+      "Columbus Junior High",
+      "Columbus",
+      "Columbus Titans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/columbushs",
+        "provider_school_id": "h20250204045157211862e2c2bcdb14a"
+      }
+    ]
+  },
+  {
+    "id": "galena-ms-ks",
+    "name": "Galena Middle School",
+    "short_name": "Galena",
+    "state": "Kansas",
+    "city": "Galena",
+    "county": "Cherokee County",
+    "conference": "CCC League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.galena499.org",
+    "aliases": [
+      "Galena Middle School",
+      "Galena",
+      "Galena Bulldog"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/galenahs",
+        "provider_school_id": "h202502040451585100f48f36ff5bc4a"
+      }
+    ]
+  },
+  {
+    "id": "chetopa-ks",
+    "name": "Chetopa High School",
+    "short_name": "Chetopa",
+    "state": "Kansas",
+    "city": "Chetopa",
+    "county": "Labette County",
+    "conference": "Three Rivers League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd505.org",
+    "aliases": [
+      "Chetopa High School",
+      "Chetopa",
+      "Chetopa Hornets"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/chetopahs",
+        "provider_school_id": "h20250204045156243a90c62ec02724e"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/chetopa/chetopa-hornets",
+        "provider_school_id": "029714c5-1ca4-4cc3-9f95-95b27f422182"
+      }
+    ]
+  },
+  {
+    "id": "labette-county-ks",
+    "name": "Labette County High School",
+    "short_name": "Labette County",
+    "state": "Kansas",
+    "city": "Altamont",
+    "county": "Labette County",
+    "conference": "Southeast Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd506.org",
+    "aliases": [
+      "Labette County High School",
+      "Labette County",
+      "Labette County Grizzlies"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/labettecountyhs",
+        "provider_school_id": "h20250204045200057dabb1e2f777148"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/altamont/labette-county-grizzlies",
+        "provider_school_id": "c1654b31-4b5e-4839-bf99-f34b8d83919c"
+      }
+    ]
+  },
+  {
+    "id": "oswego-ks",
+    "name": "Oswego High School",
+    "short_name": "Oswego",
+    "state": "Kansas",
+    "city": "Oswego",
+    "county": "Labette County",
+    "conference": "Three Rivers League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd504.org",
+    "aliases": [
+      "Oswego High School",
+      "Oswego",
+      "Oswego Indians"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/oswegohs",
+        "provider_school_id": "h20250204045201954d042b93512d348"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/oswego/oswego-indians",
+        "provider_school_id": "48cab446-71a9-488f-abed-53cdc7c6b487"
+      }
+    ]
+  },
+  {
+    "id": "parsons-ks",
+    "name": "Parsons High School",
+    "short_name": "Parsons",
+    "state": "Kansas",
+    "city": "Parsons",
+    "county": "Labette County",
+    "conference": "Southeast Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.phs.usd503.org",
+    "aliases": [
+      "Parsons High School",
+      "Parsons",
+      "Parsons Viking"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/parsonshs",
+        "provider_school_id": "h20250204045202156a2db323573c048"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/parsons/parsons-vikings",
+        "provider_school_id": "9329a31f-6de3-4501-a2c1-7ffac2b7934f"
+      }
+    ]
+  },
+  {
+    "id": "caney-valley-ks",
+    "name": "Caney Valley High School",
+    "short_name": "Caney Valley",
+    "state": "Kansas",
+    "city": "Caney",
+    "county": "Montgomery County",
+    "conference": "Tri-Valley League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.caney.com",
+    "aliases": [
+      "Caney Valley High School",
+      "Caney Valley",
+      "Caney Valley Bull Pups"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/caneyvalleyhs",
+        "provider_school_id": "h202502040451557288747d95d4e1743"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/caney/caney-valley-bullpups",
+        "provider_school_id": "0e41bb10-f9f4-4159-86ff-c82e44be61ae"
+      }
+    ]
+  },
+  {
+    "id": "cherryvale-ks",
+    "name": "Cherryvale High School",
+    "short_name": "Cherryvale",
+    "state": "Kansas",
+    "city": "Cherryvale",
+    "county": "Montgomery County",
+    "conference": "Tri-Valley League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd447.org",
+    "aliases": [
+      "Cherryvale High School",
+      "Cherryvale",
+      "Cherryvale Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cherryvalehs",
+        "provider_school_id": "h2025020404515621829828bb9c57a44"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/cherryvale/cherryvale-chargers",
+        "provider_school_id": "9ad98a91-ca7b-461c-93bd-0c553a6ae217"
+      }
+    ]
+  },
+  {
+    "id": "field-kindley-ks",
+    "name": "Field Kindley High School",
+    "short_name": "Field Kindley",
+    "state": "Kansas",
+    "city": "Coffeyville",
+    "county": "Montgomery County",
+    "conference": "Southeast Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.cvilleschools.com",
+    "aliases": [
+      "Field Kindley High School",
+      "Field Kindley",
+      "Field Kindley Golden Tornadoes"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/fieldkindleyhs",
+        "provider_school_id": "h2025020404515829699195790b1554b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/coffeyville/field-kindley-golden-tornado",
+        "provider_school_id": "7042bb91-b7f4-4845-be0b-5fbc6f61065e"
+      }
+    ]
+  },
+  {
+    "id": "independence-ks",
+    "name": "Independence High School",
+    "short_name": "Independence",
+    "state": "Kansas",
+    "city": "Independence",
+    "county": "Montgomery County",
+    "conference": "Southeast Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.indyschools.com",
+    "aliases": [
+      "Independence High School",
+      "Independence",
+      "Independence Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/independencehs",
+        "provider_school_id": "h2025020404515961388d47530c3184f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/independence/independence-bulldogs",
+        "provider_school_id": "c4db9c5c-2c3d-47d9-8659-5b987ac83c77"
+      }
+    ]
+  },
+  {
+    "id": "caney-valley-ms-ks",
+    "name": "Caney Valley Junior High",
+    "short_name": "Caney Valley",
+    "state": "Kansas",
+    "city": "Caney",
+    "county": "Montgomery County",
+    "conference": "Tri-Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.caney.com",
+    "aliases": [
+      "Caney Valley Junior High",
+      "Caney Valley",
+      "Caney Valley Bull Pups"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/caneyvalleyhs",
+        "provider_school_id": "h202502040451557288747d95d4e1743"
+      }
+    ]
+  },
+  {
+    "id": "cherryvale-ms-ks",
+    "name": "Cherryvale Middle School",
+    "short_name": "Cherryvale",
+    "state": "Kansas",
+    "city": "Cherryvale",
+    "county": "Montgomery County",
+    "conference": "Tri-Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd447schools.org",
+    "aliases": [
+      "Cherryvale Middle School",
+      "Cherryvale",
+      "Cherryvale Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cherryvalehs",
+        "provider_school_id": "h2025020404515621829828bb9c57a44"
+      }
+    ]
+  },
+  {
+    "id": "cedar-vale-ks",
+    "name": "Cedar Vale High School",
+    "short_name": "Cedar Vale",
+    "state": "Kansas",
+    "city": "Cedar Vale",
+    "county": "Chautauqua County",
+    "conference": "South Central Border League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.cvs285.net",
+    "aliases": [
+      "Cedar Vale High School",
+      "Cedar Vale",
+      "Cedar Vale Mustangs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cedarvalehs",
+        "provider_school_id": "h202502040451557920d128d09aa5044"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/cedar-vale/cedar-vale-dexter-spartans",
+        "provider_school_id": "6bf705c1-d1e4-4cb7-85a9-adf722762234"
+      }
+    ]
+  },
+  {
+    "id": "sedan-ks",
+    "name": "Sedan High School",
+    "short_name": "Sedan",
+    "state": "Kansas",
+    "city": "Sedan",
+    "county": "Chautauqua County",
+    "conference": "South Central Border League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd286.org",
+    "aliases": [
+      "Sedan High School",
+      "Sedan",
+      "Sedan Blue Devils"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/sedanhs",
+        "provider_school_id": "h2025020404520603347391a96b3c844"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/sedan/sedan-devils",
+        "provider_school_id": "7d5c142c-cc7d-4caf-b018-9a2f2588028d"
+      }
+    ]
+  },
+  {
+    "id": "ellis-ks",
+    "name": "Ellis High School",
+    "short_name": "Ellis",
+    "state": "Kansas",
+    "city": "Ellis",
+    "county": "Ellis County",
+    "conference": "Mid-Continent League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://usd388.com",
+    "aliases": [
+      "Ellis High School",
+      "Ellis",
+      "Ellis Railroaders"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/ellishs",
+        "provider_school_id": "h20250204045158009a2b37cdd390145"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/ellis/ellis-railroaders",
+        "provider_school_id": "e6569c07-ec69-4c1d-8c27-ab22467f00a6"
+      }
+    ]
+  },
+  {
+    "id": "hays-ks",
+    "name": "Hays High School",
+    "short_name": "Hays",
+    "state": "Kansas",
+    "city": "Hays",
+    "county": "Ellis County",
+    "conference": "Western Athletic Conference",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.hayshighindians.com",
+    "aliases": [
+      "Hays High School",
+      "Hays",
+      "Hays HS",
+      "Hays Indians"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/hayshs",
+        "provider_school_id": "h202502040451590574f733048058341"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/hays/hays-indians",
+        "provider_school_id": "27ff8c00-cc2f-4925-a482-bbc3e9cae781"
+      }
+    ]
+  },
+  {
+    "id": "thomas-more-prep-marian-ks",
+    "name": "Thomas More Prep-Marian High School",
+    "short_name": "Thomas More Prep-Marian",
+    "state": "Kansas",
+    "city": "Hays",
+    "county": "Ellis County",
+    "conference": "Mid-Continent League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.tmp-m.org",
+    "aliases": [
+      "Thomas More Prep-Marian High School",
+      "Thomas More Prep-Marian",
+      "Thomas More Prep Marian",
+      "Thomas More Prep-Marian Monarchs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/tmpmarian",
+        "provider_school_id": "h2025020404520731299ca317183b94c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/hays/thomas-more-prep-marian-monarchs",
+        "provider_school_id": "0980e880-9db5-41ef-b98c-21bbc587b0dc"
+      }
+    ]
+  },
+  {
+    "id": "victoria-ks",
+    "name": "Victoria High School",
+    "short_name": "Victoria",
+    "state": "Kansas",
+    "city": "Victoria",
+    "county": "Ellis County",
+    "conference": "Central Prairie League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd432.org",
+    "aliases": [
+      "Victoria High School",
+      "Victoria",
+      "Victoria Knights"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/victoriahs",
+        "provider_school_id": "h2025020404520874313e54b55d7bd42"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/victoria/victoria-knights",
+        "provider_school_id": "3789b2a9-647a-48c8-9c3f-dbb31dc15649"
+      }
+    ]
+  },
+  {
+    "id": "ellis-ms-ks",
+    "name": "Ellis Junior High",
+    "short_name": "Ellis",
+    "state": "Kansas",
+    "city": "Ellis",
+    "county": "Ellis County",
+    "conference": "Mid-Continent League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://usd388.com",
+    "aliases": [
+      "Ellis Junior High",
+      "Ellis",
+      "Ellis Railroaders"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/ellishs",
+        "provider_school_id": "h20250204045158009a2b37cdd390145"
+      }
+    ]
+  },
+  {
+    "id": "hays-ms-ks",
+    "name": "Hays Middle School",
+    "short_name": "Hays",
+    "state": "Kansas",
+    "city": "Hays",
+    "county": "Ellis County",
+    "conference": "Western Athletic Conference-MS",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.haysfalcons.com",
+    "aliases": [
+      "Hays Middle School",
+      "Hays",
+      "Hays MS",
+      "Hays Indians"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/haysms",
+        "provider_school_id": "h20250612073120894aa0cce98b92849"
+      }
+    ]
+  },
+  {
+    "id": "thomas-more-prep-marian-ms-ks",
+    "name": "Thomas More Prep-Marian Junior High",
+    "short_name": "Thomas More Prep-Marian",
+    "state": "Kansas",
+    "city": "Hays",
+    "county": "Ellis County",
+    "conference": "Mid-Continent League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.tmp-m.org",
+    "aliases": [
+      "Thomas More Prep-Marian Junior High",
+      "Thomas More Prep-Marian",
+      "Thomas More Prep Marian",
+      "Thomas More Prep-Marian Monarchs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/tmpmarian",
+        "provider_school_id": "h2025020404520731299ca317183b94c"
+      }
+    ]
+  },
+  {
+    "id": "victoria-ms-ks",
+    "name": "Victoria Junior High",
+    "short_name": "Victoria",
+    "state": "Kansas",
+    "city": "Victoria",
+    "county": "Ellis County",
+    "conference": "Central Prairie League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd432.org",
+    "aliases": [
+      "Victoria Junior High",
+      "Victoria",
+      "Victoria Knights"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/victoriahs",
+        "provider_school_id": "h2025020404520874313e54b55d7bd42"
+      }
+    ]
+  },
+  {
+    "id": "palco-ks",
+    "name": "Palco High School",
+    "short_name": "Palco",
+    "state": "Kansas",
+    "city": "Palco",
+    "county": "Rooks County",
+    "conference": "Western Kansas Liberty League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd269.net",
+    "aliases": [
+      "Palco High School",
+      "Palco",
+      "Palco Roosters"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/palcohs",
+        "provider_school_id": "h202502040452021025a2039d9204846"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/palco/palco-roosters",
+        "provider_school_id": "1c69e9e4-a76f-4ede-ad10-b5efad829c6c"
+      }
+    ]
+  },
+  {
+    "id": "plainville-ks",
+    "name": "Plainville High School",
+    "short_name": "Plainville",
+    "state": "Kansas",
+    "city": "Plainville",
+    "county": "Rooks County",
+    "conference": "Mid-Continent League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.plainville270.net",
+    "aliases": [
+      "Plainville High School",
+      "Plainville",
+      "Plainville Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/plainvillehs",
+        "provider_school_id": "h20250204045202390340c7044553e42"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/plainville/plainville-cardinals",
+        "provider_school_id": "596a0500-d1c1-40df-822b-371c323a046f"
+      }
+    ]
+  },
+  {
+    "id": "stockton-ks",
+    "name": "Stockton High School",
+    "short_name": "Stockton",
+    "state": "Kansas",
+    "city": "Stockton",
+    "county": "Rooks County",
+    "conference": "Northern Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd271.com",
+    "aliases": [
+      "Stockton High School",
+      "Stockton",
+      "Stockton Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/stocktonhs",
+        "provider_school_id": "h2025020404520705509f337c3c47149"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/stockton/stockton-tigers",
+        "provider_school_id": "06bd6ec9-1870-4f21-a6a2-e42410ffea85"
+      }
+    ]
+  },
+  {
+    "id": "logan-ks",
+    "name": "Logan High School",
+    "short_name": "Logan",
+    "state": "Kansas",
+    "city": "Logan",
+    "county": "Phillips County",
+    "conference": "Western Kansas Liberty League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.logan326.net",
+    "aliases": [
+      "Logan High School",
+      "Logan",
+      "Logan Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/loganhs",
+        "provider_school_id": "h202502040452004811aeab585222a44"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/logan/logan-trojans",
+        "provider_school_id": "5e6d5671-d7f0-4ddd-b2e7-158ea688cce8"
+      }
+    ]
+  },
+  {
+    "id": "phillipsburg-ks",
+    "name": "Phillipsburg High School",
+    "short_name": "Phillipsburg",
+    "state": "Kansas",
+    "city": "Phillipsburg",
+    "county": "Phillips County",
+    "conference": "Mid-Continent League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd325.com",
+    "aliases": [
+      "Phillipsburg High School",
+      "Phillipsburg",
+      "Phillipsburg Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/phillipsburghs",
+        "provider_school_id": "h202502040452022619d3776962b2845"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/phillipsburg/phillipsburg-panthers",
+        "provider_school_id": "31411a7b-37c3-486c-b2ef-c669f832795e"
+      }
+    ]
+  },
+  {
     "id": "atlanta-dream",
     "name": "Atlanta Dream",
     "short_name": "Dream",
@@ -18198,7 +19350,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Eastern Conference",
+    "division": "WNBA · Eastern Conference",
     "athletics_url": "https://dream.wnba.com",
     "aliases": [
       "Dream",
@@ -18223,7 +19375,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Eastern Conference",
+    "division": "WNBA · Eastern Conference",
     "athletics_url": "https://sky.wnba.com",
     "aliases": [
       "Sky",
@@ -18248,7 +19400,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Eastern Conference",
+    "division": "WNBA · Eastern Conference",
     "athletics_url": "https://sun.wnba.com",
     "aliases": [
       "Sun",
@@ -18273,7 +19425,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Eastern Conference",
+    "division": "WNBA · Eastern Conference",
     "athletics_url": "https://fever.wnba.com",
     "aliases": [
       "Fever",
@@ -18298,7 +19450,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Eastern Conference",
+    "division": "WNBA · Eastern Conference",
     "athletics_url": "https://liberty.wnba.com",
     "aliases": [
       "Liberty",
@@ -18323,7 +19475,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Eastern Conference",
+    "division": "WNBA · Eastern Conference",
     "athletics_url": "https://tempo.wnba.com",
     "aliases": [
       "Tempo",
@@ -18348,7 +19500,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Eastern Conference",
+    "division": "WNBA · Eastern Conference",
     "athletics_url": "https://mystics.wnba.com",
     "aliases": [
       "Mystics",
@@ -18373,7 +19525,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Western Conference",
+    "division": "WNBA · Western Conference",
     "athletics_url": "https://wings.wnba.com",
     "aliases": [
       "Wings",
@@ -18398,7 +19550,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Western Conference",
+    "division": "WNBA · Western Conference",
     "athletics_url": "https://valkyries.wnba.com",
     "aliases": [
       "Valkyries",
@@ -18423,7 +19575,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Western Conference",
+    "division": "WNBA · Western Conference",
     "athletics_url": "https://aces.wnba.com",
     "aliases": [
       "Aces",
@@ -18448,7 +19600,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Western Conference",
+    "division": "WNBA · Western Conference",
     "athletics_url": "https://sparks.wnba.com",
     "aliases": [
       "Sparks",
@@ -18473,7 +19625,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Western Conference",
+    "division": "WNBA · Western Conference",
     "athletics_url": "https://lynx.wnba.com",
     "aliases": [
       "Lynx",
@@ -18498,7 +19650,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Western Conference",
+    "division": "WNBA · Western Conference",
     "athletics_url": "https://mercury.wnba.com",
     "aliases": [
       "Mercury",
@@ -18523,7 +19675,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Western Conference",
+    "division": "WNBA · Western Conference",
     "athletics_url": "https://fire.wnba.com",
     "aliases": [
       "Fire",
@@ -18548,7 +19700,7 @@
     "league": "WNBA",
     "pro_sport": "Basketball",
     "level": "pro",
-    "division": "WNBA \u00b7 Western Conference",
+    "division": "WNBA · Western Conference",
     "athletics_url": "https://storm.wnba.com",
     "aliases": [
       "Storm",
@@ -19074,7 +20226,7 @@
     "league": "MiLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MiLB \u00b7 Triple-A \u00b7 International League",
+    "division": "MiLB · Triple-A · International League",
     "athletics_url": "https://www.milb.com/omaha",
     "aliases": [
       "Storm Chasers",
@@ -19098,7 +20250,7 @@
     "league": "MiLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MiLB \u00b7 Double-A \u00b7 Texas League",
+    "division": "MiLB · Double-A · Texas League",
     "athletics_url": "https://www.milb.com/northwest-arkansas",
     "aliases": [
       "Naturals",
@@ -19122,7 +20274,7 @@
     "league": "MiLB",
     "pro_sport": "Baseball",
     "level": "pro",
-    "division": "MiLB \u00b7 Double-A \u00b7 Texas League",
+    "division": "MiLB · Double-A · Texas League",
     "athletics_url": "https://www.milb.com/wichita",
     "aliases": [
       "Wind Surge",
@@ -19146,7 +20298,7 @@
     "league": "Kansas & KC",
     "pro_sport": "Kansas",
     "level": "pro",
-    "division": "Kansas & KC \u00b7 pro teams and players",
+    "division": "Kansas & KC · pro teams and players",
     "athletics_url": "https://www.chiefs.com",
     "aliases": [
       "Kansas pros",

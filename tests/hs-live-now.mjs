@@ -28,7 +28,8 @@ const games=w.hsScoreboardEvents(contests,w.HS_SCOREBOARDS[0],'2026-11-06');
 // Sylvan-Lucas join; Riley County at Beloit (14-14) is one game between two of
 // the app's schools and shows once, under Beloit.
 // Seventh batch (November 20): Basehor-Linwood joins; Sylvan-Lucas at Thunder Ridge shows once, under Thunder Ridge.
-assert.deepEqual(games.map(g=>g.school_id).sort(),['basehor-linwood-ks','beloit-ks','council-grove-ks','hayden-ks','hesston-ks','inman-ks','lawrence-free-state-ks','louisburg-ks','manhattan-ks','mcpherson-ks','rossville-ks','salina-central-ks','spring-hill-ks','st-marys-ks','thunder-ridge-ks','wamego-ks','washburn-rural-ks','washington-county-ks']);
+// Eighth batch (November 22): Hays, Oswego and Thomas More Prep-Marian join; Washington County at Oswego shows once, under Oswego, and Plainville at Thomas More Prep-Marian once, under TMP-Marian.
+assert.deepEqual(games.map(g=>g.school_id).sort(),['basehor-linwood-ks','beloit-ks','council-grove-ks','hayden-ks','hays-ks','hesston-ks','inman-ks','lawrence-free-state-ks','louisburg-ks','manhattan-ks','mcpherson-ks','oswego-ks','rossville-ks','salina-central-ks','spring-hill-ks','st-marys-ks','thomas-more-prep-marian-ks','thunder-ridge-ks','wamego-ks','washburn-rural-ks']);
 assert.equal(games.filter(g=>/Riley County|Beloit/.test(g.title)).map(g=>g.title).join(),'Beloit vs Riley County');
 const m=games.find(g=>g.school_id==='manhattan-ks');
 assert.deepEqual([m.title,m.school_score,m.opponent_score,m.recency_label,m.status,m.level,m.sport],['Manhattan vs Garden City','22','7','2nd Quarter','Live','high-school','Football']);
@@ -39,8 +40,8 @@ assert.ok(games.every(g=>g.recap_url?.startsWith('https://www.maxpreps.com/ks/fo
 // A game between two of the app's schools shows once.
 const both={id:'x',live:true,period:'Q3',url:null,away:{schoolId:mhs.home.schoolId,name:'Manhattan',score:7},home:{schoolId:contests.find(c=>c.home.name==='Hayden'||c.away.name==='Hayden').home.name==='Hayden'?contests.find(c=>c.home.name==='Hayden').home.schoolId:contests.find(c=>c.away.name==='Hayden').away.schoolId,name:'Hayden',score:3}};
 assert.equal(w.hsScoreboardEvents([both,both],w.HS_SCOREBOARDS[0],'2026-11-06').length,1);
-// Through the reader: in November, football's page is read (and basketball's, which this stand-in does not have). Inman and McPherson (November 7 counties) made 13; Hesston (November 10) made 14; the sixth batch (November 19) made 17; the seventh (November 20) makes 18.
-assert.equal((await w.hsLiveGames(new Date('2026-11-07T02:00:00Z'))).length,18);
+// Through the reader: in November, football's page is read (and basketball's, which this stand-in does not have). Inman and McPherson (November 7 counties) made 13; Hesston (November 10) made 14; the sixth batch (November 19) made 17; the seventh (November 20) made 18; the eighth (November 22) makes 20.
+assert.equal((await w.hsLiveGames(new Date('2026-11-07T02:00:00Z'))).length,20);
 // The team feed takes the state page's score (the reference plan: 22-7 there
 // while Manhattan's own MaxPreps page read 15-7), its period and the ranks.
 {
