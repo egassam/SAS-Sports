@@ -274,4 +274,6 @@ assert.ok(html.indexOf("logo?.addEventListener('pointerup'")<html.indexOf("await
 assert.ok(!/\bprompt\(/.test(html),'the owner code is typed in the page (no prompt(), which iPhone home screen apps may not show)');
 assert.match(html,/\.brandbar \.brand\{touch-action:manipulation/,'quick taps on the logo are not taken as double-tap zoom');
 assert.match(html,/get\('feedback'\)==='1'\)showFeedback\(\)/,'the alert opens the notes');
+assert.match(html,/<button type="button" class="ghost owner-strip" id="ownerStrip" hidden><\/button>/,'the owner strip starts hidden (only the owner phone shows it)');
+assert.match(html,/if\(sub&&isOwner\(\)\)refreshOwnerStrip\(sub\)/,'the owner phone shows today\'s numbers without the five taps');
 console.log('push-alerts: encryption, VAPID, rules and the Worker run OK');
