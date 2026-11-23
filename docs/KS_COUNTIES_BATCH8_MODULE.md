@@ -69,3 +69,7 @@ Middle schools that share their high school's Bound id read it at their grade le
 ## Cross country meets with no results source (checked November 22)
 
 About 30 meets across the eight counties had no MileSplit Live or LetsGoRun results on their day (Cherokee County's 14 the most, mostly small meets the host school times itself). They are **not published** on the sources the app may read (Athletic.net disallows the app), and read "No results posted". The per-county lists are in the survey reports; a later session can repeat the survey (`onboard:hs`) to list them again.
+
+## Open
+
+- **Caney Valley JH and Cherryvale MS football:** the survey counted one Bound entry each this fall, and the feeds list no game. Bound answered this session's container with HTTP 403 after the survey, so the entries were not read. Check them next session (a grade label the reader does not take, or an entry that is not the school's own game).
