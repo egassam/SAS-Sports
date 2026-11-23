@@ -202,6 +202,48 @@ const test=await (await call('/api/push/test',{endpoint:subscription.endpoint}))
 assert.deepEqual(test,{sent:true,status:201});
 assert.equal(decrypt(Buffer.from(sent.at(-1).init.body),ua,auth).title,'SAS Sports alerts are on');
 assert.equal((await call('/api/push/test',{endpoint:subscription.endpoint})).status,429,'one test every 30 seconds');
+// Feedback alerts for the owner (user, November 23, 2026: "I want to be
+// notified when I get feedback").
+{
+  const owner=(body,o)=>call('/api/push/owner',{endpoint:subscription.endpoint,...body},o);
+  assert.equal((await owner({code:'x'},{on:{...env,SOURCE_FETCH_KEY:undefined}})).status,503,'no owner code set up');
+  assert.equal((await owner({code:'wrong'})).status,401);
+  assert.equal((await call('/api/push/owner',{endpoint:'https://push.example/other',code:'secret'})).status,404,'a phone without alerts');
+  const before=sent.length;
+  assert.deepEqual(await (await owner({code:'secret'})).json(),{owner:true,sent:true},'the source key works as the owner code');
+  assert.equal(decrypt(Buffer.from(sent.at(-1).init.body),ua,auth).title,'Feedback alerts are on');
+  assert.deepEqual(await (await owner({code:'mine-only'},{on:{...env,OWNER_CODE:'mine-only'}})).json(),{owner:true,sent:true},'OWNER_CODE, when set');
+  assert.equal((await owner({code:'secret'},{on:{...env,OWNER_CODE:'mine-only'}})).status,401,'OWNER_CODE replaces the source key');
+  // A note sends one alert to the owner's phone, with the start of the message.
+  const n=sent.length;
+  const note=await call('/api/feedback',{kind:'missing',team:'Wamego',message:'Please add Wamego tennis and golf. '+'x'.repeat(300)},{headers:{origin:`https://${host}`}});
+  assert.equal(note.status,200);
+  assert.equal(sent.length,n+1,'one alert per note');
+  const alert=decrypt(Buffer.from(sent.at(-1).init.body),ua,auth);
+  assert.equal(alert.title,'New feedback · Missing team');
+  assert.match(alert.body,/^Wamego: Please add Wamego tennis and golf\. x+…$/);
+  assert.ok(alert.body.length<=170);
+  assert.equal(alert.url,'/?feedback=1');
+  // Only the owner's phone reads the notes.
+  const list=await (await call('/api/push/feedback',{endpoint:subscription.endpoint})).json();
+  assert.equal(list.feedback.length,1);assert.equal(list.feedback[0].team,'Wamego');
+  assert.equal((await call('/api/push/feedback',{endpoint:'https://push.example/other'})).status,403);
+  // A failed alert never loses the note.
+  pushStatus=500;
+  assert.equal((await call('/api/feedback',{message:'Second note'},{headers:{origin:`https://${host}`}})).status,200);
+  assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM feedback').get().n,2);
+  pushStatus=201;
+  // Guessing is limited (a preview's tries are its own).
+  const preview='branch-sas-sports.example';
+  for(let i=0;i<10;i++)assert.equal((await owner({code:'guess'+i},{at:preview})).status,401);
+  assert.equal((await owner({code:'secret'},{at:preview})).status,429,'ten wrong codes an hour');
+  assert.equal((await owner({code:'wrong'})).status,401,'production still answers');
+  // No owner: a note sends nothing.
+  db.sqlite.prepare('DELETE FROM push_owners').run();
+  const m=sent.length;await call('/api/feedback',{message:'Third note'},{headers:{origin:`https://${host}`}});
+  assert.equal(sent.length,m,'no owner, no alert');
+  db.sqlite.prepare('UPDATE push_subscriptions SET last_sent=NULL').run();
+}
 db.sqlite.prepare("UPDATE push_subscriptions SET last_sent=NULL").run();
 pushStatus=410;
 assert.equal((await call('/api/push/test',{endpoint:subscription.endpoint})).status,410);
@@ -212,7 +254,9 @@ pushStatus=201;
 await call('/api/push/subscribe',{subscription,favorites:['chicago-bulls']},{at:'branch-sas-sports.example'});
 assert.equal(db.sqlite.prepare('SELECT scope FROM push_subscriptions').get().scope,'branch-sas-sports.example');
 assert.equal((await worker.runPushAlerts(env,{now})).subscriptions,0,'production does not send to a preview\'s subscriptions');
+db.sqlite.prepare("INSERT INTO push_owners (scope,endpoint,added) VALUES ('branch-sas-sports.example',?, 'now')").run(subscription.endpoint);
 await call('/api/push/unsubscribe',{endpoint:subscription.endpoint},{at:'branch-sas-sports.example'});
+assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM push_owners').get().n,0,'turning alerts off ends feedback alerts');
 assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM push_subscriptions').get().n,0);
 
 // The page and the service worker.
@@ -221,4 +265,6 @@ assert.match(html,/id="alertsButton"[^>]*hidden/,'Alerts button starts hidden (s
 assert.match(html,/dispatchEvent\(new Event\('sas-favorites-changed'\)\)/,'favorites changes are sent again');
 assert.match(sw,/addEventListener\('push'/);assert.match(sw,/addEventListener\('notificationclick'/);
 assert.equal(worker.PUSH_CRON,'*/2 * * * *');
+assert.match(html,/const logo=document\.querySelector\('\.brandbar \.mark'\)/,'five taps on the logo ask for the owner code');
+assert.match(html,/get\('feedback'\)==='1'\)showFeedback\(\)/,'the alert opens the notes');
 console.log('push-alerts: encryption, VAPID, rules and the Worker run OK');

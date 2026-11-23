@@ -24,3 +24,17 @@ User, November 23, 2026: "We need to make a download page for this app with inst
   - Cloudflare dashboard → Storage & Databases → D1 → `sas-sports-catalog` → Console: `SELECT id,at,kind,message,team,contact,device FROM feedback WHERE scope='sas-sports.lovetogivepain.workers.dev' ORDER BY id DESC;`
   - Or `GET /api/feedback` with `Authorization: Bearer <SOURCE_FETCH_KEY>` (latest 500).
 - Test: `tests/download-page.mjs` (in `npm test` and `test:release`).
+
+## Feedback alerts on the owner's phone (`4.330.0-feedback-alerts`)
+
+User, November 23, 2026: "I want to be notified when I get feedback." Each new note sends a push alert to the owner's phone(s): "New feedback · Missing team", with the team and the first 160 characters. Tapping it opens the app at `/?feedback=1`, which lists the latest 100 notes (kind, time, team, message, reply contact).
+
+**Setup (once):**
+1. Cloudflare dashboard → Workers & Pages → sas-sports → Settings → Variables and Secrets → Add → type **Secret**, name `OWNER_CODE`, value: a code you choose. (Without it, the source key `SOURCE_FETCH_KEY` works as the code.)
+2. On the phone, in the **installed** app: turn on **Alerts**.
+3. Tap the **SAS** logo at the top left **five times** quickly, enter the code. A "Feedback alerts are on" alert confirms it.
+
+Afterwards, five taps on the logo open the notes. Turn off alerts on that phone to stop feedback alerts too.
+
+**How it runs:** `push_owners` (D1, per host) lists the owner's subscriptions; `POST /api/push/owner {endpoint, code}` adds one (10 wrong codes an hour per host, then 429); `POST /api/push/feedback {endpoint}` returns the notes to an owner subscription only (403 otherwise); `notifyFeedbackOwners` in `src/index.js` sends the alert after the note is stored (a failed alert never loses the note). Text: `feedbackAlert` in `src/push-alerts.mjs`. Tests: `tests/push-alerts.mjs` (codes, the limit, the alert, the list, no owner no alert, unsubscribe ends it).
+
