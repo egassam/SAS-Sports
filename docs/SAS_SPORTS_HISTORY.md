@@ -5884,3 +5884,28 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 **Gate.** Preview: K-State Basketball 36/36 refreshes, 13/13 expanded views, the feed 38 home / 19 away / 9 neutral with Missouri neutral; Manhattan, Anthony, Eisenhower all sports 69 PASS (3 refreshes); Steelers 6 PASS; XC 18/20 and 26/21; `check-reference-page` PASS; screenshots (iPhone 13) of the spotlight and cards checked by eye. `diff:feeds` for Manhattan, Anthony, Eisenhower, Junction City and Wamego: the known Sep 10 XC cards; Wamego Golf's Prep.Golf results page read empty once on the preview and matched production on rerun. The 425 px width with the expanded view open on K-State Basketball is the same on production.
 
 **Production `4.325.0-home-away`** (merge `ff8af90`): `verify:prod` 90 PASS, XC 18/20 and 26/21, `check-reference-page` PASS; K-State Basketball's feed 38 home / 19 away / 9 neutral, the women's Missouri game neutral; the spotlight (iPhone 13) reads NEUTRAL · "Neutral site · Kansas City, Mo.". The CI run before the merge first failed on `tests/oklahoma-state-module.mjs` (release only): its Soccer case fed the Football page to the enricher and now took the H/A/N mark; the test now allows the mark there and still requires no change for other schools and hosts.
+
+## November 22, 2026 — Eighth Kansas county batch (PR #637)
+
+**Conversation.** The user said "Let's add more counties". Chosen, next to counties already in: Crawford, Cherokee, Labette, Montgomery and Chautauqua (the southeast corner, south of Bourbon, Neosho, Wilson and Elk) and Ellis, Rooks and Phillips (beside Russell, Osborne and Smith). Cowley, Reno and Butler were left for a later batch.
+
+**Survey.** `onboard-hs` for the eight counties took about 95 minutes (no MaxPreps 403s). `add:county` wrote 40 schools: 30 high schools and 10 middle schools.
+- **Found by hand, 30 s apart through the source route:** Sedan's MaxPreps page `sedan/sedan-devils` (`7d5c142c-…`, from West Elk's basketball schedule links) and Cedar Vale's, the Cedar Vale/Dexter co-op `cedar-vale/cedar-vale-dexter-spartans` (`6bf705c1-…`, from Sedan's schedule links). Sedan had 9 football and 36 volleyball games on MaxPreps and none on Bound.
+- **Read MaxPreps' schedule** (sports MaxPreps has and Bound lacks): Cedar Vale and Sedan football and volleyball; Logan football, volleyball and basketball (Bound: track only); Palco the same (no Bound events); Stockton the same (Bound: cross country and wrestling).
+- **Cross country from the MileSplit Live index alone:** Sedan (26451) and Palco (21986), 7 meets each on the preview (sub-state and state included).
+- **Columbus JH:** Golf taken out (Bound listed it; Kansas has no junior high golf).
+- **Names:** "Pittsburg-St. Mary's Elementary School" → Pittsburg St. Mary's Junior High, "Victoria Elementary School" → Victoria Junior High.
+- **Skipped:** middle schools not on Bound (Pittsburg, Northeast JH, Southeast MS, Baxter Springs, Riverton, Parsons, Labette County JH, Coffeyville Roosevelt, Independence, Stockton JH, Phillipsburg and others); middle schools sharing their high school's Bound id with no events (Chetopa, Oswego, Cedar Vale, Palco, Plainville, Logan); Sedan JH (spring track only).
+- **Not published:** Cherryvale HS and MS and Columbus JH cross country (no MileSplit Live team, 2026 index checked); Galena and Labette County have no Prep.Golf code.
+
+**Tests.** `ks-counties-module` (BATCH8 and the sparse list), `catalog-module` (58 Kansas counties), `hs-live-now` (20 games: Hays, Oswego and Thomas More Prep-Marian join; Washington County at Oswego shows once under Oswego, Plainville at TMP-Marian once under TMP-Marian), `state-brackets` (149 football schools), `college-alumni` (Keiton Jones, Field Kindley). `npm test` passed locally; CI `guardrails` green.
+
+**Gate.**
+- `verify:preview` (3 refreshes): 183 PASS (Crawford), 228 (Cherokee, Labette), 186 (Montgomery, Chautauqua), 240 (Ellis, Rooks, Phillips), 69 (Manhattan, Anthony, Eisenhower) with K-State XC 18/20 and KU 26/21.
+- `check-reference-page` PASS; `check:reference-rules --county="<eight> County"` (the full county names): 40 schools, 275 feeds, 3,344 cards, 0 FAIL, 28 NOTE (spring sports out of season; volleyball tournament days with the same opponent twice).
+- Feeds read by eye: Sedan football 9 finals (4-5), Palco and Sedan cross country 7 meets each, Cedar Vale volleyball 41 matches (29-12), Logan basketball 34 coming games, Stockton football 9 finals. Hays's page on an iPhone 13 profile: Kansas → Ellis County → Hays High School, 5A, 10/10 sports reached.
+- No shared code changed, so no `diff:feeds`.
+
+**Production `4.326.0-ks-counties-8`** (merge `4a3a1d0`). `verify:prod` for Manhattan, Pittsburg, Hays, Sedan, Palco, Columbus JH, Parsons, Independence, Phillipsburg and Thomas More Prep-Marian JH: 258 PASS, K-State XC 18/20, KU XC 26/21; `check-reference-page` PASS.
+
+**Left open.** Caney Valley JH and Cherryvale MS football read no games, though the survey counted one Bound entry each this fall. After the survey and the preview checks, Bound answered this container with HTTP 403 (CloudFront), so the entries were not inspected. Production's scheduled refreshes kept building (last run 8 built, 0 failed). Check the entries next session.
