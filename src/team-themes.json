@@ -6734,5 +6734,13 @@
     "panelDark": "#1e1e07",
     "line": "#9b9b13",
     "onAccent": "#0b0b10"
+  },
+  "indycar-series": {
+    "primary": "#D6001C",
+    "secondary": "#1B2A4E",
+    "panel": "#380913",
+    "panelDark": "#1a040a",
+    "line": "#840e22",
+    "onAccent": "#ffffff"
   }
 }
