@@ -265,6 +265,9 @@ assert.match(html,/id="alertsButton"[^>]*hidden/,'Alerts button starts hidden (s
 assert.match(html,/dispatchEvent\(new Event\('sas-favorites-changed'\)\)/,'favorites changes are sent again');
 assert.match(sw,/addEventListener\('push'/);assert.match(sw,/addEventListener\('notificationclick'/);
 assert.equal(worker.PUSH_CRON,'*/2 * * * *');
-assert.match(html,/const logo=document\.querySelector\('\.brandbar \.mark'\)/,'five taps on the logo ask for the owner code');
+assert.match(html,/const logo=document\.querySelector\('\.brandbar \.brand'\);let taps=\[\],ownerTap=null;\n  logo\?\.addEventListener\('pointerup'/,'five taps on the logo are counted from the start (not after the alerts set-up, which can stall on an iPhone)');
+assert.ok(html.indexOf("logo?.addEventListener('pointerup'")<html.indexOf("await (await fetch('/api/push/config'"),'the tap counter starts before any await');
+assert.ok(!/\bprompt\(/.test(html),'the owner code is typed in the page (no prompt(), which iPhone home screen apps may not show)');
+assert.match(html,/\.brandbar \.brand\{touch-action:manipulation/,'quick taps on the logo are not taken as double-tap zoom');
 assert.match(html,/get\('feedback'\)==='1'\)showFeedback\(\)/,'the alert opens the notes');
 console.log('push-alerts: encryption, VAPID, rules and the Worker run OK');
