@@ -13,7 +13,7 @@ User, November 23, 2026: "We need to make a download page for this app with inst
 - **Send feedback:** a form (Idea / Something's wrong / Missing team / What I like / Other, the message, an optional team and optional contact). `?team=` pre-fills the team.
 - **Share it:** the native share sheet where the phone has one, and Copy link.
 - The team counts are rounded down ("250+", "360+", "180+", "80+"), so new counties don't make them wrong.
-- The app links to it from the footer ("Get the app, how it works and how to customize · Send feedback") and from a header **Feedback** link. On a phone the header has no room for both Install app and Feedback, so in a phone browser it shows Install app, and in the installed app (no Install button) it shows Feedback.
+- The app links to it from the footer ("Get the app, how it works and how to customize · Send feedback") and from a header **Feedback** link on screens wider than 600 px (on a phone, Alerts, Calendar and Install app already fill the header: the first try, showing it where Install app was hidden, made the reference page 420 px wide on the preview, where Alerts is on).
 
 ## Feedback (`src/feedback.mjs`, `POST /api/feedback`)
 

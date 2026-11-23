@@ -20,7 +20,7 @@ assert.ok(!/<script[^>]+src=/.test(page),'the page loads no outside scripts');
 // The app links to it.
 assert.ok(app.includes('href="/get/#feedback"'),'the app header links to feedback');
 assert.ok(app.includes('href="/get/"'),'the app footer links to the page');
-assert.ok(app.includes('@media(max-width:600px){.brandbar:has(#installApp:not([hidden])) #feedbackLink{display:none}}'),'on a phone, the header shows Feedback only where Install app is hidden (the header has no room for both)');
+assert.ok(app.includes('@media(max-width:600px){#feedbackLink{display:none}}'),'on a phone the header has no room for Feedback (Alerts, Calendar and Install app fill it): the footer links there');
 assert.match(worker,/url\.pathname==='\/api\/feedback'\)return feedbackRoute/,'the Worker routes /api/feedback');
 assert.ok(!/run_worker_first[^\]]*\/get/.test(readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8')),'/get is a static asset');
 
