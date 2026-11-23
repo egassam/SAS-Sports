@@ -47,9 +47,19 @@ h2{font-size:24px;margin:0 0 6px;letter-spacing:-.3px}
 .tab[aria-selected="true"]{color:var(--bg);background:linear-gradient(135deg,var(--mint),var(--sky))}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
 ol.steps{margin:0;padding:0;list-style:none;counter-reset:s}
-ol.steps li{counter-increment:s;position:relative;padding:4px 0 12px 42px}
-ol.steps li:last-child{padding-bottom:2px}
-ol.steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:14px;color:var(--bg);background:var(--mint)}
+ol.steps>li{counter-increment:s;position:relative;padding:4px 0 12px 42px}
+ol.steps>li:last-child{padding-bottom:2px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:14px;color:var(--bg);background:var(--mint)}
+.i{width:16px;height:16px;vertical-align:-3px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.key .i{margin-right:3px}
+.ph{font-size:16px;margin:18px 0 8px}.panel>.ph:first-of-type{margin-top:2px}
+ul.plain{margin:0 0 6px;padding-left:20px;color:var(--text)}ul.plain li{margin:0 0 8px}
+ul.plain.sm{margin-top:8px;list-style:disc;color:var(--muted);font-size:15px}ul.plain.sm li{margin-bottom:6px}
+.plain-p{margin:0 0 8px}.sm{font-size:15px;color:var(--muted)}
+.mini{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;font-size:8px;font-weight:950;color:var(--bg);background:linear-gradient(135deg,var(--mint),var(--sky));vertical-align:-5px}
+.alert{margin:0 0 12px;padding:12px 14px;border-radius:12px;border:1px solid #6b5d35;background:rgba(255,209,102,.1);color:#f3d98b;font-weight:700}
+.alert[hidden]{display:none}
+#iosLink{word-break:break-all}
 .key{display:inline-block;padding:1px 8px;border-radius:7px;background:var(--bg2);border:1px solid var(--line);font-weight:800;font-size:14px;white-space:nowrap}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
@@ -125,12 +135,41 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
         <button type="button" class="tab" role="tab" id="tab-computer" aria-controls="pane-computer" aria-selected="false" tabindex="-1">Computer</button>
       </div>
       <div class="panel" role="tabpanel" id="pane-iphone" aria-labelledby="tab-iphone">
+        <p class="alert" id="inAppNote" hidden></p>
+        <h3 class="ph">Before you start</h3>
+        <ul class="plain">
+          <li>Use <b>Safari</b>, the iPhone's own browser (the blue compass). It's the surest way. If someone texted you this link, tapping it in Messages opens Safari already.</li>
+          <li>Opened the link inside <b>Instagram, Facebook, Snapchat, TikTok or X</b>? Those apps use their own browser, which can't install apps. Tap the <span class="key">···</span> menu (top or bottom right) and choose <span class="key">Open in Safari</span> or <span class="key">Open in external browser</span>. Or copy this link and paste it into Safari: <b id="iosLink">sas-sports.lovetogivepain.workers.dev/get/</b></li>
+        </ul>
+
+        <h3 class="ph">Install on iPhone</h3>
         <ol class="steps">
-          <li>Open this page in <b>Safari</b> (in another app's browser, tap the menu and choose <b>Open in Safari</b> first).</li>
-          <li>Tap the <span class="key">Share ⬆︎</span> button at the bottom of the screen (on iPad, at the top).</li>
-          <li>Scroll down and tap <span class="key">Add to Home Screen</span>, then <span class="key">Add</span>.</li>
-          <li>Open <b>SAS Sports</b> from your home screen. Open it from there from now on: game alerts only work in the installed app (iOS 16.4 or newer).</li>
+          <li>In Safari, find the <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg> Share</span> button (a square with an arrow pointing up).
+            <ul class="plain sm">
+              <li><b>Bottom toolbar</b> (most iPhones): it's in the middle of the bar at the bottom of the screen. If the bar is hidden, tap the bottom of the screen or scroll up a little to bring it back.</li>
+              <li><b>iOS 26</b>, or when the address bar is at the bottom with no toolbar: tap <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="7.8" cy="12" r=".9" fill="currentColor"/><circle cx="12" cy="12" r=".9" fill="currentColor"/><circle cx="16.2" cy="12" r=".9" fill="currentColor"/></svg></span> next to the address, then tap <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg> Share</span>.</li>
+            </ul>
+          </li>
+          <li>A sheet slides up. <b>Scroll down</b> past the row of contacts and apps to the list of actions, and tap <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M12 8.5v7M8.5 12h7"/></svg> Add to Home Screen</span>.
+            <ul class="plain sm"><li>Don't see it? Scroll all the way down, tap <b>Edit Actions…</b>, and add <b>Add to Home Screen</b>.</li></ul>
+          </li>
+          <li>Leave the name as <b>SAS Sports</b>. If you see <b>Open as Web App</b>, leave it switched <b>on</b>. Tap <span class="key">Add</span> at the top right.</li>
+          <li>The <span class="mini">SAS</span> icon is now on your home screen (swipe over if your first page is full). <b>Always open SAS Sports from that icon</b>, not from Safari: that's what makes it the app, full screen and with alerts.</li>
         </ol>
+
+        <h3 class="ph">iPad</h3>
+        <p class="plain-p">The same steps, but the <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg> Share</span> button is at the <b>top right</b>, next to the address bar.</p>
+
+        <h3 class="ph">Turn on game alerts (optional)</h3>
+        <ol class="steps">
+          <li>Open SAS Sports <b>from the home screen icon</b> and star your teams with <span class="key">☆ Favorite</span>.</li>
+          <li>Tap <span class="key">Alerts</span> at the top, then <span class="key">Allow</span> when your iPhone asks.</li>
+          <li>You'll get one alert when a favorite's game starts and one with the final score.</li>
+        </ol>
+        <p class="plain-p sm">Alerts need iOS 16.4 or newer (Settings → General → About → iOS Version). Tapped <b>Don't Allow</b> by mistake? Go to Settings → Notifications → SAS Sports and turn on Allow Notifications.</p>
+
+        <h3 class="ph">Using Chrome on iPhone?</h3>
+        <p class="plain-p sm">It works too on iOS 16.4 or newer: tap <span class="key"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg></span> in the address bar, then <span class="key">Add to Home Screen</span>. If you don't see it, use Safari.</p>
       </div>
       <div class="panel" role="tabpanel" id="pane-android" aria-labelledby="tab-android" hidden>
         <ol class="steps">
@@ -244,6 +283,12 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
   });
   select(ios?tabs[0]:android?tabs[1]:/mobile/i.test(ua)?tabs[0]:tabs[2]);
 
+  // iPhone: name the in-app browser that can't install, and the link to paste.
+  const shareLink=location.origin+'/get/';
+  $('#iosLink').textContent=shareLink.replace(/^https?:\/\//,'');
+  const inApp=(ua.match(/Instagram|FBAN|FBAV|FB_IAB|Snapchat|TikTok|musical_ly|Twitter|LinkedInApp|Pinterest|GSA\//)||[])[0];
+  if(ios&&inApp){const names={FBAN:'Facebook',FBAV:'Facebook',FB_IAB:'Facebook',musical_ly:'TikTok',Twitter:'X',LinkedInApp:'LinkedIn','GSA/':'the Google app'};const n=$('#inAppNote');n.textContent=`You're in ${names[inApp]||inApp}'s browser, which can't install apps. Tap the ··· menu and choose Open in Safari (or Open in external browser), then follow the steps below.`;n.hidden=false}
+  if(ios)$('#installTop').textContent='How to install on iPhone';
   // Install: the browser's own prompt where it offers one, else the steps.
   let deferred=null;const top=$('#installTop');
   addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e});
@@ -254,7 +299,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 40px}
   });
 
   // Share
-  const link=location.origin+'/get/';$('#shareUrl').textContent=link.replace(/^https?:\/\//,'');
+  const link=shareLink;$('#shareUrl').textContent=link.replace(/^https?:\/\//,'');
   const copy=async btn=>{try{await navigator.clipboard.writeText(link);btn.textContent='Copied'}catch{btn.textContent='Copy failed'}setTimeout(()=>btn.textContent='Copy link',2000)};
   $('#copyBtn').addEventListener('click',e=>copy(e.currentTarget));
   const shareBtn=$('#shareBtn');

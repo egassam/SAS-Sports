@@ -17,10 +17,15 @@ assert.ok(page.includes('<link rel="manifest" href="/manifest.webmanifest">'),'t
 assert.match(page,/fetch\('\/api\/feedback',\{method:'POST'/,'the form posts to /api/feedback');
 assert.match(page,/name="website"[^>]*tabindex="-1"/,'the form has a hidden field for bots');
 assert.ok(!/<script[^>]+src=/.test(page),'the page loads no outside scripts');
-// The app links to it.
-assert.ok(app.includes('href="/get/#feedback"'),'the app header links to feedback');
-assert.ok(app.includes('href="/get/"'),'the app footer links to the page');
-assert.ok(app.includes('@media(max-width:600px){#feedbackLink{display:none}}'),'on a phone the header has no room for Feedback (Alerts, Calendar and Install app fill it): the footer links there');
+// The app does not link to it (user, November 23: "I don't want it in the app. I
+// only wanted an install page so I could send people to that page"). The app
+// page is exactly as before: no Feedback link, no footer link.
+assert.ok(!/href="\/get\//.test(app),'the app does not link to the download page');
+assert.ok(!app.includes('feedbackLink'),'the app has no Feedback link');
+// Detailed Apple steps (user: "Make sure it has detailed instructions for how
+// to install it on Apple").
+for(const text of ['Open in Safari','Edit Actions','Open as Web App','iOS 26','iPad','Settings → Notifications → SAS Sports','Always open SAS Sports from that icon'])assert.ok(page.includes(text),`the iPhone steps cover "${text}"`);
+assert.match(page,/id="inAppNote" hidden/,'the in-app browser note starts hidden');
 assert.match(worker,/url\.pathname==='\/api\/feedback'\)return feedbackRoute/,'the Worker routes /api/feedback');
 assert.ok(!/run_worker_first[^\]]*\/get/.test(readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8')),'/get is a static asset');
 
