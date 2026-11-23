@@ -42,10 +42,9 @@ Afterwards, five taps on the logo open the notes. Turn off alerts on that phone 
 
 ## How many people use it (`4.331.0-usage`)
 
-User, November 23, 2026: "Can we track how many people are using the app?", then "Both" (this counter and Cloudflare Web Analytics).
+User, November 23, 2026: "Can we track how many people are using the app?". Our own counter only (user: "I didn't mean both just our own"; no Cloudflare Web Analytics).
 
 - **Counter (`src/usage.mjs`):** each device sends one anonymous check-in a day per page (`/` as `app`, `/get/` as `get`) to `POST /api/ping`: a random id kept on the device (`sas-device` in local storage), hashed with the host before it is stored, and whether the app is installed. Nothing else; no cookies, names or outside service. Automated browsers (`navigator.webdriver`, the release checks) are not counted. D1 `usage_days` (per host, Central days, kept 400 days, at most 50,000 rows a day per host).
 - **Where to see it:** the owner view (five taps on the logo, or a feedback alert) shows devices today, in 7 days and in 30 days, how many of the 30 days' devices have it installed, how many have alerts on, install-page visitors, and a 14-day bar chart (`POST /api/push/stats`, owner phone only). It counts **devices**: one person on a phone and a laptop counts twice. Counting started with this version.
-- **Cloudflare Web Analytics:** visits and page views in the Cloudflare dashboard; waiting on the site token from the user (dashboard → Analytics & Logs → Web Analytics → Add a site → the hostname → copy the token from the snippet). The token goes in both pages' beacon script.
 - Tests: `tests/usage.mjs` (check-ins, Central days, totals, per host, cap, pages), `tests/push-alerts.mjs` (stats owner-only).
 

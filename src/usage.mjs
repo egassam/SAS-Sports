@@ -1,6 +1,6 @@
 // How many people use the app (user, November 23, 2026: "Can we track how
-// many people are using the app?", then "Both": this counter and Cloudflare
-// Web Analytics). Each device sends one anonymous check-in a day per page
+// many people are using the app?"; our own counter only, no outside
+// analytics: "I didn't mean both just our own"). Each device sends one anonymous check-in a day per page
 // (the app, the install page /get/): a random id the device keeps, hashed
 // here before it is stored, whether the app is installed, nothing else. No
 // names, accounts, cookies or outside service. It counts devices, not

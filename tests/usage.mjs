@@ -1,5 +1,5 @@
 // How many people use the app (user, November 23, 2026: "Can we track how many
-// people are using the app?", then "Both").
+// people are using the app?"; our own counter only).
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
