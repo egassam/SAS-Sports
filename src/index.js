@@ -352,7 +352,7 @@ import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 import {feedbackRoute,FEEDBACK_TABLE_SQL} from './feedback.mjs';
 import {usageRoute,usageStats} from './usage.mjs';
 
-const VERSION='4.331.0-usage';
+const VERSION='4.332.0-owner-strip';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

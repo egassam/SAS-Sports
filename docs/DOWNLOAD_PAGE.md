@@ -48,3 +48,7 @@ User, November 23, 2026: "Can we track how many people are using the app?". Our 
 - **Where to see it:** the owner view (five taps on the logo, or a feedback alert) shows devices today, in 7 days and in 30 days, how many of the 30 days' devices have it installed, how many have alerts on, install-page visitors, and a 14-day bar chart (`POST /api/push/stats`, owner phone only). It counts **devices**: one person on a phone and a laptop counts twice. Counting started with this version.
 - Tests: `tests/usage.mjs` (check-ins, Central days, totals, per host, cap, pages), `tests/push-alerts.mjs` (stats owner-only).
 
+## The owner bar (`4.332.0-owner-strip`)
+
+User: "Can I see it on my phone without tapping SAS Sports logo five times?" On the owner's phone only (the one that entered the owner code: `sas-feedback-owner` on the device and its subscription in `push_owners`), a bar under the header reads "📊 12 using today · 41 this week · 2 new notes ›" (or "no new feedback"); tapping it opens the full view. "New" counts notes with an id above the last one the full view showed (`sas-feedback-seen` on the device). It refreshes each time the app comes back to the screen. Every other phone never shows it (it starts hidden, and the totals answer 403 to anyone else). Five taps on the logo still work.
+
