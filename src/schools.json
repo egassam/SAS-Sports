@@ -20217,6 +20217,1377 @@
     ]
   },
   {
+    "id": "afc-bournemouth",
+    "name": "AFC Bournemouth",
+    "short_name": "Bournemouth",
+    "state": "England",
+    "city": "Bournemouth",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.afcb.co.uk",
+    "aliases": [
+      "Bournemouth",
+      "AFCB",
+      "Cherries",
+      "AFC Bournemouth"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/349",
+        "provider_school_id": "349"
+      }
+    ]
+  },
+  {
+    "id": "arsenal",
+    "name": "Arsenal",
+    "short_name": "Arsenal",
+    "state": "England",
+    "city": "London",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.arsenal.com",
+    "aliases": [
+      "Arsenal",
+      "Gunners"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/359",
+        "provider_school_id": "359"
+      }
+    ]
+  },
+  {
+    "id": "aston-villa",
+    "name": "Aston Villa",
+    "short_name": "Aston Villa",
+    "state": "England",
+    "city": "Birmingham",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.avfc.co.uk",
+    "aliases": [
+      "Aston Villa",
+      "Villa"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/362",
+        "provider_school_id": "362"
+      }
+    ]
+  },
+  {
+    "id": "brentford",
+    "name": "Brentford",
+    "short_name": "Brentford",
+    "state": "England",
+    "city": "London",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.brentfordfc.com",
+    "aliases": [
+      "Brentford",
+      "Bees"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/337",
+        "provider_school_id": "337"
+      }
+    ]
+  },
+  {
+    "id": "brighton-and-hove-albion",
+    "name": "Brighton & Hove Albion",
+    "short_name": "Brighton",
+    "state": "England",
+    "city": "Brighton",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.brightonandhovealbion.com",
+    "aliases": [
+      "Brighton",
+      "Seagulls",
+      "Brighton & Hove Albion"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/331",
+        "provider_school_id": "331"
+      }
+    ]
+  },
+  {
+    "id": "chelsea",
+    "name": "Chelsea",
+    "short_name": "Chelsea",
+    "state": "England",
+    "city": "London",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.chelseafc.com",
+    "aliases": [
+      "Chelsea",
+      "Blues"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/363",
+        "provider_school_id": "363"
+      }
+    ]
+  },
+  {
+    "id": "coventry-city",
+    "name": "Coventry City",
+    "short_name": "Coventry",
+    "state": "England",
+    "city": "Coventry",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.ccfc.co.uk",
+    "aliases": [
+      "Coventry",
+      "Sky Blues",
+      "Coventry City"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/388",
+        "provider_school_id": "388"
+      }
+    ]
+  },
+  {
+    "id": "crystal-palace",
+    "name": "Crystal Palace",
+    "short_name": "Crystal Palace",
+    "state": "England",
+    "city": "London",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.cpfc.co.uk",
+    "aliases": [
+      "Crystal Palace",
+      "Palace",
+      "C Palace"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/384",
+        "provider_school_id": "384"
+      }
+    ]
+  },
+  {
+    "id": "everton",
+    "name": "Everton",
+    "short_name": "Everton",
+    "state": "England",
+    "city": "Liverpool",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.evertonfc.com",
+    "aliases": [
+      "Everton",
+      "Toffees"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/368",
+        "provider_school_id": "368"
+      }
+    ]
+  },
+  {
+    "id": "fulham",
+    "name": "Fulham",
+    "short_name": "Fulham",
+    "state": "England",
+    "city": "London",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.fulhamfc.com",
+    "aliases": [
+      "Fulham",
+      "Cottagers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/370",
+        "provider_school_id": "370"
+      }
+    ]
+  },
+  {
+    "id": "hull-city",
+    "name": "Hull City",
+    "short_name": "Hull City",
+    "state": "England",
+    "city": "Hull",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.wearehullcity.co.uk",
+    "aliases": [
+      "Hull City",
+      "Hull",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/306",
+        "provider_school_id": "306"
+      }
+    ]
+  },
+  {
+    "id": "ipswich-town",
+    "name": "Ipswich Town",
+    "short_name": "Ipswich",
+    "state": "England",
+    "city": "Ipswich",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.itfc.co.uk",
+    "aliases": [
+      "Ipswich",
+      "Tractor Boys",
+      "Ipswich Town"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/373",
+        "provider_school_id": "373"
+      }
+    ]
+  },
+  {
+    "id": "leeds-united",
+    "name": "Leeds United",
+    "short_name": "Leeds",
+    "state": "England",
+    "city": "Leeds",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.leedsunited.com",
+    "aliases": [
+      "Leeds",
+      "Leeds United"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/357",
+        "provider_school_id": "357"
+      }
+    ]
+  },
+  {
+    "id": "liverpool",
+    "name": "Liverpool",
+    "short_name": "Liverpool",
+    "state": "England",
+    "city": "Liverpool",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.liverpoolfc.com",
+    "aliases": [
+      "Liverpool",
+      "Reds",
+      "LFC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/364",
+        "provider_school_id": "364"
+      }
+    ]
+  },
+  {
+    "id": "manchester-city",
+    "name": "Manchester City",
+    "short_name": "Man City",
+    "state": "England",
+    "city": "Manchester",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.mancity.com",
+    "aliases": [
+      "Man City",
+      "City",
+      "Manchester City"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/382",
+        "provider_school_id": "382"
+      }
+    ]
+  },
+  {
+    "id": "manchester-united",
+    "name": "Manchester United",
+    "short_name": "Man United",
+    "state": "England",
+    "city": "Manchester",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.manutd.com",
+    "aliases": [
+      "Man United",
+      "Man Utd",
+      "United",
+      "Manchester United"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/360",
+        "provider_school_id": "360"
+      }
+    ]
+  },
+  {
+    "id": "newcastle-united",
+    "name": "Newcastle United",
+    "short_name": "Newcastle",
+    "state": "England",
+    "city": "Newcastle upon Tyne",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.newcastleunited.com",
+    "aliases": [
+      "Newcastle",
+      "Magpies",
+      "Newcastle United"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/361",
+        "provider_school_id": "361"
+      }
+    ]
+  },
+  {
+    "id": "nottingham-forest",
+    "name": "Nottingham Forest",
+    "short_name": "Nottingham Forest",
+    "state": "England",
+    "city": "Nottingham",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.nottinghamforest.co.uk",
+    "aliases": [
+      "Nottingham Forest",
+      "Forest",
+      "Nottm Forest"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/393",
+        "provider_school_id": "393"
+      }
+    ]
+  },
+  {
+    "id": "sunderland",
+    "name": "Sunderland",
+    "short_name": "Sunderland",
+    "state": "England",
+    "city": "Sunderland",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.safc.com",
+    "aliases": [
+      "Sunderland",
+      "Black Cats"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/366",
+        "provider_school_id": "366"
+      }
+    ]
+  },
+  {
+    "id": "tottenham-hotspur",
+    "name": "Tottenham Hotspur",
+    "short_name": "Tottenham",
+    "state": "England",
+    "city": "London",
+    "conference": "Premier League",
+    "league": "Premier League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Premier League",
+    "athletics_url": "https://www.tottenhamhotspur.com",
+    "aliases": [
+      "Tottenham",
+      "Spurs",
+      "Tottenham Hotspur"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/eng.1/teams/367",
+        "provider_school_id": "367"
+      }
+    ]
+  },
+  {
+    "id": "aek-athens-ucl",
+    "name": "AEK Athens",
+    "short_name": "AEK Athens",
+    "state": "Greece",
+    "city": "Athens",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.aekfc.gr",
+    "aliases": [
+      "AEK Athens",
+      "AEK"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/887",
+        "provider_school_id": "887"
+      }
+    ]
+  },
+  {
+    "id": "as-roma-ucl",
+    "name": "AS Roma",
+    "short_name": "Roma",
+    "state": "Italy",
+    "city": "Rome",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.asroma.com",
+    "aliases": [
+      "Roma",
+      "AS Roma"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/104",
+        "provider_school_id": "104"
+      }
+    ]
+  },
+  {
+    "id": "arsenal-ucl",
+    "name": "Arsenal",
+    "short_name": "Arsenal",
+    "state": "England",
+    "city": "London",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.arsenal.com",
+    "aliases": [
+      "Arsenal",
+      "Gunners"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/359",
+        "provider_school_id": "359"
+      }
+    ]
+  },
+  {
+    "id": "aston-villa-ucl",
+    "name": "Aston Villa",
+    "short_name": "Aston Villa",
+    "state": "England",
+    "city": "Birmingham",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.avfc.co.uk",
+    "aliases": [
+      "Aston Villa",
+      "Villa"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/362",
+        "provider_school_id": "362"
+      }
+    ]
+  },
+  {
+    "id": "atletico-madrid-ucl",
+    "name": "Atlético Madrid",
+    "short_name": "Atlético Madrid",
+    "state": "Spain",
+    "city": "Madrid",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://en.atleticodemadrid.com",
+    "aliases": [
+      "Atlético Madrid",
+      "Atlético",
+      "Atletico Madrid",
+      "Atleti"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/1068",
+        "provider_school_id": "1068"
+      }
+    ]
+  },
+  {
+    "id": "barcelona-ucl",
+    "name": "Barcelona",
+    "short_name": "Barcelona",
+    "state": "Spain",
+    "city": "Barcelona",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.fcbarcelona.com",
+    "aliases": [
+      "Barcelona",
+      "Barça",
+      "FC Barcelona"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/83",
+        "provider_school_id": "83"
+      }
+    ]
+  },
+  {
+    "id": "bayern-munich-ucl",
+    "name": "Bayern Munich",
+    "short_name": "Bayern Munich",
+    "state": "Germany",
+    "city": "Munich",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://fcbayern.com",
+    "aliases": [
+      "Bayern Munich",
+      "Bayern",
+      "FC Bayern"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/132",
+        "provider_school_id": "132"
+      }
+    ]
+  },
+  {
+    "id": "bodo-glimt-ucl",
+    "name": "Bodø/Glimt",
+    "short_name": "Bodø/Glimt",
+    "state": "Norway",
+    "city": "Bodø",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.glimt.no",
+    "aliases": [
+      "Bodø/Glimt",
+      "Bodo/Glimt",
+      "Glimt"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/2980",
+        "provider_school_id": "2980"
+      }
+    ]
+  },
+  {
+    "id": "borussia-dortmund-ucl",
+    "name": "Borussia Dortmund",
+    "short_name": "Dortmund",
+    "state": "Germany",
+    "city": "Dortmund",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.bvb.de",
+    "aliases": [
+      "Dortmund",
+      "BVB",
+      "Borussia Dortmund"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/124",
+        "provider_school_id": "124"
+      }
+    ]
+  },
+  {
+    "id": "club-brugge-ucl",
+    "name": "Club Brugge",
+    "short_name": "Club Brugge",
+    "state": "Belgium",
+    "city": "Bruges",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.clubbrugge.be",
+    "aliases": [
+      "Club Brugge",
+      "Brugge"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/570",
+        "provider_school_id": "570"
+      }
+    ]
+  },
+  {
+    "id": "como-ucl",
+    "name": "Como",
+    "short_name": "Como",
+    "state": "Italy",
+    "city": "Como",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://comofootball.com",
+    "aliases": [
+      "Como",
+      "Como 1907"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/2572",
+        "provider_school_id": "2572"
+      }
+    ]
+  },
+  {
+    "id": "fc-porto-ucl",
+    "name": "FC Porto",
+    "short_name": "Porto",
+    "state": "Portugal",
+    "city": "Porto",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.fcporto.pt",
+    "aliases": [
+      "Porto",
+      "FC Porto"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/437",
+        "provider_school_id": "437"
+      }
+    ]
+  },
+  {
+    "id": "fenerbahce-ucl",
+    "name": "Fenerbahçe",
+    "short_name": "Fenerbahçe",
+    "state": "Turkey",
+    "city": "Istanbul",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.fenerbahce.org",
+    "aliases": [
+      "Fenerbahçe",
+      "Fenerbahce"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/436",
+        "provider_school_id": "436"
+      }
+    ]
+  },
+  {
+    "id": "feyenoord-ucl",
+    "name": "Feyenoord",
+    "short_name": "Feyenoord",
+    "state": "Netherlands",
+    "city": "Rotterdam",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.feyenoord.com",
+    "aliases": [
+      "Feyenoord",
+      "Feyenoord Rotterdam"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/142",
+        "provider_school_id": "142"
+      }
+    ]
+  },
+  {
+    "id": "galatasaray-ucl",
+    "name": "Galatasaray",
+    "short_name": "Galatasaray",
+    "state": "Turkey",
+    "city": "Istanbul",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.galatasaray.org",
+    "aliases": [
+      "Galatasaray"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/432",
+        "provider_school_id": "432"
+      }
+    ]
+  },
+  {
+    "id": "inter-milan-ucl",
+    "name": "Inter Milan",
+    "short_name": "Inter",
+    "state": "Italy",
+    "city": "Milan",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.inter.it",
+    "aliases": [
+      "Inter",
+      "Internazionale",
+      "Inter Milan"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/110",
+        "provider_school_id": "110"
+      }
+    ]
+  },
+  {
+    "id": "lask-ucl",
+    "name": "LASK",
+    "short_name": "LASK",
+    "state": "Austria",
+    "city": "Linz",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.lask.at",
+    "aliases": [
+      "LASK",
+      "LASK Linz"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/4411",
+        "provider_school_id": "4411"
+      }
+    ]
+  },
+  {
+    "id": "lens-ucl",
+    "name": "RC Lens",
+    "short_name": "Lens",
+    "state": "France",
+    "city": "Lens",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.rclens.fr",
+    "aliases": [
+      "Lens",
+      "RC Lens"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/175",
+        "provider_school_id": "175"
+      }
+    ]
+  },
+  {
+    "id": "lille-ucl",
+    "name": "Lille",
+    "short_name": "Lille",
+    "state": "France",
+    "city": "Lille",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.losc.fr",
+    "aliases": [
+      "Lille",
+      "LOSC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/166",
+        "provider_school_id": "166"
+      }
+    ]
+  },
+  {
+    "id": "liverpool-ucl",
+    "name": "Liverpool",
+    "short_name": "Liverpool",
+    "state": "England",
+    "city": "Liverpool",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.liverpoolfc.com",
+    "aliases": [
+      "Liverpool",
+      "Reds",
+      "LFC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/364",
+        "provider_school_id": "364"
+      }
+    ]
+  },
+  {
+    "id": "manchester-city-ucl",
+    "name": "Manchester City",
+    "short_name": "Man City",
+    "state": "England",
+    "city": "Manchester",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.mancity.com",
+    "aliases": [
+      "Man City",
+      "City",
+      "Manchester City"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/382",
+        "provider_school_id": "382"
+      }
+    ]
+  },
+  {
+    "id": "manchester-united-ucl",
+    "name": "Manchester United",
+    "short_name": "Man United",
+    "state": "England",
+    "city": "Manchester",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.manutd.com",
+    "aliases": [
+      "Man United",
+      "Man Utd",
+      "United",
+      "Manchester United"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/360",
+        "provider_school_id": "360"
+      }
+    ]
+  },
+  {
+    "id": "napoli-ucl",
+    "name": "Napoli",
+    "short_name": "Napoli",
+    "state": "Italy",
+    "city": "Naples",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://sscnapoli.it",
+    "aliases": [
+      "Napoli",
+      "SSC Napoli"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/114",
+        "provider_school_id": "114"
+      }
+    ]
+  },
+  {
+    "id": "psv-eindhoven-ucl",
+    "name": "PSV Eindhoven",
+    "short_name": "PSV",
+    "state": "Netherlands",
+    "city": "Eindhoven",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.psv.nl",
+    "aliases": [
+      "PSV",
+      "PSV Eindhoven"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/148",
+        "provider_school_id": "148"
+      }
+    ]
+  },
+  {
+    "id": "paris-saint-germain-ucl",
+    "name": "Paris Saint-Germain",
+    "short_name": "PSG",
+    "state": "France",
+    "city": "Paris",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.psg.fr",
+    "aliases": [
+      "PSG",
+      "Paris SG",
+      "Paris Saint-Germain"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/160",
+        "provider_school_id": "160"
+      }
+    ]
+  },
+  {
+    "id": "rb-leipzig-ucl",
+    "name": "RB Leipzig",
+    "short_name": "RB Leipzig",
+    "state": "Germany",
+    "city": "Leipzig",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://rbleipzig.com",
+    "aliases": [
+      "RB Leipzig",
+      "Leipzig"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/11420",
+        "provider_school_id": "11420"
+      }
+    ]
+  },
+  {
+    "id": "real-betis-ucl",
+    "name": "Real Betis",
+    "short_name": "Real Betis",
+    "state": "Spain",
+    "city": "Seville",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.realbetisbalompie.es",
+    "aliases": [
+      "Real Betis",
+      "Betis"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/244",
+        "provider_school_id": "244"
+      }
+    ]
+  },
+  {
+    "id": "real-madrid-ucl",
+    "name": "Real Madrid",
+    "short_name": "Real Madrid",
+    "state": "Spain",
+    "city": "Madrid",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.realmadrid.com",
+    "aliases": [
+      "Real Madrid",
+      "Madrid"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/86",
+        "provider_school_id": "86"
+      }
+    ]
+  },
+  {
+    "id": "sabah-ucl",
+    "name": "Sabah",
+    "short_name": "Sabah",
+    "state": "Azerbaijan",
+    "city": "Baku",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://sabahfc.az",
+    "aliases": [
+      "Sabah",
+      "Sabah FK"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/21922",
+        "provider_school_id": "21922"
+      }
+    ]
+  },
+  {
+    "id": "shakhtar-donetsk-ucl",
+    "name": "Shakhtar Donetsk",
+    "short_name": "Shakhtar",
+    "state": "Ukraine",
+    "city": "Donetsk",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://shakhtar.com",
+    "aliases": [
+      "Shakhtar",
+      "Shakhtar Donetsk"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/493",
+        "provider_school_id": "493"
+      }
+    ]
+  },
+  {
+    "id": "slavia-prague-ucl",
+    "name": "Slavia Prague",
+    "short_name": "Slavia Prague",
+    "state": "Czechia",
+    "city": "Prague",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.slavia.cz",
+    "aliases": [
+      "Slavia Prague",
+      "Slavia"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/494",
+        "provider_school_id": "494"
+      }
+    ]
+  },
+  {
+    "id": "slovan-bratislava-ucl",
+    "name": "Slovan Bratislava",
+    "short_name": "Slovan Bratislava",
+    "state": "Slovakia",
+    "city": "Bratislava",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.skslovan.com",
+    "aliases": [
+      "Slovan Bratislava",
+      "Slovan"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/521",
+        "provider_school_id": "521"
+      }
+    ]
+  },
+  {
+    "id": "sporting-cp-ucl",
+    "name": "Sporting CP",
+    "short_name": "Sporting CP",
+    "state": "Portugal",
+    "city": "Lisbon",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.sporting.pt",
+    "aliases": [
+      "Sporting CP",
+      "Sporting",
+      "Sporting Lisbon"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/2250",
+        "provider_school_id": "2250"
+      }
+    ]
+  },
+  {
+    "id": "vfb-stuttgart-ucl",
+    "name": "VfB Stuttgart",
+    "short_name": "Stuttgart",
+    "state": "Germany",
+    "city": "Stuttgart",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.vfb.de",
+    "aliases": [
+      "Stuttgart",
+      "VfB",
+      "VfB Stuttgart"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/134",
+        "provider_school_id": "134"
+      }
+    ]
+  },
+  {
+    "id": "viking-ucl",
+    "name": "Viking",
+    "short_name": "Viking",
+    "state": "Norway",
+    "city": "Stavanger",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://www.vikingfotball.no",
+    "aliases": [
+      "Viking",
+      "Viking FK"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/510",
+        "provider_school_id": "510"
+      }
+    ]
+  },
+  {
+    "id": "villarreal-ucl",
+    "name": "Villarreal",
+    "short_name": "Villarreal",
+    "state": "Spain",
+    "city": "Villarreal",
+    "conference": "Champions League",
+    "league": "Champions League",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "Champions League",
+    "athletics_url": "https://villarrealcf.es",
+    "aliases": [
+      "Villarreal",
+      "Yellow Submarine"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/uefa.champions/teams/102",
+        "provider_school_id": "102"
+      }
+    ]
+  },
+  {
     "id": "omaha-storm-chasers",
     "name": "Omaha Storm Chasers",
     "short_name": "Storm Chasers",

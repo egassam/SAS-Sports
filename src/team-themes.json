@@ -6286,5 +6286,453 @@
     "panelDark": "#242300",
     "line": "#c8c341",
     "onAccent": "#ffffff"
+  },
+  "afc-bournemouth": {
+    "primary": "#F42727",
+    "secondary": "#B57EDC",
+    "panel": "#3e1115",
+    "panelDark": "#1d080b",
+    "line": "#952428",
+    "onAccent": "#ffffff"
+  },
+  "arsenal": {
+    "primary": "#E20520",
+    "secondary": "#003399",
+    "panel": "#3a0a14",
+    "panelDark": "#1b050a",
+    "line": "#8b1125",
+    "onAccent": "#ffffff"
+  },
+  "aston-villa": {
+    "primary": "#660E36",
+    "secondary": "#000000",
+    "panel": "#1f0c18",
+    "panelDark": "#0f060d",
+    "line": "#471631",
+    "onAccent": "#ffffff"
+  },
+  "brentford": {
+    "primary": "#F42727",
+    "secondary": "#0F1C3F",
+    "panel": "#3e1115",
+    "panelDark": "#1d080b",
+    "line": "#952428",
+    "onAccent": "#ffffff"
+  },
+  "brighton-and-hove-albion": {
+    "primary": "#0606FA",
+    "secondary": "#005F60",
+    "panel": "#0a0a43",
+    "panelDark": "#050520",
+    "line": "#12129c",
+    "onAccent": "#ffffff"
+  },
+  "chelsea": {
+    "primary": "#144992",
+    "secondary": "#FFFFFF",
+    "panel": "#0d192d",
+    "panelDark": "#070c16",
+    "line": "#193763",
+    "onAccent": "#ffffff"
+  },
+  "coventry-city": {
+    "primary": "#87CCED",
+    "secondary": "#FFFFFF",
+    "panel": "#263541",
+    "panelDark": "#12191f",
+    "line": "#597f95",
+    "onAccent": "#0b0b10"
+  },
+  "crystal-palace": {
+    "primary": "#0202FB",
+    "secondary": "#000000",
+    "panel": "#090944",
+    "panelDark": "#050520",
+    "line": "#0f0f9d",
+    "onAccent": "#ffffff"
+  },
+  "everton": {
+    "primary": "#0606FA",
+    "secondary": "#FFFFFF",
+    "panel": "#0a0a43",
+    "panelDark": "#050520",
+    "line": "#12129c",
+    "onAccent": "#ffffff"
+  },
+  "fulham": {
+    "primary": "#000000",
+    "secondary": "#CC0000",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "hull-city": {
+    "primary": "#F28800",
+    "secondary": "#FFFFFF",
+    "panel": "#3e270c",
+    "panelDark": "#1d1207",
+    "line": "#945913",
+    "onAccent": "#ffffff"
+  },
+  "ipswich-town": {
+    "primary": "#0000FA",
+    "secondary": "#F5F2DC",
+    "panel": "#090943",
+    "panelDark": "#050520",
+    "line": "#0e0e9c",
+    "onAccent": "#ffffff"
+  },
+  "leeds-united": {
+    "primary": "#1D428A",
+    "secondary": "#FFCD00",
+    "panel": "#0f172b",
+    "panelDark": "#070b15",
+    "line": "#1e335f",
+    "onAccent": "#ffffff"
+  },
+  "liverpool": {
+    "primary": "#D11317",
+    "secondary": "#FFFFFF",
+    "panel": "#370d12",
+    "panelDark": "#19060a",
+    "line": "#811920",
+    "onAccent": "#ffffff"
+  },
+  "manchester-city": {
+    "primary": "#99C5EA",
+    "secondary": "#000000",
+    "panel": "#2a3440",
+    "panelDark": "#14181f",
+    "line": "#637b94",
+    "onAccent": "#0b0b10"
+  },
+  "manchester-united": {
+    "primary": "#DA020E",
+    "secondary": "#4169E1",
+    "panel": "#390910",
+    "panelDark": "#1a0509",
+    "line": "#860f1b",
+    "onAccent": "#ffffff"
+  },
+  "newcastle-united": {
+    "primary": "#241F20",
+    "secondary": "#0B1B3D",
+    "panel": "#110f14",
+    "panelDark": "#08080a",
+    "line": "#221f25",
+    "onAccent": "#ffffff"
+  },
+  "nottingham-forest": {
+    "primary": "#C8102E",
+    "secondary": "#1B3624",
+    "panel": "#350c17",
+    "panelDark": "#19060c",
+    "line": "#7c172c",
+    "onAccent": "#ffffff"
+  },
+  "sunderland": {
+    "primary": "#EB172B",
+    "secondary": "#FFB6C1",
+    "panel": "#3c0e16",
+    "panelDark": "#1c070c",
+    "line": "#901b2b",
+    "onAccent": "#ffffff"
+  },
+  "tottenham-hotspur": {
+    "primary": "#132257",
+    "secondary": "#0B1426",
+    "panel": "#0d1020",
+    "panelDark": "#060810",
+    "line": "#192143",
+    "onAccent": "#ffffff"
+  },
+  "aek-athens-ucl": {
+    "primary": "#FFFF00",
+    "secondary": "#000000",
+    "panel": "#41410c",
+    "panelDark": "#1e1e07",
+    "line": "#9b9b13",
+    "onAccent": "#0b0b10"
+  },
+  "as-roma-ucl": {
+    "primary": "#990A2C",
+    "secondary": "#F5F3E5",
+    "panel": "#2a0b16",
+    "panelDark": "#14060c",
+    "line": "#63142b",
+    "onAccent": "#ffffff"
+  },
+  "arsenal-ucl": {
+    "primary": "#E20520",
+    "secondary": "#003399",
+    "panel": "#3a0a14",
+    "panelDark": "#1b050a",
+    "line": "#8b1125",
+    "onAccent": "#ffffff"
+  },
+  "aston-villa-ucl": {
+    "primary": "#660E36",
+    "secondary": "#000000",
+    "panel": "#1f0c18",
+    "panelDark": "#0f060d",
+    "line": "#471631",
+    "onAccent": "#ffffff"
+  },
+  "atletico-madrid-ucl": {
+    "primary": "#CA3624",
+    "secondary": "#000000",
+    "panel": "#351414",
+    "panelDark": "#190a0b",
+    "line": "#7e2c27",
+    "onAccent": "#ffffff"
+  },
+  "barcelona-ucl": {
+    "primary": "#990000",
+    "secondary": "#FCE38A",
+    "panel": "#2a090c",
+    "panelDark": "#140507",
+    "line": "#630e13",
+    "onAccent": "#ffffff"
+  },
+  "bayern-munich-ucl": {
+    "primary": "#DC052D",
+    "secondary": "#1A1A1A",
+    "panel": "#390a16",
+    "panelDark": "#1b050c",
+    "line": "#87112c",
+    "onAccent": "#ffffff"
+  },
+  "bodo-glimt-ucl": {
+    "primary": "#FCEE33",
+    "secondary": "#FFFFFF",
+    "panel": "#403d18",
+    "panelDark": "#1e1c0c",
+    "line": "#99912f",
+    "onAccent": "#0b0b10"
+  },
+  "borussia-dortmund-ucl": {
+    "primary": "#FFEE00",
+    "secondary": "#272726",
+    "panel": "#413d0c",
+    "panelDark": "#1e1c07",
+    "line": "#9b9113",
+    "onAccent": "#0b0b10"
+  },
+  "club-brugge-ucl": {
+    "primary": "#0081FF",
+    "secondary": "#FFFFFF",
+    "panel": "#092545",
+    "panelDark": "#051121",
+    "line": "#0e559f",
+    "onAccent": "#ffffff"
+  },
+  "como-ucl": {
+    "primary": "#4169E1",
+    "secondary": "#FFFFFF",
+    "panel": "#17203e",
+    "panelDark": "#0b0f1e",
+    "line": "#32488f",
+    "onAccent": "#ffffff"
+  },
+  "fc-porto-ucl": {
+    "primary": "#0000DD",
+    "secondary": "#FFA000",
+    "panel": "#09093d",
+    "panelDark": "#05051d",
+    "line": "#0e0e8c",
+    "onAccent": "#ffffff"
+  },
+  "fenerbahce-ucl": {
+    "primary": "#FFFF00",
+    "secondary": "#FFFFFF",
+    "panel": "#41410c",
+    "panelDark": "#1e1e07",
+    "line": "#9b9b13",
+    "onAccent": "#0b0b10"
+  },
+  "feyenoord-ucl": {
+    "primary": "#EF2F24",
+    "secondary": "#000000",
+    "panel": "#3d1314",
+    "panelDark": "#1c090b",
+    "line": "#922827",
+    "onAccent": "#ffffff"
+  },
+  "galatasaray-ucl": {
+    "primary": "#AA0031",
+    "secondary": "#FFFFFF",
+    "panel": "#2e0917",
+    "panelDark": "#16050c",
+    "line": "#6c0e2e",
+    "onAccent": "#ffffff"
+  },
+  "inter-milan-ucl": {
+    "primary": "#00239C",
+    "secondary": "#FFFFFF",
+    "panel": "#09102f",
+    "panelDark": "#050817",
+    "line": "#0e2269",
+    "onAccent": "#ffffff"
+  },
+  "lask-ucl": {
+    "primary": "#000000",
+    "secondary": "#FFFFFF",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "lens-ucl": {
+    "primary": "#E91514",
+    "secondary": "#004C37",
+    "panel": "#3c0d11",
+    "panelDark": "#1c0709",
+    "line": "#8f1a1e",
+    "onAccent": "#ffffff"
+  },
+  "lille-ucl": {
+    "primary": "#C2051B",
+    "secondary": "#E2D3D7",
+    "panel": "#330a12",
+    "panelDark": "#18050a",
+    "line": "#791122",
+    "onAccent": "#ffffff"
+  },
+  "liverpool-ucl": {
+    "primary": "#D11317",
+    "secondary": "#FFFFFF",
+    "panel": "#370d12",
+    "panelDark": "#19060a",
+    "line": "#811920",
+    "onAccent": "#ffffff"
+  },
+  "manchester-city-ucl": {
+    "primary": "#99C5EA",
+    "secondary": "#000000",
+    "panel": "#2a3440",
+    "panelDark": "#14181f",
+    "line": "#637b94",
+    "onAccent": "#0b0b10"
+  },
+  "manchester-united-ucl": {
+    "primary": "#DA020E",
+    "secondary": "#4169E1",
+    "panel": "#390910",
+    "panelDark": "#1a0509",
+    "line": "#860f1b",
+    "onAccent": "#ffffff"
+  },
+  "napoli-ucl": {
+    "primary": "#0677D2",
+    "secondary": "#FFFFFF",
+    "panel": "#0a233b",
+    "panelDark": "#05101c",
+    "line": "#125086",
+    "onAccent": "#ffffff"
+  },
+  "psv-eindhoven-ucl": {
+    "primary": "#EF2F24",
+    "secondary": "#000000",
+    "panel": "#3d1314",
+    "panelDark": "#1c090b",
+    "line": "#922827",
+    "onAccent": "#ffffff"
+  },
+  "paris-saint-germain-ucl": {
+    "primary": "#011F68",
+    "secondary": "#FFFFFF",
+    "panel": "#090f23",
+    "panelDark": "#050812",
+    "line": "#0f1f4c",
+    "onAccent": "#ffffff"
+  },
+  "rb-leipzig-ucl": {
+    "primary": "#DD0741",
+    "secondary": "#740C14",
+    "panel": "#390a1b",
+    "panelDark": "#1b050e",
+    "line": "#881237",
+    "onAccent": "#ffffff"
+  },
+  "real-betis-ucl": {
+    "primary": "#288A00",
+    "secondary": "#0A422D",
+    "panel": "#11270c",
+    "panelDark": "#091207",
+    "line": "#245a13",
+    "onAccent": "#ffffff"
+  },
+  "real-madrid-ucl": {
+    "primary": "#00529F",
+    "secondary": "#1B4D3E",
+    "panel": "#091b2f",
+    "panelDark": "#050d17",
+    "line": "#0e3c6a",
+    "onAccent": "#ffffff"
+  },
+  "sabah-ucl": {
+    "primary": "#1A1A1A",
+    "secondary": "#FF1493",
+    "panel": "#0e0e12",
+    "panelDark": "#07070a",
+    "line": "#1d1d21",
+    "onAccent": "#ffffff"
+  },
+  "shakhtar-donetsk-ucl": {
+    "primary": "#FF5900",
+    "secondary": "#1A1A1A",
+    "panel": "#411c0c",
+    "panelDark": "#1e0d07",
+    "line": "#9b3f13",
+    "onAccent": "#ffffff"
+  },
+  "slavia-prague-ucl": {
+    "primary": "#DC1F26",
+    "secondary": "#81C0FF",
+    "panel": "#390f15",
+    "panelDark": "#1b080b",
+    "line": "#871f28",
+    "onAccent": "#ffffff"
+  },
+  "slovan-bratislava-ucl": {
+    "primary": "#81C0FF",
+    "secondary": "#1A1A1A",
+    "panel": "#253345",
+    "panelDark": "#111821",
+    "line": "#55789f",
+    "onAccent": "#0b0b10"
+  },
+  "sporting-cp-ucl": {
+    "primary": "#008127",
+    "secondary": "#FFFFFF",
+    "panel": "#092515",
+    "panelDark": "#05110b",
+    "line": "#0e5528",
+    "onAccent": "#ffffff"
+  },
+  "vfb-stuttgart-ucl": {
+    "primary": "#E32219",
+    "secondary": "#DA0308",
+    "panel": "#3b1012",
+    "panelDark": "#1b080a",
+    "line": "#8b2121",
+    "onAccent": "#ffffff"
+  },
+  "viking-ucl": {
+    "primary": "#000080",
+    "secondary": "#FFFFFF",
+    "panel": "#090929",
+    "panelDark": "#050514",
+    "line": "#0e0e59",
+    "onAccent": "#ffffff"
+  },
+  "villarreal-ucl": {
+    "primary": "#FFFF00",
+    "secondary": "#6CACE4",
+    "panel": "#41410c",
+    "panelDark": "#1e1e07",
+    "line": "#9b9b13",
+    "onAccent": "#0b0b10"
   }
 }

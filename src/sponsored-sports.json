@@ -7544,5 +7544,173 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "afc-bournemouth": [
+    "Soccer"
+  ],
+  "arsenal": [
+    "Soccer"
+  ],
+  "aston-villa": [
+    "Soccer"
+  ],
+  "brentford": [
+    "Soccer"
+  ],
+  "brighton-and-hove-albion": [
+    "Soccer"
+  ],
+  "chelsea": [
+    "Soccer"
+  ],
+  "coventry-city": [
+    "Soccer"
+  ],
+  "crystal-palace": [
+    "Soccer"
+  ],
+  "everton": [
+    "Soccer"
+  ],
+  "fulham": [
+    "Soccer"
+  ],
+  "hull-city": [
+    "Soccer"
+  ],
+  "ipswich-town": [
+    "Soccer"
+  ],
+  "leeds-united": [
+    "Soccer"
+  ],
+  "liverpool": [
+    "Soccer"
+  ],
+  "manchester-city": [
+    "Soccer"
+  ],
+  "manchester-united": [
+    "Soccer"
+  ],
+  "newcastle-united": [
+    "Soccer"
+  ],
+  "nottingham-forest": [
+    "Soccer"
+  ],
+  "sunderland": [
+    "Soccer"
+  ],
+  "tottenham-hotspur": [
+    "Soccer"
+  ],
+  "aek-athens-ucl": [
+    "Soccer"
+  ],
+  "as-roma-ucl": [
+    "Soccer"
+  ],
+  "arsenal-ucl": [
+    "Soccer"
+  ],
+  "aston-villa-ucl": [
+    "Soccer"
+  ],
+  "atletico-madrid-ucl": [
+    "Soccer"
+  ],
+  "barcelona-ucl": [
+    "Soccer"
+  ],
+  "bayern-munich-ucl": [
+    "Soccer"
+  ],
+  "bodo-glimt-ucl": [
+    "Soccer"
+  ],
+  "borussia-dortmund-ucl": [
+    "Soccer"
+  ],
+  "club-brugge-ucl": [
+    "Soccer"
+  ],
+  "como-ucl": [
+    "Soccer"
+  ],
+  "fc-porto-ucl": [
+    "Soccer"
+  ],
+  "fenerbahce-ucl": [
+    "Soccer"
+  ],
+  "feyenoord-ucl": [
+    "Soccer"
+  ],
+  "galatasaray-ucl": [
+    "Soccer"
+  ],
+  "inter-milan-ucl": [
+    "Soccer"
+  ],
+  "lask-ucl": [
+    "Soccer"
+  ],
+  "lens-ucl": [
+    "Soccer"
+  ],
+  "lille-ucl": [
+    "Soccer"
+  ],
+  "liverpool-ucl": [
+    "Soccer"
+  ],
+  "manchester-city-ucl": [
+    "Soccer"
+  ],
+  "manchester-united-ucl": [
+    "Soccer"
+  ],
+  "napoli-ucl": [
+    "Soccer"
+  ],
+  "psv-eindhoven-ucl": [
+    "Soccer"
+  ],
+  "paris-saint-germain-ucl": [
+    "Soccer"
+  ],
+  "rb-leipzig-ucl": [
+    "Soccer"
+  ],
+  "real-betis-ucl": [
+    "Soccer"
+  ],
+  "real-madrid-ucl": [
+    "Soccer"
+  ],
+  "sabah-ucl": [
+    "Soccer"
+  ],
+  "shakhtar-donetsk-ucl": [
+    "Soccer"
+  ],
+  "slavia-prague-ucl": [
+    "Soccer"
+  ],
+  "slovan-bratislava-ucl": [
+    "Soccer"
+  ],
+  "sporting-cp-ucl": [
+    "Soccer"
+  ],
+  "vfb-stuttgart-ucl": [
+    "Soccer"
+  ],
+  "viking-ucl": [
+    "Soccer"
+  ],
+  "villarreal-ucl": [
+    "Soccer"
   ]
 }

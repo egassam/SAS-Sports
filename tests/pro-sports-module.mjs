@@ -29,8 +29,10 @@ const pro=schools.filter(s=>s.level==='pro');
 // request; tests/track-field-module.mjs), then the 16 NWSL clubs (user,
 // November 18: "Add NWSL next"; tests/nwsl-module.mjs), then three minor
 // league baseball teams and the Kansas & Kansas City hub (user, November 18:
-// "Start 1-4"; tests/milb-module.mjs, tests/pro-alumni-module.mjs).
-assert.equal(pro.length,197);
+// "Start 1-4"; tests/milb-module.mjs, tests/pro-alumni-module.mjs). The 20
+// Premier League and 36 Champions League clubs follow the NWSL (user,
+// November 23: "Add more pro", then "1 then 4"; tests/european-soccer-module.mjs).
+assert.equal(pro.length,253);
 assert.deepEqual(pro.filter(s=>s.pro_sport==='Auto Racing').map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
