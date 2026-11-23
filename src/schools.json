@@ -7611,6 +7611,32 @@
     ]
   },
   {
+    "id": "indycar-series",
+    "name": "NTT IndyCar Series",
+    "short_name": "IndyCar Series",
+    "state": "Indiana",
+    "city": "Indianapolis",
+    "conference": "IndyCar",
+    "league": "IndyCar",
+    "pro_sport": "Auto Racing",
+    "level": "pro",
+    "division": "NTT IndyCar Series",
+    "athletics_url": "https://www.indycar.com",
+    "aliases": [
+      "IndyCar",
+      "IndyCar Series",
+      "NTT IndyCar Series",
+      "Indy 500"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "racing/irl",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "atlanta-united",
     "name": "Atlanta United FC",
     "short_name": "Atlanta United",

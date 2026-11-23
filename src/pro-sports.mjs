@@ -322,6 +322,12 @@ export const PRO_TEAMS={
     kind:'f1',sport:'Auto Racing',
     schedule:'https://www.formula1.com/en/racing/2026'
   },
+  // The NTT IndyCar Series (user, November 23, 2026: "1 then 4"): its races,
+  // from ESPN's IndyCar board and indycar.com's schedule.
+  'indycar-series':{
+    kind:'indycar',sport:'Auto Racing',
+    schedule:'https://www.indycar.com/Schedule'
+  },
   // Track and field (user, November 18: "Start with wnba and track and
   // field. Track will be hard with most results in other countries so you
   // will need to be creative"): World Athletics' own calendar and results
@@ -1484,6 +1490,120 @@ export function f1Races(calendar,{school,config,timeZone,now,results=new Map(),l
     }
   }
   return events;
+}
+
+// ---- IndyCar (user, November 23, 2026: "Add more pro", then "1 then 4") ----
+// The NTT IndyCar Series' races. ESPN's IndyCar board (`racing/irl`) gives the
+// season's calendar and, on each race day, the finishing order (place and
+// driver; ESPN publishes no car numbers, teams, laps or status for IndyCar).
+// The coming season's races (dates, tracks, places, TV) come from the
+// series' own schedule page (indycar.com/Schedule), which lists the next
+// season once it is announced. ESPN's driver standings give the points.
+export const INDYCAR_SCHEDULE='https://www.indycar.com/Schedule';
+export const INDYCAR_BOARD=`${'https://site.api.espn.com/apis/site/v2/sports/'}racing/irl/scoreboard`;
+export const INDYCAR_STANDINGS='https://site.api.espn.com/apis/v2/sports/racing/irl/standings';
+// ESPN's calendar: each race's name and listed time. The listed time runs
+// three hours after the start the race-day board gives (2026: every race),
+// so the board is read for the Eastern day three hours earlier.
+export function indycarCalendar(board){
+  const league=board?.leagues?.[0],year=Number(league?.season?.year)||null;
+  return(league?.calendar||[]).filter(c=>c?.label&&Date.parse(c.startDate)).map((c,i)=>({round:i+1,name:String(c.label).trim(),listed:c.startDate,year}));
+}
+export function indycarBoardDay(race){return wallClock(new Date(Date.parse(race.listed)-3*3600e3).toISOString(),'America/New_York').slice(0,10).replaceAll('-','');}
+// A race-day board's race: its start, state, lap and finishing order.
+export function indycarRace(board,race){
+  const ev=(board?.events||[]).find(e=>String(e.name||'').trim()===race.name)||null;
+  const comp=ev?.competitions?.[0];if(!comp)return null;
+  const rows=(comp.competitors||[]).slice().sort((a,b)=>a.order-b.order).map(c=>({pos:Number(c.order),driver:c.athlete?.displayName||c.athlete?.fullName||'',country:c.athlete?.flag?.alt||'',winner:Boolean(c.winner)})).filter(r=>r.driver&&Number.isFinite(r.pos));
+  return{start:ev.date,state:comp.status?.type?.state||'',lap:Number(comp.status?.period)||null,rows};
+}
+// indycar.com's schedule cards: "/Schedule/2027/Phoenix", "Mar 13", "TBD",
+// "Phoenix Raceway", "Avondale, Arizona", the networks' logos.
+export function indycarSchedule(html){
+  const text=String(html||''),seen=new Set(),races=[];
+  const strip=s=>String(s||'').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&#x27;/g,"'").replace(/\s+/g,' ').trim();
+  for(const card of text.split('<div class="event-card ').slice(1)){
+    const href=card.match(/href="(\/Schedule\/(\d{4})\/[^"]+)"/);if(!href||seen.has(href[1]))continue;
+    const date=strip(card.match(/event-card-header-date">([\s\S]*?)<\/div>/)?.[1]).match(/^([A-Z][a-z]{2})\s+(\d{1,2})$/);if(!date)continue;
+    const month=MONTHS.indexOf(date[1]);if(month<0)continue;
+    seen.add(href[1]);
+    const time=strip(card.match(/event-card-header-time">([\s\S]*?)<\/div>/)?.[1]),clock=time.match(/^(\d{1,2}):(\d{2})\s*([AP])M/i);
+    races.push({year:Number(href[2]),date:`${href[2]}-${pad(month+1)}-${pad(Number(date[2]))}`,clock:clock?`${pad(Number(clock[1])%12+(/p/i.test(clock[3])?12:0))}:${clock[2]}`:null,
+      name:strip(card.match(/event-card-title">([\s\S]*?)<\/h3>/)?.[1]),track:strip(card.match(/event-card-track-name">([\s\S]*?)<\/div>/)?.[1]),place:strip(card.match(/event-card-track-location">([\s\S]*?)<\/div>/)?.[1]),
+      tv:[...new Set([...card.matchAll(/Networks\/[^"]*"\s+alt="([^"]+)"/g)].map(m=>m[1].replace(/\s*Logo$/i,'').trim()).filter(Boolean))],url:`https://www.indycar.com${href[1]}`});
+  }
+  return races.sort((a,b)=>a.date.localeCompare(b.date));
+}
+// The race window: the winner, the podium, the field.
+export function indycarFinishTable(rows){return rows.map(r=>({pos:r.pos,driver:r.driver,car:'',make:r.country||'',team:'',laps_led:0,status:null,note:''}));}
+export function indycarFinishRows(rows){return rows.map(r=>({participant:r.driver,result:[ordinal(r.pos),r.country||null].filter(Boolean).join(' · ')}));}
+export function indycarRaceDetails(event,rows){
+  if(!rows?.length)return null;
+  const [first,second,third]=rows;
+  const lines=[`${first.driver} won the ${event.title}${second?`, ahead of ${second.driver}${third?` and ${third.driver}`:''}`:''}.`];
+  return{lines,stats:[{label:'Cars',value:String(rows.length)}],rows:indycarFinishRows(rows),table:indycarFinishTable(rows)};
+}
+// The season's races: ESPN's calendar (finals with ESPN's order, a race
+// under way with its running order), then the next season's races from
+// indycar.com once ESPN's calendar is over. A past race without a result is
+// not listed (K-State's rule).
+export function indycarRaces(calendar,{school,config,timeZone,now,results=new Map(),schedule=[]}){
+  const sport=config.sport,nowMs=now.getTime(),today=dayOf(wallClock(now,timeZone)),events=[],total=calendar.length;
+  for(const race of calendar){
+    const found=results.get(race.round),at=found?.start||new Date(Date.parse(race.listed)-3*3600e3).toISOString(),began=Date.parse(at),start=wallClock(at,timeZone),day=dayOf(start);
+    const rows=found?.rows||[];
+    let status;
+    if(found?.state==='post'&&rows.length)status='Final';
+    else if(found?.state==='in'||began<=nowMs&&nowMs-began<=5*3600e3&&!rows.length)status='Live';
+    else if(began>nowMs)status=day===today?'Today':'Upcoming';
+    else continue;
+    const event=baseEvent({school,sport,status,title:race.name,start,display:displayTime(start),opponent:null,sourceName:'ESPN IndyCar board',sourceUrl:config.schedule,now,key:`${race.year}|${race.round}`});
+    event.season=race.year;event.indycar_round=race.round;event.espn_day=indycarBoardDay(race);
+    if(status==='Final'){
+      const [winner]=rows;
+      event.winner={name:winner.driver};event.headline=`Winner: ${winner.driver}`;
+      event.race_table=indycarFinishTable(rows.slice(0,3));event.results=indycarFinishRows(rows.slice(0,3));
+      event.has_more_results=rows.length>3;event.result_count=rows.length;
+    }else if(status==='Live'){
+      event.recency_label=found?.lap?`Lap ${found.lap}`:'Under way';
+      event.headline=rows[0]?`Leader: ${rows[0].driver}`:'Under way';
+      event.results=rows.slice(0,10).map(r=>({participant:`${ordinal(r.pos)} ${r.driver}`,result:r.country||''}));
+      if(rows.length){event.live_details={stage:event.recency_label,order:rows.map(r=>({position:r.pos,driver:r.driver,car:'',gap:r.pos===1?'Leader':null,make:null,laps_led:null,last_lap_speed:null,pit_stops:null}))};event.live_score_source='ESPN IndyCar board';}
+      event.result_count=event.results.length;
+    }else{
+      event.results.push({label:'Round',value:`${race.round} of ${total}`});
+      event.result_count=event.results.length;
+    }
+    events.push(event);
+  }
+  // The next season, from the series' schedule, once ESPN's calendar holds
+  // no coming race of it.
+  const espnYear=Math.max(0,...calendar.map(r=>r.year||0));
+  const next=schedule.filter(r=>r.year>espnYear),count=new Map();for(const r of next)count.set(r.year,(count.get(r.year)||0)+1);
+  const seen=new Map();
+  for(const race of next){
+    const n=(seen.get(race.year)||0)+1;seen.set(race.year,n);
+    const timed=Boolean(race.clock),start=`${race.date}T${race.clock||'00:00'}:00.000Z`,day=dayOf(start);
+    if(day<today)continue;
+    const event=baseEvent({school,sport,status:day===today?'Today':'Upcoming',title:race.name.replace(/\s*-\s*Race\s*(\d)$/i,' (Race $1)'),start,display:displayTime(start,{timed}),opponent:race.track||race.name,sourceName:'IndyCar schedule (indycar.com)',sourceUrl:race.url||config.schedule,now,key:`${race.year}|${race.date}|${race.name}`});
+    event.season=race.year;event.track=race.track||race.name;
+    if(race.tv.length)event.broadcast=race.tv.join(', ');
+    event.results.push({label:'Track',value:race.track||race.name});
+    if(race.place)event.results.push({label:'Location',value:race.place});
+    event.results.push({label:'Round',value:`${n} of ${count.get(race.year)}`});
+    if(!timed)event.results.push({label:'Start',value:'Time to be announced'});
+    event.result_count=event.results.length;
+    events.push(event);
+  }
+  return events;
+}
+export function indycarStandings(payload){
+  const entries=(payload?.children||[]).flatMap(c=>c?.standings?.entries||[]);
+  const stat=(e,n)=>(e.stats||[]).find(s=>s?.name===n)?.displayValue;
+  const season=(payload?.children||[]).find(c=>c?.standings?.season)?.standings?.season;
+  const rows=entries.map(e=>({pos:Number(stat(e,'rank'))||null,name:e.athlete?.displayName||'',detail:e.athlete?.flag?.alt||'',points:pointsOf(stat(e,'championshipPts'))})).filter(r=>r.name&&r.points!=null).sort((a,b)=>(a.pos??999)-(b.pos??999));
+  const table=standingsTable('Drivers',rows,{source:{name:`ESPN IndyCar standings${season?` (${season} season)`:''}`,url:'https://www.espn.com/racing/standings/_/series/irl'}});
+  return table?[table]:[];
 }
 
 // ---- Standings ----

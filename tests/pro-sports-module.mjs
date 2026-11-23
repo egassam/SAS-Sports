@@ -32,8 +32,9 @@ const pro=schools.filter(s=>s.level==='pro');
 // "Start 1-4"; tests/milb-module.mjs, tests/pro-alumni-module.mjs). The 20
 // Premier League and 36 Champions League clubs follow the NWSL (user,
 // November 23: "Add more pro", then "1 then 4"; tests/european-soccer-module.mjs).
-assert.equal(pro.length,253);
-assert.deepEqual(pro.filter(s=>s.pro_sport==='Auto Racing').map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
+// IndyCar follows Formula 1 (same request; tests/indycar-module.mjs).
+assert.equal(pro.length,254);
+assert.deepEqual(pro.filter(s=>s.pro_sport==='Auto Racing').map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1','indycar-series']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
 assert.deepEqual(divisions,{

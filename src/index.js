@@ -75,7 +75,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
+import {INDYCAR_SCHEDULE,INDYCAR_BOARD,INDYCAR_STANDINGS,indycarCalendar,indycarBoardDay,indycarRace,indycarSchedule,indycarRaces,indycarRaceDetails,indycarStandings,MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -350,7 +350,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.327.0-european-soccer';
+const VERSION='4.328.0-indycar';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5394,6 +5394,7 @@ async function fetchPro(school,sport,now,aiTargetId=null){
   }
   if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);
   if(config.kind==='f1')return fetchF1(school,config,now,timeZone,aiTargetId,failed);
+  if(config.kind==='indycar')return fetchIndycar(school,config,now,timeZone,aiTargetId,failed);
   if(config.kind==='world-athletics')return fetchWorldAthletics(school,config,now,timeZone,aiTargetId,failed);
   return failed('Unknown pro source');
 }
@@ -5444,6 +5445,36 @@ async function fetchWorldAthletics(school,config,now,timeZone,aiTargetId,failed)
     }
   }
   return{events,source_url:config.schedule,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+}
+// IndyCar (src/pro-sports.mjs): ESPN's calendar, each past race's board
+// (kept six hours once final; a race day's every 30 s), indycar.com's
+// schedule for the next season, ESPN's driver standings.
+async function fetchIndycar(school,config,now,timeZone,aiTargetId,failed){
+  const [calendarBoard,scheduleHtml,standingsPayload]=await Promise.all([readJson(INDYCAR_BOARD,SOURCE_TTL.listing),readText(INDYCAR_SCHEDULE,SOURCE_TTL.listing),readJson(INDYCAR_STANDINGS,SOURCE_TTL.article)]);
+  const calendar=indycarCalendar(calendarBoard);
+  if(!calendar.length)return failed(`${INDYCAR_BOARD}: unreadable or empty`);
+  const nowMs=now.getTime(),sources=[INDYCAR_BOARD],results=new Map();
+  await Promise.all(calendar.map(async race=>{
+    const began=Date.parse(race.listed)-3*3600e3;if(began>nowMs)return;
+    const recent=nowMs-began<=8*3600e3,url=`${INDYCAR_BOARD}?dates=${indycarBoardDay(race)}`;
+    const found=indycarRace(await readJson(url,recent?30:SOURCE_TTL.document),race);
+    if(found){results.set(race.round,found);if(recent)sources.push(url);}
+  }));
+  const schedule=indycarSchedule(scheduleHtml||'');
+  if(schedule.length)sources.push(INDYCAR_SCHEDULE);
+  const events=indycarRaces(calendar,{school,config,timeZone,now,results,schedule});
+  const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
+  if(target&&target.status==='Final'){
+    const details=indycarRaceDetails(target,results.get(target.indycar_round)?.rows);
+    if(details){
+      target.results=details.rows;target.result_count=details.rows.length;target.race_table=details.table;
+      target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
+      target.highlight_status='Finishing order from ESPN\'s IndyCar board (ESPN publishes no car numbers, teams or laps for IndyCar).';
+    }
+  }
+  const standings=indycarStandings(standingsPayload);
+  if(standings.length)sources.push(INDYCAR_STANDINGS);
+  return{events,...(standings.length?{standings}:{}),source_url:INDYCAR_SCHEDULE,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
 }
 async function fetchF1(school,config,now,timeZone,aiTargetId,failed){
   const year=schoolNow(now,school).getUTCFullYear(),calendarUrl=`${JOLPICA_F1}${year}.json`,seasonUrl=`${F1_RESULTS}${year}/races`;
