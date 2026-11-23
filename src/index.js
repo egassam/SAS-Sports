@@ -351,7 +351,7 @@ import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 import {feedbackRoute,FEEDBACK_TABLE_SQL} from './feedback.mjs';
 
-const VERSION='4.330.0-feedback-alerts';
+const VERSION='4.330.1-owner-taps';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
