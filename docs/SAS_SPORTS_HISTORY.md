@@ -5920,3 +5920,20 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 
 **Open.** IndyCar fuller results (user's approval for indycar.com's API); first live EPL/UCL cards; next season's UCL clubs after the August draw; remaining pro ideas: golf, UFC, tennis.
 
+## November 23, 2026 — Install page at /get/ (PR #642)
+
+**Asked.** User: "We need to make a download page for this app with instructions on how it works and how you customize so I can start sharing it. I need to start getting more feedback." Midway, after seeing the first version: "Make sure it has detailed instructions for how to install it on Apple. Droid is easy. I don't want it in the app. I only wanted an install page so I could send people to that page to install it. There's no purpose to have an install option within the app..."
+
+**Built** (`4.329.0-get-page`, `docs/DOWNLOAD_PAGE.md`):
+- `public/get/index.html` (static, served at `/get/`): install (iPhone/iPad in detail, Android, computer; the browser's own prompt where offered; the page opens on the visitor's device tab, and on an iPhone opened inside Instagram/Facebook/Snapchat/TikTok/X/LinkedIn/Pinterest/the Google app it names that app and says how to open Safari), how it works, Make it yours (☆ Favorite, My Teams, ⚙ Customize, Alerts, Calendar), questions, feedback form, share. Team counts rounded down (250+, 360+, 180+, 80+).
+- `src/feedback.mjs`: `POST /api/feedback` stores notes in D1 `CATALOG_DB.feedback` per host (3 to 2,000 characters, 8 KB body, 60 an hour per host, same origin only, honeypot field); `GET` with `Authorization: Bearer <SOURCE_FETCH_KEY>` returns the latest 500. Routed in `src/index.js` next to `/api/push/`.
+- `tests/download-page.mjs` (in `npm test` and `test:release`): page sections and iPhone details, the app does not link to `/get/`, cleaning, the route on a stand-in D1 (spam, 400/413/403/405/401/429/503).
+
+**Changed along the way.** The first commit added a header Feedback link and a footer link in the app. `check-reference-page` on the preview failed (Manhattan, Anthony, Eisenhower 420 px wide at 390: Alerts, Calendar and Feedback do not fit; Alerts is on there). The link was limited to wide screens, then removed entirely with the footer link at the user's request; `public/index.html` merged unchanged from `main`. A hidden-radio overflow on the page itself (676 px at 390, from the shared `input{width:100%}`) was found in Chromium and fixed before the PR; nested step lists that picked up step numbers were fixed too.
+
+**Gate.** Local `npm test` exit 0 (earlier tree; later commits touched only the page and its test). CI `guardrails` green on `84e3da0`, no conflict (main had gained only the #641 handoff). Preview: `/get/` 200, feedback POST `{"received":true}` (one preview note: "Preview check from the build session (ignore)"), GET without key 401; `verify:preview` K-State XC 18/20, KU XC 26/21, kstate Cross Country 3 refreshes PASS, Manhattan, Anthony, Eisenhower all sports 3 refreshes PASS; `check-reference-page` PASS after the header link change. Page checked in Chromium at iPhone 13 (Safari and Instagram user agents) and 1280 px.
+
+**Production** (merge `4072f9e`). `/api/status` `4.329.0-get-page`; `verify:prod` Manhattan Basketball PASS, K-State XC 18/20, KU XC 26/21; `check-reference-page` PASS; `/get/` 200 with the iPhone steps; production `/` has no `/get/` link; `/api/feedback` GET without key 401, cross-origin POST 403. No note was posted to production.
+
+**Not done / open.** The app's own header Install app button (from November 9) is unchanged; the user's "no purpose to have an install option within the app" may also mean that button: asked. Feedback is read in the Cloudflare D1 console (query in `docs/DOWNLOAD_PAGE.md`); no in-app or email notice when a note arrives.
+
