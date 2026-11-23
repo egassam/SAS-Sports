@@ -6,6 +6,7 @@ Started November 9, 2026 (user: "When should we make this into an app for Apple 
 
 The site can be installed from the browser and opens full screen with its own icon. No app store is involved; every deploy of the Worker updates the installed app.
 
+- **No install button in the app since November 23, 2026** (user: "remove the Install app button from the app"; and on the install page: "There's no purpose to have an install option within the app"). People install from **`/get/`** (`docs/DOWNLOAD_PAGE.md`). The service worker is still registered on every page load (alerts and the offline page need it). The two items below describe the button as it was.
 - **Android / Chrome / Edge (desktop too):** an "Install app" button appears in the header when the browser offers installation (`beforeinstallprompt`). The browser menu's "Install app" also works.
 - **iPhone / iPad:** the "Install app" button shows a hint: Share, then Add to Home Screen (Apple offers no install prompt to web pages).
 - The button never shows inside the installed app.

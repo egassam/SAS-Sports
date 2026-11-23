@@ -13,7 +13,7 @@ const html=read('index.html').toString();
 for(const tag of ['<link rel="manifest" href="/manifest.webmanifest">','<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">','<meta name="apple-mobile-web-app-capable" content="yes">','<meta name="apple-mobile-web-app-title" content="SAS Sports">'])
   assert.ok(html.includes(tag),`index.html must include ${tag}`);
 assert.match(html,/navigator\.serviceWorker\.register\('\/sw\.js'\)/,'index.html registers /sw.js');
-assert.match(html,/id="installApp"[^>]*hidden/,'the Install app button starts hidden');
+assert.ok(!/id="installApp"|id="installHint"|beforeinstallprompt/.test(html),'no install button in the app (user, November 23: "remove the Install app button from the app"; people install from /get/)');
 
 // Manifest
 const manifest=JSON.parse(read('manifest.webmanifest'));

@@ -22,8 +22,25 @@ export const PUSH_TABLES_SQL=[
   // decides which alert is due. Rows older than PUSH_EVENT_KEEP_DAYS go.
   `CREATE TABLE IF NOT EXISTS push_events (
     scope TEXT NOT NULL, event_key TEXT NOT NULL, school_id TEXT NOT NULL, state TEXT NOT NULL, seen TEXT NOT NULL,
-    PRIMARY KEY (scope, event_key))`
+    PRIMARY KEY (scope, event_key))`,
+  // The owner's phones (user, November 23, 2026: "I want to be notified when
+  // I get feedback"): a subscription listed here also gets an alert for each
+  // feedback note, and may read the notes. Marked with the owner code.
+  `CREATE TABLE IF NOT EXISTS push_owners (
+    scope TEXT NOT NULL, endpoint TEXT NOT NULL, added TEXT NOT NULL,
+    PRIMARY KEY (scope, endpoint))`,
+  // Owner-code attempts, so the code cannot be guessed quickly.
+  `CREATE TABLE IF NOT EXISTS push_owner_tries (scope TEXT NOT NULL, at TEXT NOT NULL)`
 ];
+export const OWNER_TRIES_PER_HOUR=10;
+const FEEDBACK_KIND_NAMES={idea:'Idea',bug:"Something's wrong",missing:'Missing team',praise:'What they like',other:'Other'};
+// The alert for one feedback note: the kind, the team if given, and the start
+// of the message (a push message must stay small; the full note is in the app).
+export function feedbackAlert(note){
+  const text=String(note?.message||'').replace(/\s+/g,' ').trim();
+  const body=(note?.team?`${note.team}: `:'')+(text.length>160?`${text.slice(0,157)}…`:text);
+  return{title:`New feedback · ${FEEDBACK_KIND_NAMES[note?.kind]||'Other'}`,body,url:'/?feedback=1',tag:`feedback-${note?.id??Date.now()}`};
+}
 export const PUSH_EVENT_KEEP_DAYS=3;
 export const PUSH_MAX_FAVORITES=60;
 export const PUSH_FAILURES_TO_DROP=5;

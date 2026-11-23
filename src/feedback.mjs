@@ -4,7 +4,8 @@
 // feedback."). Anyone can send a note from /get/#feedback; it is kept in D1
 // (CATALOG_DB, table feedback, per host so a preview's are its own). Reading
 // the notes takes the source key (GET /api/feedback with Bearer
-// SOURCE_FETCH_KEY), or the Cloudflare D1 console:
+// SOURCE_FETCH_KEY), the owner's phone (the app with ?feedback=1, after the
+// owner code), or the Cloudflare D1 console:
 //   SELECT * FROM feedback ORDER BY id DESC;
 
 export const FEEDBACK_TABLE_SQL=`CREATE TABLE IF NOT EXISTS feedback (
@@ -34,7 +35,7 @@ export function cleanFeedback(body){
   return{kind,message,contact:clean(body.contact,FEEDBACK_LIMITS.contact)||null,team:clean(body.team,FEEDBACK_LIMITS.team)||null,device:clean(body.device,FEEDBACK_LIMITS.device)||null};
 }
 
-export async function feedbackRoute(request,env,url,{json,sameSecret,now=()=>new Date()}){
+export async function feedbackRoute(request,env,url,{json,sameSecret,notify=null,now=()=>new Date()}){
   const db=env?.CATALOG_DB,scope=url.hostname;
   if(!db)return json({detail:'Feedback is not set up'},503);
   if(request.method==='GET'){
@@ -58,6 +59,9 @@ export async function feedbackRoute(request,env,url,{json,sameSecret,now=()=>new
   const at=now().toISOString(),hourAgo=new Date(Date.parse(at)-3600000).toISOString();
   const recent=Number((await db.prepare('SELECT COUNT(*) AS n FROM feedback WHERE scope=? AND at>?').bind(scope,hourAgo).first())?.n)||0;
   if(recent>=FEEDBACK_LIMITS.perHour)return json({detail:'Lots of feedback right now. Try again in a little while.'},429);
-  await db.prepare('INSERT INTO feedback (scope,at,kind,message,contact,team,device) VALUES (?,?,?,?,?,?,?)').bind(scope,at,note.kind,note.message,note.contact,note.team,note.device).run();
+  const saved=await db.prepare('INSERT INTO feedback (scope,at,kind,message,contact,team,device) VALUES (?,?,?,?,?,?,?)').bind(scope,at,note.kind,note.message,note.contact,note.team,note.device).run();
+  // The owner's phones get an alert (user, November 23: "I want to be notified
+  // when I get feedback"). The note is stored either way.
+  if(notify)try{await notify({...note,id:saved?.meta?.last_row_id??null,at},scope)}catch{}
   return json({received:true});
 }

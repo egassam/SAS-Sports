@@ -70,7 +70,7 @@ import {KSHSAA_BRACKETS,stateSitesUrl,bracketUrl,stateSiteBrackets,parseKshsaaBr
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
 import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings,conferenceStandingsUrl,conferenceSiteStandings,parseSidearmStandings} from './college-standings.mjs';
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
-import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,highSchoolGames,dueHighSchoolAlerts,vapidSigningKey,vapidKeyCheck,sendPush} from './push-alerts.mjs';
+import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,highSchoolGames,dueHighSchoolAlerts,vapidSigningKey,vapidKeyCheck,sendPush,feedbackAlert,OWNER_TRIES_PER_HOUR} from './push-alerts.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
@@ -349,9 +349,9 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
-import {feedbackRoute} from './feedback.mjs';
+import {feedbackRoute,FEEDBACK_TABLE_SQL} from './feedback.mjs';
 
-const VERSION='4.329.0-get-page';
+const VERSION='4.330.0-feedback-alerts';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7106,6 +7106,17 @@ async function readBody(request,limit=8192){
   const text=await request.text();if(text.length>limit)return null;
   try{return JSON.parse(text)}catch{return null}
 }
+// One alert per feedback note to the owner's phones. A failure never loses the
+// note (it is already stored).
+async function notifyFeedbackOwners(env,scope,note){
+  if(!pushConfigured(env))return{sent:0};
+  const db=env.CATALOG_DB;await ensurePushTables(db);
+  const subs=(await db.prepare('SELECT s.endpoint,s.p256dh,s.auth FROM push_subscriptions s JOIN push_owners o ON o.scope=s.scope AND o.endpoint=s.endpoint WHERE s.scope=?').bind(scope).all())?.results||[];
+  if(!subs.length)return{sent:0};
+  const keys=await pushKeys(env),message=feedbackAlert(note);
+  const results=await Promise.all(subs.map(sub=>sendPush(sub,message,{...keys,fetchImpl:fetch}).catch(()=>({ok:false}))));
+  return{sent:results.filter(r=>r.ok).length};
+}
 async function pushRoute(request,env,url){
   const path=url.pathname,scope=url.hostname;
   // The key check signs with the secret and verifies with the public key; it
@@ -7133,8 +7144,32 @@ async function pushRoute(request,env,url){
     return json({subscribed:true,favorites,covered:favorites.filter(pushCovered)});
   }
   const endpoint=String(body.endpoint||'');
+  // The owner's phone (user, November 23, 2026: "I want to be notified when I
+  // get feedback"): the owner code (Worker secret OWNER_CODE, or the source
+  // key) marks this phone's subscription; it then gets an alert for each
+  // feedback note and may read the notes (/api/push/feedback).
+  if(path==='/api/push/owner'){
+    const secret=env?.OWNER_CODE||env?.SOURCE_FETCH_KEY;
+    if(!secret)return json({detail:'The owner code is not set up (Worker secret OWNER_CODE)'},503);
+    const hourAgo=new Date(Date.now()-3600000).toISOString();
+    const tries=Number((await db.prepare('SELECT COUNT(*) AS n FROM push_owner_tries WHERE scope=? AND at>?').bind(scope,hourAgo).first())?.n)||0;
+    if(tries>=OWNER_TRIES_PER_HOUR)return json({detail:'Too many tries. Wait an hour.'},429);
+    if(!(await sameSecret(String(body.code||''),secret))){await db.prepare('INSERT INTO push_owner_tries (scope,at) VALUES (?,?)').bind(scope,at).run();return json({detail:'That code is not right'},401)}
+    const sub=await db.prepare('SELECT endpoint,p256dh,auth FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,endpoint).first();
+    if(!sub)return json({detail:'Turn on Alerts on this phone first'},404);
+    await db.prepare('INSERT INTO push_owners (scope,endpoint,added) VALUES (?,?,?) ON CONFLICT(scope,endpoint) DO NOTHING').bind(scope,endpoint,at).run();
+    let sent=false;try{sent=(await sendPush(sub,{title:'Feedback alerts are on',body:"You'll get an alert on this phone for each feedback note.",url:'/?feedback=1',tag:'feedback-on'},{...await pushKeys(env),fetchImpl:fetch})).ok}catch{}
+    return json({owner:true,sent});
+  }
+  if(path==='/api/push/feedback'){
+    const owner=await db.prepare('SELECT 1 AS ok FROM push_owners WHERE scope=? AND endpoint=?').bind(scope,endpoint).first();
+    if(!owner)return json({detail:'Not the owner'},403);
+    await db.prepare(FEEDBACK_TABLE_SQL).run();
+    const rows=await db.prepare('SELECT id,at,kind,message,contact,team,device FROM feedback WHERE scope=? ORDER BY id DESC LIMIT 100').bind(scope).all();
+    return json({feedback:rows?.results||[]});
+  }
   if(path==='/api/push/unsubscribe'){
-    await db.prepare('DELETE FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,endpoint).run();
+    await db.batch([db.prepare('DELETE FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,endpoint),db.prepare('DELETE FROM push_owners WHERE scope=? AND endpoint=?').bind(scope,endpoint)]);
     return json({subscribed:false});
   }
   if(path==='/api/push/test'){
@@ -7800,7 +7835,7 @@ async function routeRequest(request,env,ctx){
     // run now (2 feeds, no gap) with the source key.
     if(url.pathname==='/api/refresh-status'){let status=null,paused=null;try{status=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_STATUS_KEY,url.hostname),'json');paused=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_PAUSE_KEY,url.hostname))}catch{}return json({version:VERSION,schedule:'every 10 minutes',batch:REFRESH_BATCH,gap_seconds:REFRESH_GAP_MS/1000,feeds:refreshFeeds(HIGH_SCHOOL_MODULES).length,paused:Boolean(paused),status});}
     if(url.pathname.startsWith('/api/push/'))return pushRoute(request,env,url);
-    if(url.pathname==='/api/feedback')return feedbackRoute(request,env,url,{json,sameSecret});
+    if(url.pathname==='/api/feedback')return feedbackRoute(request,env,url,{json,sameSecret,notify:(note,scope)=>notifyFeedbackOwners(env,scope,note)});
     if(url.pathname==='/api/refresh-control'){
       const secret=env?.SOURCE_FETCH_KEY,given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
       if(!secret)return json({detail:'Not found'},404);
