@@ -2,7 +2,6 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| montana | Basketball | 🔴 on | live 3-3 · 7:29 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1398,6 +1397,7 @@
 | monmouth | Basketball | ✅ off (passed) | Men's · Monmouth at St John's · 2026-11-03T06:08:38.986Z |
 | monmouth | Field Hockey | ✅ off (passed) | Monmouth vs Fairfield · 2026-10-23T23:34:13.874Z |
 | monmouth | Soccer | ✅ off (passed) | Men's · Monmouth vs Stony Brook · 2026-10-24T21:15:41.017Z |
+| montana | Basketball | ✅ off (passed) | Women's · Montana vs MT St Northern · 2026-11-23T01:34:13.905Z |
 | montana | Soccer | ✅ off (passed) | Montana at N Arizona · 2026-10-23T07:27:20.343Z |
 | montana | Volleyball | ✅ off (passed) | Montana at Idaho St · 2026-10-23T07:27:20.390Z |
 | montana-state | Basketball | ✅ off (passed) | Men's · Montana State vs Cal Poly · 2026-11-16T03:01:23.208Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1127/1956; on 1; off 826; failing 2.
+Done 1128/1956; on 0; off 826; failing 2.
