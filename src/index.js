@@ -350,7 +350,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.326.0-ks-counties-8';
+const VERSION='4.327.0-european-soccer';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -2798,7 +2798,9 @@ const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/
 // Official schedule times are stored as the school's local wall clock with a
 // Z suffix. Compare days and convert provider UTC times in that same frame so
 // an evening game is not moved to the next day or dropped at 00:00 UTC.
-const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Idaho:'America/Boise',Montana:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles',Hawaii:'Pacific/Honolulu','New Mexico':'America/Denver',Wyoming:'America/Denver','British Columbia':'America/Vancouver',Alberta:'America/Edmonton',Manitoba:'America/Winnipeg',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago','North Dakota':'America/Chicago','South Dakota':'America/Chicago'};
+const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Idaho:'America/Boise',Montana:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles',Hawaii:'Pacific/Honolulu','New Mexico':'America/Denver',Wyoming:'America/Denver','British Columbia':'America/Vancouver',Alberta:'America/Edmonton',Manitoba:'America/Winnipeg',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago','North Dakota':'America/Chicago','South Dakota':'America/Chicago',
+  // European soccer clubs (Premier League, Champions League) by country.
+  England:'Europe/London',Spain:'Europe/Madrid',Italy:'Europe/Rome',Germany:'Europe/Berlin',France:'Europe/Paris',Portugal:'Europe/Lisbon',Netherlands:'Europe/Amsterdam',Belgium:'Europe/Brussels',Turkey:'Europe/Istanbul',Greece:'Europe/Athens',Norway:'Europe/Oslo',Austria:'Europe/Vienna',Czechia:'Europe/Prague',Slovakia:'Europe/Bratislava',Ukraine:'Europe/Kyiv',Azerbaijan:'Asia/Baku'};
 // Formula 1 races are listed in Eastern time, as ESPN and US broadcasts list them.
 // Idaho's Moscow (the Vandals) keeps Pacific time; Boise, Mountain.
 const SCHOOL_TIME_ZONES={chattanooga:'America/New_York','east-tennessee-state':'America/New_York',evansville:'America/Chicago',valparaiso:'America/Chicago','murray-state':'America/Chicago','western-kentucky':'America/Chicago',tennessee:'America/New_York',idaho:'America/Los_Angeles','formula-1':'America/New_York'};
@@ -5277,7 +5279,11 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     const base=`${ESPN_SITE}${config.espn.path}/teams/${config.espn.id??config.espn.team}/schedule`,urls=[base];
     if(config.fixtures)urls.push(`${base}?fixture=true`);
     // The NFL postseason is read only in its months (January and February).
-    const month=schoolNow(now,school).getUTCMonth()+1;if(config.sport==='Football'&&month<=2)urls.push(`${base}?seasontype=3`);
+    const month=schoolNow(now,school).getUTCMonth()+1;
+    // European soccer reads its season by name (2026 is 2026-27, from July):
+    // a plain list follows ESPN's current stage ("League Phase"), and a named
+    // season holds every stage (2025-26: the league phase through the final).
+    if(EUROPEAN_SOCCER.has(config.espn.path)){const season=month>=7?schoolNow(now,school).getUTCFullYear():schoolNow(now,school).getUTCFullYear()-1;urls.splice(0,urls.length,`${base}?season=${season}`,`${base}?season=${season}&fixture=true`);}if(config.sport==='Football'&&month<=2)urls.push(`${base}?seasontype=3`);
     // MLB: the plain list is the current season type (spring training, then
     // the regular season, then the postseason), so the regular season is read
     // by name, and the postseason in its months (September to November).
@@ -5798,10 +5804,13 @@ function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:
 // early December, MLB late March to the World Series (early November), the
 // NBA and NHL October to the June finals, professional track and field from
 // the indoor season (January) to the Diamond League final (September).
+const EUROPEAN_SOCCER=new Set(['soccer/eng.1','soccer/uefa.champions']);
 const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]],'Track & Field':[[1,9]]};
 // A league whose season is not its sport's (by ESPN path): the WNBA plays
 // May to its October finals.
-const PRO_LEAGUE_SEASONS={'basketball/wnba':[[5,10]],'mlb-stats':[[3,9]]};
+// The Premier League plays August to May; the Champions League's league
+// phase starts in September and its final is in late May or early June.
+const PRO_LEAGUE_SEASONS={'basketball/wnba':[[5,10]],'mlb-stats':[[3,9]],'soccer/eng.1':[[8,5]],'soccer/uefa.champions':[[9,6]]};
 function inSeason(sport,month,pro=false,league=null){const windows=(pro&&(PRO_LEAGUE_SEASONS[league]||PRO_SEASONS[sport]))||SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 // A sport's overall record this season (user, October 7: "the sports overall
 // win/loss record for every sport"), counted from its finals' W/L/T results

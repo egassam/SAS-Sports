@@ -117,6 +117,68 @@ export const PRO_TEAMS={
   'seattle-reign-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'sea',id:15363},fixtures:true,schedule:'https://www.reignfc.com/schedule'},
   'utah-royals':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'uta',id:19141},fixtures:true,schedule:'https://www.rsl.com/utahroyals/schedule/'},
   'washington-spirit':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'was',id:15365},fixtures:true,schedule:'https://washingtonspirit.com/schedule/'},
+  // English Premier League (user, November 23, 2026: "Add more pro", then
+  // "1 then 4"): the 20 clubs of 2026-27, one table, read from ESPN like
+  // MLS (results and fixtures, by season).
+  'afc-bournemouth':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'bou',id:349},fixtures:true,schedule:'https://www.afcb.co.uk/matches/fixtures'},
+  'arsenal':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'ars',id:359},fixtures:true,schedule:'https://www.arsenal.com/fixtures/men/fixtures'},
+  'aston-villa':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'avl',id:362},fixtures:true,schedule:'https://www.avfc.co.uk/matches'},
+  'brentford':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'bre',id:337},fixtures:true,schedule:'https://www.brentfordfc.com/en/matches/mens/fixtures'},
+  'brighton-and-hove-albion':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'bha',id:331},fixtures:true,schedule:'https://www.brightonandhovealbion.com/fixtures'},
+  'chelsea':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'che',id:363},fixtures:true,schedule:'https://www.chelseafc.com/en/matches/mens-fixtures-and-results'},
+  'coventry-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'cov',id:388},fixtures:true,schedule:'https://www.ccfc.co.uk/fixtures'},
+  'crystal-palace':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'cry',id:384},fixtures:true,schedule:'https://www.cpfc.co.uk/fixtures/'},
+  'everton':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'eve',id:368},fixtures:true,schedule:'https://www.evertonfc.com/matches'},
+  'fulham':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'ful',id:370},fixtures:true,schedule:'https://www.fulhamfc.com/matches'},
+  'hull-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'hul',id:306},fixtures:true,schedule:'https://www.wearehullcity.co.uk/fixtures'},
+  'ipswich-town':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'ips',id:373},fixtures:true,schedule:'https://www.itfc.co.uk/fixtures'},
+  'leeds-united':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'lee',id:357},fixtures:true,schedule:'https://www.leedsunited.com/en/matches/mens/fixtures'},
+  'liverpool':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'liv',id:364},fixtures:true,schedule:'https://www.liverpoolfc.com/matches/mens-team/fixtures'},
+  'manchester-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'mnc',id:382},fixtures:true,schedule:'https://www.mancity.com/fixtures'},
+  'manchester-united':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'man',id:360},fixtures:true,schedule:'https://www.manutd.com/en/matches/mens-team/fixtures'},
+  'newcastle-united':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'new',id:361},fixtures:true,schedule:'https://www.newcastleunited.com/en/matches/mens-team/fixtures'},
+  'nottingham-forest':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'nfo',id:393},fixtures:true,schedule:'https://www.nottinghamforest.co.uk/fixtures'},
+  'sunderland':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'sun',id:366},fixtures:true,schedule:'https://www.safc.com/matches'},
+  'tottenham-hotspur':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/eng.1',team:'tot',id:367},fixtures:true,schedule:'https://www.tottenhamhotspur.com/teams/mens/matches'},
+  // UEFA Champions League (same request): the 36 clubs of the 2026-27 league
+  // phase, one table; the knockout rounds by round and leg. The five English
+  // clubs are entries of both leagues (`-ucl` here), as ESPN keeps them.
+  'aek-athens-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'aek',id:887},fixtures:true,schedule:'https://www.aekfc.gr'},
+  'as-roma-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'roma',id:104},fixtures:true,schedule:'https://www.asroma.com/en/men/fixtures'},
+  'arsenal-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'ars',id:359},fixtures:true,schedule:'https://www.arsenal.com/fixtures/men/fixtures'},
+  'aston-villa-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'avl',id:362},fixtures:true,schedule:'https://www.avfc.co.uk/matches'},
+  'atletico-madrid-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'atm',id:1068},fixtures:true,schedule:'https://en.atleticodemadrid.com'},
+  'barcelona-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'bar',id:83},fixtures:true,schedule:'https://www.fcbarcelona.com/en/football/first-team/schedule'},
+  'bayern-munich-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'mun',id:132},fixtures:true,schedule:'https://fcbayern.com/en/matches/profis'},
+  'bodo-glimt-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'bodo',id:2980},fixtures:true,schedule:'https://www.glimt.no'},
+  'borussia-dortmund-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'dor',id:124},fixtures:true,schedule:'https://www.bvb.de/de/de/bvb-spielplan.html'},
+  'club-brugge-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'bru',id:570},fixtures:true,schedule:'https://www.clubbrugge.be/en'},
+  'como-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'como',id:2572},fixtures:true,schedule:'https://comofootball.com/fixtures-and-results/'},
+  'fc-porto-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'fcp',id:437},fixtures:true,schedule:'https://www.fcporto.pt/en/schedule'},
+  'fenerbahce-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'fen',id:436},fixtures:true,schedule:'https://www.fenerbahce.org'},
+  'feyenoord-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'fey',id:142},fixtures:true,schedule:'https://www.feyenoord.com'},
+  'galatasaray-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'gal',id:432},fixtures:true,schedule:'https://www.galatasaray.org/en'},
+  'inter-milan-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'int',id:110},fixtures:true,schedule:'https://www.inter.it/en/inter-calendar'},
+  'lask-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'las',id:4411},fixtures:true,schedule:'https://www.lask.at/de/m/matches/pros'},
+  'lens-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'rcl',id:175},fixtures:true,schedule:'https://www.rclens.fr'},
+  'lille-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'lill',id:166},fixtures:true,schedule:'https://www.losc.fr'},
+  'liverpool-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'liv',id:364},fixtures:true,schedule:'https://www.liverpoolfc.com/matches/mens-team/fixtures'},
+  'manchester-city-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'mnc',id:382},fixtures:true,schedule:'https://www.mancity.com/fixtures'},
+  'manchester-united-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'man',id:360},fixtures:true,schedule:'https://www.manutd.com/en/matches/mens-team/fixtures'},
+  'napoli-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'nap',id:114},fixtures:true,schedule:'https://sscnapoli.it/stagione/calendario'},
+  'psv-eindhoven-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'psv',id:148},fixtures:true,schedule:'https://www.psv.nl'},
+  'paris-saint-germain-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'psg',id:160},fixtures:true,schedule:'https://www.psg.fr/en'},
+  'rb-leipzig-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'rbl',id:11420},fixtures:true,schedule:'https://rbleipzig.com/en'},
+  'real-betis-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'bet',id:244},fixtures:true,schedule:'https://www.realbetisbalompie.es/primer-equipo/matches/'},
+  'real-madrid-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'rma',id:86},fixtures:true,schedule:'https://www.realmadrid.com/en-US/schedule'},
+  'sabah-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'sab',id:21922},fixtures:true,schedule:'https://sabahfc.az/matches'},
+  'shakhtar-donetsk-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'shk',id:493},fixtures:true,schedule:'https://shakhtar.com/en'},
+  'slavia-prague-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'slp',id:494},fixtures:true,schedule:'https://www.slavia.cz'},
+  'slovan-bratislava-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'slb',id:521},fixtures:true,schedule:'https://www.skslovan.com/zapasy/'},
+  'sporting-cp-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'scp',id:2250},fixtures:true,schedule:'https://www.sporting.pt'},
+  'vfb-stuttgart-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'vfb',id:134},fixtures:true,schedule:'https://www.vfb.de/en/1893/latest/fixtures/'},
+  'viking-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'vfk',id:510},fixtures:true,schedule:'https://www.vikingfotball.no'},
+  'villarreal-ucl':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/uefa.champions',team:'vil',id:102},fixtures:true,schedule:'https://villarrealcf.es/en/calendario-primer-equipo/'},
   // Major League Baseball (user, October 19: "Let's add MLB in the pro
   // section including playoff games"): all 30 teams by division, AL then NL.
   // Division games give the header's "AL Central 30-22" (regular season);
@@ -326,6 +388,8 @@ export const NASCAR_FEEDS='https://cf.nascar.com/';
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const pad=n=>String(n).padStart(2,'0');
 const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+// "Atlético Madrid" and "Atletico Madrid" are one name.
+const normalName=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const ordinal=n=>`${n}${n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th'}`;
 
 // A UTC instant as the team's local wall clock ("2026-09-13T13:00:00.000Z"
@@ -398,7 +462,10 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       else if(state==='pre'&&day>=today)status=day===today?'Today':'Upcoming';
       else continue;
       const tv=(c.broadcasts||[]).map(b=>b.media?.shortName).filter(Boolean);
-      const relation=c.neutralSite?'vs':own.homeAway==='away'?'at':'vs';
+      // The Champions League final is played at a ground chosen in advance
+      // (2026: Budapest), though ESPN names a home side.
+      const neutral=c.neutralSite||config.espn.path==='soccer/uefa.champions'&&/^Final$/i.test(game.seasonType?.name||'');
+      const relation=neutral?'vs':own.homeAway==='away'?'at':'vs';
       // A World Series opponent not yet decided is the other league's
       // champion ("TBD" in ESPN's list).
       const tbd=/^TBD$/i.test(opp.team.abbreviation||opp.team.displayName||'');
@@ -411,12 +478,16 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       // Playoffs - Round One", "MLS Cup"). ESPN's MLB "week" is not a
       // baseball notion and is not shown.
       // The NBA's play-in tournament is its own season type (5): postseason.
-      const week=series?null:game.week?.text||null,postseason=[3,5].includes(Number(game.seasonType?.type))||['3','5'].includes(String(game.seasonType?.id))||/post|playoff|play-in|mls cup/i.test(game.seasonType?.name||'');
+      // The Champions League's knockout rounds are season types of their own
+      // ("Knockout Round Playoffs", "Round of 16" … "Final", ids 2 to 6): out
+      // of the record, which is the league phase's (ESPN's table).
+      const ucl=config.espn.path==='soccer/uefa.champions';
+      const week=series?null:game.week?.text||null,postseason=ucl?!/^League Phase$/i.test(game.seasonType?.name||'League Phase'):[3,5].includes(Number(game.seasonType?.type))||['3','5'].includes(String(game.seasonType?.id))||/post|playoff|play-in|mls cup/i.test(game.seasonType?.name||'');
       const event=baseEvent({school,sport,status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:`ESPN team schedule (${school.league||'NFL'})`,sourceUrl:config.schedule,now,key:`${game.id}|${status}`});
       event.espn_event_id=game.id;event.espn_date=game.date;
       // Home, away or neutral, as ESPN marks it (user, November 22, 2026:
       // "make these obvious if it's a home game or away for all sports").
-      event.home_away=c.neutralSite?'neutral':own.homeAway==='away'?'away':'home';
+      event.home_away=neutral?'neutral':own.homeAway==='away'?'away':'home';
       if(tv.length)event.broadcast=tv.join(', ');
       // An NBA Cup game (the WNBA's: a Commissioner's Cup game) is a
       // regular-season game with its stage as the round
@@ -426,15 +497,27 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       // NWSL playoff rounds are season types too ("Playoffs - Quarterfinals",
       // "Playoffs - Championship"): "NWSL Playoffs · Quarterfinals", "NWSL Championship".
       const nwslRound=postseason&&config.espn.path==='soccer/usa.nwsl'&&/^Playoffs\s*-\s*/i.test(game.seasonType?.name||'')?game.seasonType.name.replace(/^Playoffs\s*-\s*/i,'').replace(/^Championship$/i,'NWSL Championship').replace(/^(?!NWSL Championship$)/,'NWSL Playoffs · '):null;
-      event.round=nwslRound||(postseason?(note?.label||(typeof note==='string'?note.replace(/^NBA Play-In\s+-\s+/i,'Play-In · ').replace(/\s+-\s+/g,' · '):null)||game.seasonType?.name||'Postseason'):cup||week);
+      // A knockout tie's leg comes from ESPN's note ("1st Leg", "2nd Leg -
+      // Arsenal advance 2-1 on aggregate"): "Champions League · Round of 16 ·
+      // 2nd leg", the aggregate as a result line.
+      const uclNote=ucl?String((c.notes||[]).find(n=>n?.type==='event')?.headline||''):'';
+      const leg=uclNote.match(/^(1st|2nd) Leg\b/i)?.[1];
+      const uclRound=ucl&&postseason?`Champions League · ${game.seasonType.name}${leg?` · ${leg} leg`:''}`:ucl?'Champions League · League Phase':null;
+      event.round=uclRound||nwslRound||(postseason?(note?.label||(typeof note==='string'?note.replace(/^NBA Play-In\s+-\s+/i,'Play-In · ').replace(/\s+-\s+/g,' · '):null)||game.seasonType?.name||'Postseason'):cup||week);
       if(cup&&/Championship|Final\b/i.test(cup))event.not_in_record=true;
       if(note?.series&&postseason){event.series_name=note.series;event.series_game=note.game;}
       if(status==='Final'||status==='Live'){
         event.school_score=String(us);event.opponent_score=String(them);
       }
       if(status==='Final'){
-        event.headline=finalHeadline(us,them,own.shootoutScore,opp.shootoutScore,c.status?.type?.shortDetail);
+        // A tie settled on penalties: ESPN gives the shootout only in the note
+        // ("Paris Saint-Germain win 4-3 on penalties").
+        const pens=ucl&&us===them?uclNote.match(/^(.+?) win (\d+)-(\d+) on penalties/i):null;
+        const pensOurs=pens?(normalName(pens[1])===normalName(own.team.displayName)?[pens[2],pens[3]]:[pens[3],pens[2]]):null;
+        event.headline=finalHeadline(us,them,own.shootoutScore??pensOurs?.[0],opp.shootoutScore??pensOurs?.[1],c.status?.type?.shortDetail);
         event.results=[{label:'Result',value:event.headline}];
+        const aggregate=uclNote.match(/\b(?:advance|win)\s+\d+-\d+ on aggregate\b.*$/i)?uclNote.replace(/^(?:1st|2nd) Leg\s*-\s*/i,''):null;
+        if(aggregate)event.results.push({label:'Aggregate',value:aggregate});
         // NHL: a loss in overtime or a shootout is its own column of the
         // record (W-L-OTL).
         if(sport==='Hockey'&&event.headline[0]==='L'&&/\((?:\d*OT|SO)\)$/.test(event.headline))event.ot_loss=true;
@@ -444,7 +527,7 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
         event.headline=`${us}-${them}`;
         event.live_score_source='ESPN';
       }
-      if(event.round)event.results.push({label:postseason||cup?'Round':'Week',value:event.round});
+      if(event.round)event.results.push({label:postseason||cup||ucl?'Round':'Week',value:event.round});
       if(tv.length&&status!=='Final')event.results.push({label:'TV',value:tv.join(', ')});
       if(c.venue?.fullName)event.venue=c.venue.fullName;
       event.result_count=event.results.length;
@@ -1474,7 +1557,9 @@ const LEAGUE_STANDINGS={
   'baseball/mlb':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'gb',label:'GB'}],detail:s=>[shown(s.streak)&&`Streak ${shown(s.streak)}`,shown(s.lasttengames)&&lastTen(s)].filter(Boolean).join(' · ')},
   'hockey/nhl':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-OT'},{key:'pts',label:'Pts'}],detail:s=>shown(s.streak)?`Streak ${shown(s.streak)}`:''},
   'soccer/usa.nwsl':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''},
-  'soccer/usa.1':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''}
+  'soccer/usa.1':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''},
+  'soccer/eng.1':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''},
+  'soccer/uefa.champions':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''}
 };
 function standingsRow(entry,league){
   const s=statsOf(entry),w=num(s.wins)??0,l=num(s.losses)??0,t=num(s.ties)??0,ot=num(s.otLosses)??num(s.overtimeLosses)??0;
@@ -1500,9 +1585,9 @@ export function espnLeagueStandings(payload,{config}={}){
   const own=team=>config.espn.id!=null?String(team?.id)===String(config.espn.id):String(team?.abbreviation||'').toLowerCase()===config.espn.team;
   const conferences=(payload.children||[]).filter(c=>entriesOf(c).length);
   const mine=conferences.find(c=>entriesOf(c).some(e=>own(e.team)));if(!mine)return[];
-  const season=(conferences.map(c=>c.standings?.seasonDisplayName||c.children?.find(d=>d.standings?.seasonDisplayName)?.standings?.seasonDisplayName).find(Boolean)||'').replace(/\s*(?:MLS|NWSL)$/,'');
+  const season=(conferences.map(c=>c.standings?.seasonDisplayName||c.children?.find(d=>d.standings?.seasonDisplayName)?.standings?.seasonDisplayName).find(Boolean)||'').replace(/\s*(?:MLS|NWSL|English Premier League|UEFA Champions League)$/,'');
   const source={name:`ESPN standings${season?` (${season} season)`:''}`,url:`https://www.espn.com/${league.startsWith('soccer/')?'soccer':league.split('/')[1]}/standings${league.startsWith('soccer/')?`/_/league/${league.split('/')[1]}`:''}`};
-  const conferenceName=c=>c.abbreviation&&c.abbreviation.length<=4&&!/^\d+$/.test(c.abbreviation)?c.abbreviation.replace(/^E(?:ast)?$/,'Eastern Conference').replace(/^W(?:est)?$/,'Western Conference'):String(c.name||'').replace(/\s+Regular Season$/,'');
+  const conferenceName=c=>c.abbreviation&&c.abbreviation.length<=4&&!/^\d+$/.test(c.abbreviation)?c.abbreviation.replace(/^E(?:ast)?$/,'Eastern Conference').replace(/^W(?:est)?$/,'Western Conference'):String(c.name||'').replace(/\s+Regular Season$/,'').replace(/^\d{4}-\d{2} English Premier League$/,'Premier League');
   const row=e=>standingsRow(e,league),tables=[];
   const division=(mine.children||[]).find(d=>(d.standings?.entries||[]).some(e=>own(e.team)));
   if(division)tables.push(leagueTable(division.name,division.standings.entries.map(row),{league,own,ranked:false,source}));
