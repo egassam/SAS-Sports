@@ -9,7 +9,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {proTeam,golfBoardDay,golfCalendar,golfLeaderboard,golfDays,golfEvents,golfDetails,golfLeaderboardUrl,GOLF_BOARD} from '../src/pro-sports.mjs';
+import {proTeam,golfBoardDay,golfCalendar,golfLeaderboard,golfDays,golfEvents,golfDetails,golfLeaderboardUrl,GOLF_BOARD,golfCupLeaderboard,golfCupDetails,lpgaResultsUrl,lpgaTeamResults,pgatourStandings,lpgaRaceToCme} from '../src/pro-sports.mjs';
+const html=name=>gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/golf-${name}-2026-11-24.html.gz`,import.meta.url))).toString('utf8');
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const json=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/golf-${name}-2026-11-24.json.gz`,import.meta.url))).toString('utf8'));
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json')),themes=JSON.parse(read('../src/team-themes.json'));
@@ -35,7 +36,7 @@ assert.match(worker,/if\(config\.kind==='golf'\)return fetchGolf\(/);
 assert.match(worker,/for\(const back of \[10,40\]\)\{/);assert.match(worker,/if\(prev\.length&&prev\[0\]\.season<current\)\{calendar\.unshift\(/);
 assert.match(worker,/const PRO_SEASONS=\{[^}]*Golf:\[\[1,12\]\]\};/,'pro golf is in season all year');
 
-assert.match(page,/sport==='Golf'\?'Tours'/);assert.match(page,/e\.golf_event\?'Next tournament'/);assert.match(page,/e\.golf_event\?'Full Leaderboard'/);assert.match(page,/if\(d\.golf\)\{/);
+assert.match(page,/sport==='Golf'\?'Tours'/);assert.match(page,/e\.golf_event\?'Next tournament'/);assert.match(page,/e\.golf_cup\?'Every Match':e\.golf_event\?'Full Leaderboard'/);assert.match(page,/g\.sport==='Golf'\?'Player':'Driver'/);assert.match(page,/\.st-table\.st-wide \.st-num\{width:104px;white-space:nowrap\}/);assert.match(page,/if\(d\.golf\)\{/);
 assert.equal(golfLeaderboardUrl('pga','401850981'),'https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&event=401850981');
 assert.equal(`${GOLF_BOARD('eur')}?dates=${golfBoardDay(now,EASTERN)}`,'https://site.api.espn.com/apis/site/v2/sports/golf/eur/scoreboard?dates=20261124');
 assert.equal(golfDays('2026-11-19T00:00:00.000Z','2026-11-22T00:00:00.000Z'),'Nov 19-22');
@@ -113,5 +114,61 @@ assert.deepEqual([underWay.status,underWay.meet_live,underWay.recency_label,unde
 assert.match(underWay.headline,/^Leader: Marco Penge \(-16\)$/);
 assert.deepEqual(underWay.live_details.order[0],{position:'1',driver:'Marco Penge',car:'England',gap:'-16',today:'-5',thru:'12'});
 assert.equal(underWay.results[0].result,'-16 · Thru 12');
+
+// Cups and team events (user, November 24: "Can we look elsewhere for cup,
+// team events and season standings?"). The Presidents Cup and Solheim Cup
+// from their ESPN leaderboards (sessions of matches, each side's players).
+const presidents=golfCupLeaderboard(json('pga-presidents-cup'));
+assert.deepEqual(presidents.teams.map(t=>[t.name,t.score]),[['USA','17'],['International','13']]);
+assert.equal(presidents.matches.length,30);
+assert.ok(presidents.matches.every(m=>m.sides.every(s=>s.players.length)),'every match names its players');
+assert.deepEqual([...new Set(presidents.matches.map(m=>m.format))],['Four-ball','Foursomes','Singles']);
+assert.equal(golfCupLeaderboard(json('pga-rsm')),null,'a stroke-play leaderboard is not a cup');
+const cupEvents=golfEvents(pga,{school,config,timeZone:EASTERN,now,boards:new Map(),cups:new Map([['401824815',presidents]])});
+const pc=cupEvents.find(e=>e.golf_event==='401824815');
+assert.deepEqual([pc.status,pc.title,pc.display_time,pc.headline,pc.opponent,pc.golf_cup],['Final','Presidents Cup','Sep 24-27','USA wins 17-13','Medinah CC (No. 3)',true]);
+assert.deepEqual(pc.results,[{participant:'USA',result:'17'},{participant:'International',result:'13'}]);
+const pcd=golfCupDetails(pc,presidents,EASTERN);
+assert.deepEqual(pcd.lines,['USA won the Presidents Cup, 17-13.','Singles: USA won 9, International 2, 1 halved.']);
+assert.deepEqual(pcd.rows[0],{group:'Thursday, Sep 24 · Four-ball',participant:'Scottie Scheffler / Sam Burns (USA) vs Sungjae Im / Min Woo Lee (International)',result:'USA 1 Up'});
+assert.equal(pcd.rows.filter(r=>r.result==='Halved').length,2);
+assert.match(pcd.rows.at(-1).group,/^Sunday, Sep 27 · Singles$/);
+// ESPN's sentence for the Solheim Cup reads "USA beats EUR 15-13"; the
+// team points and the matches (Europe 14 wins, 2 halved) say Europe 15-13.
+const solheim=golfCupLeaderboard(json('lpga-solheim-cup'));
+assert.deepEqual(solheim.teams.map(t=>[t.name,t.score,t.winner]),[['Europe','15',true],['USA','13',false]]);
+assert.equal(solheim.matches.length,28);
+// A coming cup (no matches played) lists as a coming tournament.
+const coming2=structuredClone(json('pga-presidents-cup'));coming2.events[0].status.type={name:'STATUS_SCHEDULED',state:'pre',completed:false};
+const pre=golfEvents(pga,{school,config,timeZone:EASTERN,now:new Date('2026-09-01T12:00:00Z'),boards:new Map(),cups:new Map([['401824815',golfCupLeaderboard(coming2)]])}).find(e=>e.golf_event==='401824815');
+assert.equal(pre.status,'Upcoming');
+assert.match(worker,/cup=golfCupLeaderboard\(payload\)/);
+// Golf's saved expanded views have their own key version: the first cup
+// views stored on the preview (pairs unnamed) are not served again.
+assert.ok(worker.includes("proTeam(school).kind==='golf'?'|golf2':'|box2'"));
+
+// The Dow Championship (two-player teams; no ESPN board): lpga.com's results
+// page, the top ten teams, only for the season the page names.
+assert.equal(lpgaResultsUrl('Dow Championship'),'https://www.lpga.com/tournaments/dow-championship/results');
+const dow=lpgaTeamResults(html('lpga-dow'),{season:2026});
+assert.equal(dow.length,10);
+assert.deepEqual(dow.slice(0,3).map(r=>[r.pos,r.player,r.country,r.toPar,r.points]),[['1','Gina Kim / Yana Wilson','USA','-17',820],['2','Hye-Jin Choi / Hyo Joo Kim','KOR','-15',410],['T3','Jin Hee Im / Somi Lee','KOR','-14',227.5]]);
+assert.equal(lpgaTeamResults(html('lpga-dow'),{season:2027}),null,'another season\'s page is not used');
+const dowEvent=golfEvents([{id:'401835159',name:'Dow Championship',start:'2026-06-11T07:00Z',end:'2026-06-14T07:00Z',season:2026,status:''}],{school:schools.find(s=>s.id==='lpga-tour'),config:proTeam('lpga-tour'),timeZone:EASTERN,now,boards:new Map([['401835159',{id:'401835159',name:'Dow Championship',start:'2026-06-11T04:00Z',end:'2026-06-14T04:00Z',state:'post',status:'STATUS_FINAL',completed:true,tv:[],rows:dow,topOnly:true,source:{name:'LPGA results (lpga.com) · top 10',url:lpgaResultsUrl('Dow Championship')}}]])})[0];
+assert.deepEqual([dowEvent.status,dowEvent.headline,dowEvent.source.name,dowEvent.race_table[0].note],['Final','Winner: Gina Kim / Yana Wilson (-17)','LPGA results (lpga.com) · top 10','820 points']);
+assert.equal(proTeam('lpga-tour').teamResults,'lpga');
+
+// Season standings from the tours' own pages.
+const schwab=pgatourStandings(html('pgatour-schwabcup'),{url:'https://www.pgatour.com/pgatour-champions/schwabcup'});
+assert.deepEqual([schwab.title,schwab.rows.length,schwab.rows[0]],['Charles Schwab Cup Points',140,{pos:1,name:'Stewart Cink',detail:'USA',points:4999830}]);
+assert.match(schwab.source.name,/^PGA TOUR \(pgatour\.com\) · Through the Charles Schwab Cup Championship, November 15$/);
+const kft=pgatourStandings(html('pgatour-kft-points'),{url:'x'});assert.deepEqual([kft.title,kft.rows[0].name,kft.rows[0].points],['Korn Ferry Tour Points List','Ross Steelman',2221.371]);
+const fall=pgatourStandings(html('pgatour-fedexcup'),{url:'x'});assert.deepEqual([fall.title,fall.rows[0].pos,fall.rows[0].name],['FedExCup Fall Standings',51,'Austin Smotherman']);
+const cmeRace=lpgaRaceToCme(html('lpga-cme-race'),{url:'x'});
+assert.equal(cmeRace.rows.length,15,'the page\'s top 15 (its second, repeated copy is not read again)');
+assert.deepEqual(cmeRace.rows[0],{pos:1,name:'Nelly Korda',detail:'USA',points:4043.875},'the leader\'s exact points, not "4.0 K"');
+assert.deepEqual(cmeRace.rows[14],{pos:15,name:'A Lim Kim',detail:'KOR',points:1419.735});
+assert.deepEqual(['pga-tour','lpga-tour','pga-tour-champions','korn-ferry-tour','dp-world-tour','liv-golf'].map(id=>(proTeam(id).standings||[]).map(s=>s.kind).join()),['pgatour','lpga-cme','pgatour','pgatour','','']);
+assert.equal(pgatourStandings('<html></html>'),null);assert.equal(lpgaRaceToCme(''),null);
 
 console.log('golf module tests passed');

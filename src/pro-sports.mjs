@@ -330,11 +330,11 @@ export const PRO_TEAMS={
   },
   // Golf (user, November 24, 2026: "Add more pro golf"): each tour is one
   // entry of its tournaments, from ESPN's golf boards and leaderboards.
-  'pga-tour':{kind:'golf',sport:'Golf',espn:'pga',tour:'PGA Tour',schedule:'https://www.pgatour.com/schedule'},
-  'lpga-tour':{kind:'golf',sport:'Golf',espn:'lpga',tour:'LPGA Tour',schedule:'https://www.lpga.com/tournaments'},
+  'pga-tour':{kind:'golf',sport:'Golf',espn:'pga',tour:'PGA Tour',schedule:'https://www.pgatour.com/schedule',standings:[{kind:'pgatour',url:'https://www.pgatour.com/fedexcup'}]},
+  'lpga-tour':{kind:'golf',sport:'Golf',espn:'lpga',tour:'LPGA Tour',schedule:'https://www.lpga.com/tournaments',teamResults:'lpga',standings:[{kind:'lpga-cme',url:'https://www.lpga.com/stats-and-rankings/race-to-cme-globe'}]},
   'dp-world-tour':{kind:'golf',sport:'Golf',espn:'eur',tour:'DP World Tour',schedule:'https://www.europeantour.com/dpworld-tour/schedule/'},
-  'pga-tour-champions':{kind:'golf',sport:'Golf',espn:'champions-tour',tour:'PGA Tour Champions',schedule:'https://www.pgatour.com/pgatour-champions/schedule'},
-  'korn-ferry-tour':{kind:'golf',sport:'Golf',espn:'ntw',tour:'Korn Ferry Tour',schedule:'https://www.pgatour.com/korn-ferry-tour/schedule'},
+  'pga-tour-champions':{kind:'golf',sport:'Golf',espn:'champions-tour',tour:'PGA Tour Champions',schedule:'https://www.pgatour.com/pgatour-champions/schedule',standings:[{kind:'pgatour',url:'https://www.pgatour.com/pgatour-champions/schwabcup'}]},
+  'korn-ferry-tour':{kind:'golf',sport:'Golf',espn:'ntw',tour:'Korn Ferry Tour',schedule:'https://www.pgatour.com/korn-ferry-tour/schedule',standings:[{kind:'pgatour',url:'https://www.pgatour.com/korn-ferry-tour/pointslist'}]},
   'liv-golf':{kind:'golf',sport:'Golf',espn:'liv',tour:'LIV Golf',schedule:'https://www.livgolf.com/schedule'},
   // Track and field (user, November 18: "Start with wnba and track and
   // field. Track will be hard with most results in other countries so you
@@ -1673,7 +1673,7 @@ export function golfDays(startWall,endWall){
 const golfLine=r=>r.rounds.length?`${r.rounds.join('-')}${r.total&&r.rounds.length>1?` · ${r.total}`:''}`:'';
 // The leaderboard in the race layout: place, player and country, score to
 // par as the tag, rounds and total, earnings (or why the player is out).
-export function golfTable(rows){return rows.map(r=>({pos:r.pos,place:r.place,driver:r.player+(r.amateur?' (a)':''),car:r.country||'',make:r.toPar||'',team:golfLine(r),laps_led:0,status:r.status&&r.status!=='–'?r.status:null,note:r.earnings||''}));}
+export function golfTable(rows){return rows.map(r=>({pos:r.pos,place:r.place,driver:r.player+(r.amateur?' (a)':''),car:r.country||'',make:r.toPar||'',team:golfLine(r),laps_led:0,status:r.status&&r.status!=='–'?r.status:null,note:r.earnings||(r.points&&!r.total?`${r.points.toLocaleString('en-US')} points`:'')}));}
 export function golfRows(rows){return rows.map(r=>({participant:r.player,result:[r.pos,r.toPar,r.total?String(r.total):null].filter(Boolean).join(' · ')}));}
 const SPELLED=['','one','two','three','four','five','six','seven','eight','nine','ten'];
 const shots=n=>`${SPELLED[n]||n} shot${n===1?'':'s'}`;
@@ -1692,7 +1692,7 @@ export function golfDetails(event,lb){
   if(lb.cut?.score&&lb.cut.count)lines.push(`${lb.cut.count} players made the cut at ${lb.cut.score}.`);
   const low=rows.filter(r=>r.rounds.length).reduce((best,r)=>{const m=Math.min(...r.rounds);return!best||m<best.score?{score:m,players:[r.player]}:m===best.score?{score:m,players:[...best.players,r.player]}:best},null);
   if(low&&!lb.team)lines.push(`Low round: ${low.score} (${low.players.slice(0,3).join(', ')}${low.players.length>3?` and ${low.players.length-3} more`:''}).`);
-  const stats=[{label:'Players',value:String(rows.length)}];
+  const stats=[{label:lb.topOnly?'Teams listed':lb.team?'Teams':'Players',value:String(rows.length)}];
   if(lb.cut?.count)stats.push({label:'Made cut',value:String(lb.cut.count)});
   if(lb.cut?.score)stats.push({label:'Cut',value:lb.cut.score});
   if(lb.purse)stats.push({label:'Purse',value:lb.purse});
@@ -1705,7 +1705,7 @@ export function golfDetails(event,lb){
 // with its places, the coming ones with course, purse, TV and the defending
 // champion where ESPN lists them. A past tournament without a leaderboard
 // (cancelled, a cup with no stroke-play board) is not listed (K-State's rule).
-export function golfEvents(calendar,{school,config,timeZone,now,boards=new Map()}){
+export function golfEvents(calendar,{school,config,timeZone,now,boards=new Map(),cups=new Map()}){
   const sport=config.sport,nowMs=now.getTime(),today=dayOf(wallClock(now,timeZone)),events=[];
   const bySeason=new Map();for(const t of calendar)bySeason.set(t.season,(bySeason.get(t.season)||0)+1);
   const seen=new Map();
@@ -1715,6 +1715,8 @@ export function golfEvents(calendar,{school,config,timeZone,now,boards=new Map()
     const lb=boards.get(t.id),startWall=wallClock(lb?.start||t.start,timeZone),endWall=wallClock(lb?.end||t.end,timeZone);
     const startDay=dayOf(startWall),endDay=dayOf(endWall);
     if(lb&&/CANCEL|POSTPONED/.test(lb.status))continue;
+    const cup=cups.get(t.id);
+    if(cup&&!lb?.rows.length){const event=golfCupEvent(t,cup,{school,config,timeZone,now});if(event){events.push(event);continue;}}
     let status;
     if(lb?.state==='post'&&lb.completed&&lb.rows.length)status='Final';
     else if(lb?.state==='in'||(startDay<=today&&today<=endDay+864e5&&lb?.rows.some(r=>r.rounds.length)))status='Live';
@@ -1722,7 +1724,7 @@ export function golfEvents(calendar,{school,config,timeZone,now,boards=new Map()
     else if(startDay<=today&&today<=endDay)status='Today';
     else continue;
     const start=`${startWall.slice(0,10)}T00:00:00.000Z`,end=`${endWall.slice(0,10)}T23:59:00.000Z`,title=lb?.name||t.name;
-    const event=baseEvent({school,sport,status,title,start,display:golfDays(startWall,endWall),opponent:lb?.course?.name||null,sourceName:'ESPN golf leaderboard',sourceUrl:`https://www.espn.com/golf/leaderboard?tournamentId=${t.id}`,now,key:`${t.season}|${t.id}`});
+    const event=baseEvent({school,sport,status,title,start,display:golfDays(startWall,endWall),opponent:lb?.course?.name||null,sourceName:lb?.source?.name||'ESPN golf leaderboard',sourceUrl:lb?.source?.url||`https://www.espn.com/golf/leaderboard?tournamentId=${t.id}`,now,key:`${t.season}|${t.id}`});
     event.event_type='MEET';event.end_time=end;event.season=t.season;event.golf_event=t.id;event.golf_tour=config.espn;
     if(lb?.tv.length)event.broadcast=lb.tv.join(', ');
     const rows=lb?.rows||[];
@@ -1755,6 +1757,113 @@ export function golfEvents(calendar,{school,config,timeZone,now,boards=new Map()
     events.push(event);
   }
   return events;
+}
+
+// ---- Golf cups and team events (user, November 24, 2026: "Can we look
+// elsewhere for cup, team events and season standings?") ----
+// A match-play cup (Presidents Cup, Ryder Cup, Solheim Cup) has no stroke-
+// play field. Its ESPN leaderboard (`tournament.scoringSystem` "Match")
+// lists the sessions instead: the first holds the teams' points, the others
+// their matches (format "fourball", "foursome" or "singles"), each side
+// with its team, players (a pair's roster, or the singles player) and
+// result ("1 Up", "3 & 2", "Halved"). The match results, not the
+// leaderboard's summary sentence, decide the score (ESPN wrote "USA beats
+// EUR 15-13" for Europe's 15-13 Solheim Cup).
+const CUP_TEAMS={USA:'USA',INTL:'International',EUR:'Europe'};
+const cupTeam=t=>CUP_TEAMS[t?.abbreviation||t?.displayName]||t?.shortDisplayName||t?.displayName||'';
+const CUP_FORMATS={fourball:'Four-ball',foursome:'Foursomes',foursomes:'Foursomes',singles:'Singles'};
+const cupOrder=x=>x?.homeAway==='home'?0:x?.homeAway==='away'?1:(x?.sortOrder||0);
+export function golfCupLeaderboard(payload){
+  const e=payload?.events?.[0];if(!/match/i.test(e?.tournament?.scoringSystem?.name||''))return null;
+  const sessions=(e.competitions||[]).map(x=>Array.isArray(x)?x:[x]),flat=sessions.flat();
+  const total=flat.find(c=>c?.description==='tournament'||(c?.competitors||[]).length===2&&c.competitors.every(x=>x.team&&!x.athlete&&!x.roster));
+  if(!total)return null;
+  const teams=total.competitors.slice().sort((a,b)=>cupOrder(a)-cupOrder(b)).map(x=>({name:cupTeam(x.team),score:String(x.score?.displayValue??x.score??''),winner:Boolean(x.score?.winner??x.winner)}));
+  const matches=flat.filter(c=>c!==total&&(c?.competitors||[]).length===2).map(c=>({id:String(c.id),date:c.date,state:c.status?.type?.state||'',format:CUP_FORMATS[String(c.type?.text||'').toLowerCase()]||(c.competitors.every(x=>x.athlete)?'Singles':'Team matches'),
+    sides:c.competitors.slice().sort((a,b)=>cupOrder(a)-cupOrder(b)).map(x=>({team:cupTeam(x.team),players:x.athlete?.displayName?[x.athlete.displayName]:(x.roster||[]).map(r=>r?.athlete?.displayName).filter(Boolean),score:String(x.score?.displayValue??'').trim(),winner:Boolean(x.score?.winner),draw:Boolean(x.score?.draw),singles:Boolean(x.athlete)}))}))
+    .sort((a,b)=>Date.parse(a.date)-Date.parse(b.date)||Number(a.id)-Number(b.id));
+  const type=e.status?.type||{};
+  const course=(e.courses||[]).find(c=>c.host)||(e.courses||[])[0]||null;
+  return{id:String(e.id),name:String(e.name||'').trim(),start:e.date,end:e.endDate||e.date,state:type.state||'',completed:Boolean(type.completed||type.name==='STATUS_FINAL'),teams,matches,course:course?.name||null};
+}
+const sideName=s=>`${s.players.length?s.players.join(' / '):`${s.team} pair`} (${s.team})`;
+export function golfCupMatchRow(m,timeZone){
+  const [a,b]=m.sides,won=m.sides.find(x=>x.winner),day=wallClock(m.date,timeZone).slice(0,10),[y,mo,d]=day.split('-').map(Number),wd=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(Date.UTC(y,mo-1,d)).getUTCDay()];
+  const result=won?`${won.team} ${won.score||'won'}`:m.sides.some(x=>x.draw)||m.state==='post'?'Halved':m.state==='in'?[a.score,b.score].filter(Boolean).join(' · ')||'Under way':'';
+  return{group:`${wd}, ${MONTHS[mo-1]} ${d} · ${m.format}`,participant:`${sideName(a)} vs ${sideName(b)}`,result};
+}
+export function golfCupEvent(t,cup,{school,config,timeZone,now}){
+  const [home,away]=cup.teams;if(!home||!away)return null;
+  const done=cup.state==='post'&&cup.completed,live=cup.state==='in';if(!done&&!live)return null;
+  const startWall=wallClock(cup.start||t.start,timeZone),endWall=wallClock(cup.end||t.end,timeZone);
+  const event=baseEvent({school,sport:config.sport,status:done?'Final':'Live',title:cup.name||t.name,start:`${startWall.slice(0,10)}T00:00:00.000Z`,display:golfDays(startWall,endWall),opponent:cup.course||`${home.name} vs ${away.name}`,sourceName:'ESPN golf leaderboard (match play)',sourceUrl:`https://www.espn.com/golf/leaderboard?tournamentId=${t.id}`,now,key:`${t.season}|${t.id}`});
+  event.event_type='MEET';event.end_time=`${endWall.slice(0,10)}T23:59:00.000Z`;event.season=t.season;event.golf_event=t.id;event.golf_tour=config.espn;event.golf_cup=true;
+  const lead=[home,away].sort((x,y)=>parseFloat(y.score)-parseFloat(x.score));
+  const score=`${home.name} ${home.score}, ${away.name} ${away.score}`;
+  event.headline=done?(lead[0].score===lead[1].score?`Tied ${home.score}-${away.score}`:`${lead[0].name} wins ${lead[0].score}-${lead[1].score}`):score;
+  if(done&&lead[0].score!==lead[1].score)event.winner={name:lead[0].name};
+  event.results=[{participant:home.name,result:home.score},{participant:away.name,result:away.score}];
+  if(live){event.meet_live=true;event.priority_bucket='live';event.recency_label='Match play';event.live_score_source='ESPN golf board';event.live_latest=cup.matches.filter(m=>m.state==='in').map(m=>golfCupMatchRow(m,timeZone));}
+  event.has_more_results=cup.matches.length>0;event.result_count=2;
+  return event;
+}
+export function golfCupDetails(event,cup,timeZone){
+  if(!cup?.matches.length)return null;
+  const [home,away]=cup.teams,rows=cup.matches.map(m=>golfCupMatchRow(m,timeZone));
+  const lines=[event.status==='Final'?`${event.headline.replace(/ wins /,' won the '+event.title+', ')}.`:`${home.name} ${home.score}, ${away.name} ${away.score}.`];
+  if(/^Tied/.test(event.headline))lines[0]=`The ${event.title} ended tied, ${home.score}-${away.score}.`;
+  const singles=m=>m.sides.every(x=>x.singles),count=team=>cup.matches.filter(m=>singles(m)&&m.sides.find(x=>x.winner)?.team===team).length;
+  lines.push(`Singles: ${home.name} won ${count(home.name)}, ${away.name} ${count(away.name)}, ${cup.matches.filter(m=>singles(m)&&m.state==='post'&&!m.sides.some(x=>x.winner)).length} halved.`);
+  return{lines,stats:[{label:'Matches',value:String(cup.matches.length)},{label:home.name,value:home.score},{label:away.name,value:away.score}],rows};
+}
+// The LPGA's team events with no ESPN board (the Dow Championship, two-
+// player teams): lpga.com's results page for the tournament lists the top
+// ten teams (place, both players and countries, to par, points), and names
+// the edition ("June 11-14, 2026"), which must be the season's.
+export const lpgaResultsUrl=name=>`https://www.lpga.com/tournaments/${String(name).toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}/results`;
+const htmlTokens=html=>String(html||'').replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g,'').split(/<[^>]+>/).map(t=>t.replace(/&amp;/g,'&').replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').trim()).filter(Boolean);
+export function lpgaTeamResults(html,{season}={}){
+  const toks=htmlTokens(html),head=toks.findIndex((t,i)=>t==='POS'&&toks[i+1]==='ATHLETE'&&toks[i+2]==='TO PAR');
+  if(head<0)return null;
+  if(season&&!toks.slice(0,head).some(t=>new RegExp(`\\b[A-Z][a-z]+ \\d{1,2}(?:\\s*-\\s*(?:[A-Z][a-z]+ )?\\d{1,2})?, ${season}\\b`).test(t)))return null;
+  const rows=[];let i=head+(toks[head+3]==='POINTS'?4:3);
+  while(i<toks.length&&/^T?\d+$/.test(toks[i])){
+    const pos=toks[i++],players=[];
+    while(i<toks.length&&!/^(?:[+-]\d+|E)$/.test(toks[i])){const name=toks[i++],country=/^[A-Z]{3}$/.test(toks[i]||'')?toks[i++]:'';players.push({name,country});if(players.length>4)break;}
+    const toPar=toks[i++]||null,points=/^[\d,.]+$/.test(toks[i]||'')?Number(toks[i++].replace(/,/g,'')):null;
+    rows.push({place:Number(pos.replace('T','')),pos,player:players.map(p=>p.name).join(' / '),country:[...new Set(players.map(p=>p.country).filter(Boolean))].join(' / '),amateur:false,toPar,total:null,rounds:[],today:null,thru:null,finished:true,playoff:false,status:null,earnings:null,points});
+  }
+  return rows.length?rows:null;
+}
+// ---- Golf season standings ----
+// pgatour.com's standings pages (PGA Tour, PGA Tour Champions, Korn Ferry
+// Tour) carry the official list in the page's data (`tourCupSplit`): each
+// player's official rank, country and points. lpga.com's Race to CME Globe
+// page lists the top fifteen (the full list loads in the browser from an
+// API the app does not read).
+export function pgatourStandings(html,{url}={}){
+  const m=String(html||'').match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);if(!m)return null;
+  let data;try{data=JSON.parse(m[1])}catch{return null}
+  const split=(data?.props?.pageProps?.dehydratedState?.queries||[]).find(q=>q?.queryKey?.[0]==='tourCupSplit')?.state?.data;
+  if(!split)return null;
+  const rows=(split.officialPlayers||[]).map(p=>({pos:Number(p?.rankingData?.official)||null,name:p?.displayName||'',detail:p?.countryFlag||'',points:Number(String(p?.pointData?.official??'').replace(/,/g,''))})).filter(r=>r.pos&&r.name&&Number.isFinite(r.points)).sort((a,b)=>a.pos-b.pos);
+  return standingsTable(split.title||'Standings',rows,{source:{name:`PGA TOUR (pgatour.com)${split.description?` · ${split.description}`:''}`,url}});
+}
+export function lpgaRaceToCme(html,{url}={}){
+  const raw=String(html||''),toks=htmlTokens(raw),head=toks.indexOf('Current Race to CME Globe Ranking');if(head<0)return null;
+  const rows=[];let i=head+1;while(i<toks.length&&toks[i]!=='1')i++;
+  while(i<toks.length&&/^\d+$/.test(toks[i])&&rows.length<50){
+    const pos=Number(toks[i++]);if(rows.length&&pos!==rows.at(-1).pos+1)break;
+    if(/^(?:No Change|Up|Down)$/.test(toks[i]||'')){const mv=toks[i++];if(mv!=='No Change'&&/^\d+$/.test(toks[i]||''))i++;}
+    const name=[];while(i<toks.length&&!/^[A-Z]{3}$/.test(toks[i])&&name.length<4)name.push(toks[i++]);
+    const country=toks[i++]||'';if(toks[i]==='CME Points')i++;
+    let pts=toks[i++]||'';if(toks[i]==='Leader')i++;
+    if(/K$/.test(pts)){const exact=raw.match(/cme_points\\?"[^}]*?valueFormat\\?":\\?"([\d,.]+)\\?",\\?"shortValueFormat\\?":\\?"([^"\\]+)/);pts=exact&&exact[2].replace(/\s/g,'')===pts.replace(/\s/g,'')?exact[1]:'';}
+    const points=Number(String(pts).replace(/,/g,''));
+    if(!name.length||!pts||!Number.isFinite(points))break;
+    rows.push({pos,name:name.join(' '),detail:country,points});
+  }
+  return standingsTable('Race to CME Globe',rows,{source:{name:`LPGA (lpga.com) · top ${rows.length}`,url}});
 }
 
 // ---- Standings ----
