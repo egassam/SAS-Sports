@@ -9,7 +9,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {proTeam,golfBoardDay,golfCalendar,golfLeaderboard,golfDays,golfEvents,golfDetails,golfLeaderboardUrl,GOLF_BOARD,golfCupBoard,golfPairIds,golfCupNamePairs,golfCupDetails,golfPairRosterUrl,lpgaResultsUrl,lpgaTeamResults,pgatourStandings,lpgaRaceToCme} from '../src/pro-sports.mjs';
+import {proTeam,golfBoardDay,golfCalendar,golfLeaderboard,golfDays,golfEvents,golfDetails,golfLeaderboardUrl,GOLF_BOARD,golfCupLeaderboard,golfCupDetails,lpgaResultsUrl,lpgaTeamResults,pgatourStandings,lpgaRaceToCme} from '../src/pro-sports.mjs';
 const html=name=>gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/golf-${name}-2026-11-24.html.gz`,import.meta.url))).toString('utf8');
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const json=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/golf-${name}-2026-11-24.json.gz`,import.meta.url))).toString('utf8'));
@@ -117,25 +117,32 @@ assert.equal(underWay.results[0].result,'-16 · Thru 12');
 
 // Cups and team events (user, November 24: "Can we look elsewhere for cup,
 // team events and season standings?"). The Presidents Cup and Solheim Cup
-// from ESPN's board for their week, pairs named from ESPN's rosters.
-const cupOf=(name,tour,id)=>{const cup=golfCupBoard(json(`${name}-board`),id),all=json(`${name}-rosters`),rosters=new Map();for(const [k,r] of Object.entries(all)){const ids=golfPairIds(r);if(ids.length)rosters.set(k,ids);}return golfCupNamePairs(cup,rosters);};
-const presidents=cupOf('presidents','pga','401824815');
+// from their ESPN leaderboards (sessions of matches, each side's players).
+const presidents=golfCupLeaderboard(json('pga-presidents-cup'));
 assert.deepEqual(presidents.teams.map(t=>[t.name,t.score]),[['USA','17'],['International','13']]);
 assert.equal(presidents.matches.length,30);
 assert.ok(presidents.matches.every(m=>m.sides.every(s=>s.players.length)),'every match names its players');
-assert.equal(golfPairRosterUrl('pga','401824815','12094','126078'),'https://sports.core.api.espn.com/v2/sports/golf/leagues/pga/events/401824815/competitions/12094/competitors/126078/roster');
-const cupEvents=golfEvents(pga,{school,config,timeZone:EASTERN,now,boards:new Map([['401824815',golfLeaderboard(json('pga-presidents'))]]),cups:new Map([['401824815',presidents]])});
+assert.deepEqual([...new Set(presidents.matches.map(m=>m.format))],['Four-ball','Foursomes','Singles']);
+assert.equal(golfCupLeaderboard(json('pga-rsm')),null,'a stroke-play leaderboard is not a cup');
+const cupEvents=golfEvents(pga,{school,config,timeZone:EASTERN,now,boards:new Map(),cups:new Map([['401824815',presidents]])});
 const pc=cupEvents.find(e=>e.golf_event==='401824815');
 assert.deepEqual([pc.status,pc.title,pc.display_time,pc.headline,pc.opponent,pc.golf_cup],['Final','Presidents Cup','Sep 24-27','USA wins 17-13','USA vs International',true]);
 assert.deepEqual(pc.results,[{participant:'USA',result:'17'},{participant:'International',result:'13'}]);
 const pcd=golfCupDetails(pc,presidents,EASTERN);
 assert.deepEqual(pcd.lines,['USA won the Presidents Cup, 17-13.','Singles: USA won 9, International 2, 1 halved.']);
-assert.deepEqual(pcd.rows[0],{group:'Thursday, Sep 24 · Team matches',participant:'Scottie Scheffler / Sam Burns (USA) vs Sungjae Im / Min Woo Lee (International)',result:'USA 1 Up'});
-assert.deepEqual(pcd.rows.at(-1),{group:'Sunday, Sep 27 · Singles',participant:'Xander Schauffele (USA) vs Ryan Fox (International)',result:'USA 2 & 1'});
-const solheim=cupOf('solheim','lpga','401835169');
-assert.deepEqual(solheim.teams.map(t=>[t.name,t.score]),[['Europe','15'],['USA','13']]);
+assert.deepEqual(pcd.rows[0],{group:'Thursday, Sep 24 · Four-ball',participant:'Scottie Scheffler / Sam Burns (USA) vs Sungjae Im / Min Woo Lee (International)',result:'USA 1 Up'});
+assert.equal(pcd.rows.filter(r=>r.result==='Halved').length,2);
+assert.match(pcd.rows.at(-1).group,/^Sunday, Sep 27 · Singles$/);
+// ESPN's sentence for the Solheim Cup reads "USA beats EUR 15-13"; the
+// team points and the matches (Europe 14 wins, 2 halved) say Europe 15-13.
+const solheim=golfCupLeaderboard(json('lpga-solheim-cup'));
+assert.deepEqual(solheim.teams.map(t=>[t.name,t.score,t.winner]),[['Europe','15',true],['USA','13',false]]);
 assert.equal(solheim.matches.length,28);
-assert.match(worker,/golfCupBoard\(await readJson\(url,over\?SOURCE_TTL\.document:60\),t\.id\)/);
+// A coming cup (no matches played) lists as a coming tournament.
+const coming2=structuredClone(json('pga-presidents-cup'));coming2.events[0].status.type={name:'STATUS_SCHEDULED',state:'pre',completed:false};
+const pre=golfEvents(pga,{school,config,timeZone:EASTERN,now:new Date('2026-09-01T12:00:00Z'),boards:new Map(),cups:new Map([['401824815',golfCupLeaderboard(coming2)]])}).find(e=>e.golf_event==='401824815');
+assert.equal(pre.status,'Upcoming');
+assert.match(worker,/cup=golfCupLeaderboard\(payload\)/);
 
 // The Dow Championship (two-player teams; no ESPN board): lpga.com's results
 // page, the top ten teams, only for the season the page names.

@@ -75,7 +75,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {golfCupBoard,golfPairRosterUrl,golfPairIds,golfCupNamePairs,golfCupDetails,lpgaResultsUrl,lpgaTeamResults,pgatourStandings,lpgaRaceToCme,GOLF_BOARD,golfLeaderboardUrl,golfBoardDay,golfCalendar,golfLeaderboard,golfEvents,golfDetails,INDYCAR_SCHEDULE,INDYCAR_BOARD,INDYCAR_STANDINGS,indycarCalendar,indycarBoardDay,indycarRace,indycarSchedule,indycarRaces,indycarRaceDetails,indycarStandings,MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
+import {golfCupLeaderboard,golfCupDetails,lpgaResultsUrl,lpgaTeamResults,pgatourStandings,lpgaRaceToCme,GOLF_BOARD,golfLeaderboardUrl,golfBoardDay,golfCalendar,golfLeaderboard,golfEvents,golfDetails,INDYCAR_SCHEDULE,INDYCAR_BOARD,INDYCAR_STANDINGS,indycarCalendar,indycarBoardDay,indycarRace,indycarSchedule,indycarRaces,indycarRaceDetails,indycarStandings,MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -5509,42 +5509,31 @@ async function fetchGolf(school,config,now,timeZone,aiTargetId,failed){
   // Leaderboards: every tournament begun, and the next one to come.
   const nextUp=calendar.find(t=>Date.parse(t.start)>nowMs&&!/CANCEL/.test(t.status));
   const wanted=calendar.filter(t=>!/CANCEL/.test(t.status)&&(Date.parse(t.start)-day<=nowMs||t===nextUp));
-  const boards=new Map();let next=0;
+  const boards=new Map(),cups=new Map();let next=0;
   await Promise.all(Array.from({length:Math.min(6,wanted.length)},async()=>{while(next<wanted.length){
     const t=wanted[next++],memoKey=`${config.espn}|${t.id}`,kept=golfFinalMemo.get(memoKey);
-    if(kept){boards.set(t.id,kept);continue;}
+    if(kept){if(kept.cup)cups.set(t.id,kept.cup);else boards.set(t.id,kept);continue;}
     const over=Date.parse(t.end)+2*day<nowMs,underWay=!over&&Date.parse(t.start)-day<=nowMs,url=golfLeaderboardUrl(config.espn,t.id);
-    const lb=golfLeaderboard(await readJson(url,underWay?60:over?SOURCE_TTL.document:SOURCE_TTL.listing));
+    const payload=await readJson(url,underWay?60:over?SOURCE_TTL.document:SOURCE_TTL.listing),lb=golfLeaderboard(payload),cup=golfCupLeaderboard(payload);
+    if(cup){cups.set(t.id,cup);if(underWay)sources.push(url);if(over&&cup.state==='post')golfFinalMemo.set(memoKey,{cup});continue;}
     if(!lb)continue;
     boards.set(t.id,lb);if(underWay)sources.push(url);
     if(lb.state==='post'&&lb.completed&&lb.rows.length&&over)golfFinalMemo.set(memoKey,lb);
   }}));
-  // Tournaments begun with no stroke-play board: a match-play cup from
-  // ESPN's board for its week (pairs named from their rosters), or an LPGA
-  // team event from lpga.com's results page.
-  const cups=new Map();
+  // An LPGA team event ESPN gives no leaderboard rows (the Dow
+  // Championship): lpga.com's results page. Cups come with their
+  // leaderboard (golfCupLeaderboard, above).
   for(const t of wanted){
-    const lb=boards.get(t.id);if(!lb||lb.rows.length||/CANCEL|POSTPONED/.test(lb.status)||Date.parse(t.start)>nowMs)continue;
-    const memoKey=`${config.espn}|cup|${t.id}`,kept=golfFinalMemo.get(memoKey);if(kept){if(kept.cup)cups.set(t.id,kept.cup);else boards.set(t.id,kept.lb);continue;}
-    const over=Date.parse(t.end)+2*day<nowMs,url=`${GOLF_BOARD(config.espn)}?dates=${golfBoardDay(new Date(Date.parse(lb.start||t.start)+12*3600e3),'America/New_York')}`;
-    const cup=golfCupBoard(await readJson(url,over?SOURCE_TTL.document:60),t.id);
-    if(cup){
-      const pairs=cup.matches.flatMap(m=>m.sides.filter(x=>x.type==='pair').map(x=>[m.id,x.id])),rosters=new Map();let k=0;
-      await Promise.all(Array.from({length:Math.min(6,pairs.length)},async()=>{while(k<pairs.length){const [mid,pid]=pairs[k++];const ids=golfPairIds(await readJson(golfPairRosterUrl(config.espn,t.id,mid,pid),SOURCE_TTL.document));if(ids.length)rosters.set(`${mid}|${pid}`,ids);}}));
-      golfCupNamePairs(cup,rosters);cups.set(t.id,cup);sources.push(url);
-      if(over&&cup.state==='post')golfFinalMemo.set(memoKey,{cup});
-      continue;
-    }
-    if(config.teamResults==='lpga'&&lb.state==='post'){
-      const page=lpgaResultsUrl(t.name),rows=lpgaTeamResults(await readText(page,over?SOURCE_TTL.document:SOURCE_TTL.listing),{season:t.season});
-      if(rows){const full={...lb,rows,completed:true,topOnly:true,source:{name:`LPGA results (lpga.com) · top ${rows.length}`,url:page}};boards.set(t.id,full);sources.push(page);if(over)golfFinalMemo.set(memoKey,{lb:full});}
-    }
+    const lb=boards.get(t.id);if(config.teamResults!=='lpga'||cups.has(t.id)||!lb||lb.rows.length||lb.state!=='post'||/CANCEL|POSTPONED/.test(lb.status))continue;
+    const memoKey=`${config.espn}|team|${t.id}`,kept=golfFinalMemo.get(memoKey);if(kept){boards.set(t.id,kept);continue;}
+    const over=Date.parse(t.end)+2*day<nowMs,page=lpgaResultsUrl(t.name),rows=lpgaTeamResults(await readText(page,over?SOURCE_TTL.document:SOURCE_TTL.listing),{season:t.season});
+    if(rows){const full={...lb,rows,completed:true,topOnly:true,source:{name:`LPGA results (lpga.com) · top ${rows.length}`,url:page}};boards.set(t.id,full);sources.push(page);if(over)golfFinalMemo.set(memoKey,full);}
   }
   const events=golfEvents(calendar,{school,config,timeZone,now,boards,cups});
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
   if(target?.golf_cup){
     const details=golfCupDetails(target,cups.get(target.golf_event),timeZone);
-    if(details){target.results=details.rows;target.result_count=details.rows.length;target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;target.highlight_status='Every match from ESPN\'s golf board (pairs named from ESPN\'s rosters).';}
+    if(details){target.results=details.rows;target.result_count=details.rows.length;target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;target.highlight_status='Every match from ESPN\'s golf leaderboard (team points, each match\'s players and result).';}
   }else if(target&&(target.status==='Final'||target.status==='Live')){
     const details=golfDetails(target,boards.get(target.golf_event));
     if(details){

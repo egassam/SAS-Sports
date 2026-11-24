@@ -1716,7 +1716,7 @@ export function golfEvents(calendar,{school,config,timeZone,now,boards=new Map()
     const startDay=dayOf(startWall),endDay=dayOf(endWall);
     if(lb&&/CANCEL|POSTPONED/.test(lb.status))continue;
     const cup=cups.get(t.id);
-    if(cup&&!lb?.rows.length){const event=golfCupEvent(t,cup,{school,config,timeZone,now});if(event)events.push(event);continue;}
+    if(cup&&!lb?.rows.length){const event=golfCupEvent(t,cup,{school,config,timeZone,now});if(event){events.push(event);continue;}}
     let status;
     if(lb?.state==='post'&&lb.completed&&lb.rows.length)status='Final';
     else if(lb?.state==='in'||(startDay<=today&&today<=endDay+864e5&&lb?.rows.some(r=>r.rounds.length)))status='Live';
@@ -1762,42 +1762,40 @@ export function golfEvents(calendar,{school,config,timeZone,now,boards=new Map()
 // ---- Golf cups and team events (user, November 24, 2026: "Can we look
 // elsewhere for cup, team events and season standings?") ----
 // A match-play cup (Presidents Cup, Ryder Cup, Solheim Cup) has no stroke-
-// play leaderboard. ESPN's board for its week has one competition for the
-// teams' points and one per match: singles name both players (athlete ids),
-// a foursomes or four-ball match names only a pair id, whose players are
-// its roster on ESPN's core API (`.../competitors/<pair>/roster`).
+// play field. Its ESPN leaderboard (`tournament.scoringSystem` "Match")
+// lists the sessions instead: the first holds the teams' points, the others
+// their matches (format "fourball", "foursome" or "singles"), each side
+// with its team, players (a pair's roster, or the singles player) and
+// result ("1 Up", "3 & 2", "Halved"). The match results, not the
+// leaderboard's summary sentence, decide the score (ESPN wrote "USA beats
+// EUR 15-13" for Europe's 15-13 Solheim Cup).
 const CUP_TEAMS={USA:'USA',INTL:'International',EUR:'Europe'};
 const cupTeam=t=>CUP_TEAMS[t?.abbreviation||t?.displayName]||t?.shortDisplayName||t?.displayName||'';
-export function golfCupBoard(board,eventId){
-  const e=(board?.events||[]).find(x=>String(x.id)===String(eventId)),comps=e?.competitions||[];
-  if(comps.length<2)return null;
-  const names=new Map();
-  for(const c of comps)for(const x of c.competitors||[])if(x.type==='athlete'&&x.athlete?.displayName)names.set(String(x.id),x.athlete.displayName);
-  const total=comps.find(c=>(c.competitors||[]).length===2&&c.competitors.every(x=>x.type==='team'));
+const CUP_FORMATS={fourball:'Four-ball',foursome:'Foursomes',foursomes:'Foursomes',singles:'Singles'};
+const cupOrder=x=>x?.homeAway==='home'?0:x?.homeAway==='away'?1:(x?.sortOrder||0);
+export function golfCupLeaderboard(payload){
+  const e=payload?.events?.[0];if(!/match/i.test(e?.tournament?.scoringSystem?.name||''))return null;
+  const sessions=(e.competitions||[]).map(x=>Array.isArray(x)?x:[x]),flat=sessions.flat();
+  const total=flat.find(c=>c?.description==='tournament'||(c?.competitors||[]).length===2&&c.competitors.every(x=>x.team&&!x.athlete&&!x.roster));
   if(!total)return null;
-  const teams=total.competitors.slice().sort((a,b)=>(a.order||0)-(b.order||0)).map(x=>({name:cupTeam(x.team),score:String(x.score??''),winner:Boolean(x.winner)}));
-  const matches=comps.filter(c=>c!==total).map(c=>({id:String(c.id),date:c.date,state:c.status?.type?.state||'',sides:(c.competitors||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0)).map(x=>({team:cupTeam(x.team),type:x.type,id:String(x.id),players:x.type==='athlete'&&x.athlete?.displayName?[x.athlete.displayName]:[],score:String(x.score??'').trim(),winner:Boolean(x.winner)}))})).filter(m=>m.sides.length===2).sort((a,b)=>Date.parse(a.date)-Date.parse(b.date)||a.id-b.id);
-  return{id:String(e.id),name:String(e.name||'').trim(),start:e.date,end:e.endDate||e.date,state:e.status?.type?.state||'',completed:Boolean(e.status?.type?.completed),teams,matches,names};
-}
-export const golfPairRosterUrl=(tour,eventId,matchId,pairId)=>`https://sports.core.api.espn.com/v2/sports/golf/leagues/${encodeURIComponent(tour)}/events/${encodeURIComponent(eventId)}/competitions/${encodeURIComponent(matchId)}/competitors/${encodeURIComponent(pairId)}/roster`;
-export const golfPairIds=roster=>(roster?.entries||[]).map(e=>String(e.playerId??e.athlete?.$ref?.match(/athletes\/(\d+)/)?.[1]??'')).filter(Boolean);
-// The cup's pairs named from their rosters (ids → the singles' names).
-export function golfCupNamePairs(cup,rosters){
-  for(const m of cup.matches)for(const side of m.sides)if(side.type==='pair'){const ids=rosters.get(`${m.id}|${side.id}`)||[];side.players=ids.map(id=>cup.names.get(id)).filter(Boolean);}
-  return cup;
+  const teams=total.competitors.slice().sort((a,b)=>cupOrder(a)-cupOrder(b)).map(x=>({name:cupTeam(x.team),score:String(x.score?.displayValue??x.score??''),winner:Boolean(x.score?.winner??x.winner)}));
+  const matches=flat.filter(c=>c!==total&&(c?.competitors||[]).length===2).map(c=>({id:String(c.id),date:c.date,state:c.status?.type?.state||'',format:CUP_FORMATS[String(c.type?.text||'').toLowerCase()]||(c.competitors.every(x=>x.athlete)?'Singles':'Team matches'),
+    sides:c.competitors.slice().sort((a,b)=>cupOrder(a)-cupOrder(b)).map(x=>({team:cupTeam(x.team),players:x.athlete?.displayName?[x.athlete.displayName]:(x.roster||[]).map(r=>r?.athlete?.displayName).filter(Boolean),score:String(x.score?.displayValue??'').trim(),winner:Boolean(x.score?.winner),draw:Boolean(x.score?.draw),singles:Boolean(x.athlete)}))}))
+    .sort((a,b)=>Date.parse(a.date)-Date.parse(b.date)||Number(a.id)-Number(b.id));
+  const type=e.status?.type||{};
+  return{id:String(e.id),name:String(e.name||'').trim(),start:e.date,end:e.endDate||e.date,state:type.state||'',completed:Boolean(type.completed||type.name==='STATUS_FINAL'),teams,matches};
 }
 const sideName=s=>`${s.players.length?s.players.join(' / '):`${s.team} pair`} (${s.team})`;
 export function golfCupMatchRow(m,timeZone){
   const [a,b]=m.sides,won=m.sides.find(x=>x.winner),day=wallClock(m.date,timeZone).slice(0,10),[y,mo,d]=day.split('-').map(Number),wd=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(Date.UTC(y,mo-1,d)).getUTCDay()];
-  const kind=m.sides.every(x=>x.type==='athlete')?'Singles':'Team matches';
-  const result=won?`${won.team} ${won.score||'won'}`:m.state==='post'?'Halved':m.state==='in'?[a.score,b.score].filter(Boolean).join(' · ')||'Under way':'';
-  return{group:`${wd}, ${MONTHS[mo-1]} ${d} · ${kind}`,participant:`${sideName(a)} vs ${sideName(b)}`,result};
+  const result=won?`${won.team} ${won.score||'won'}`:m.sides.some(x=>x.draw)||m.state==='post'?'Halved':m.state==='in'?[a.score,b.score].filter(Boolean).join(' · ')||'Under way':'';
+  return{group:`${wd}, ${MONTHS[mo-1]} ${d} · ${m.format}`,participant:`${sideName(a)} vs ${sideName(b)}`,result};
 }
 export function golfCupEvent(t,cup,{school,config,timeZone,now}){
   const [home,away]=cup.teams;if(!home||!away)return null;
   const done=cup.state==='post'&&cup.completed,live=cup.state==='in';if(!done&&!live)return null;
   const startWall=wallClock(cup.start||t.start,timeZone),endWall=wallClock(cup.end||t.end,timeZone);
-  const event=baseEvent({school,sport:config.sport,status:done?'Final':'Live',title:cup.name||t.name,start:`${startWall.slice(0,10)}T00:00:00.000Z`,display:golfDays(startWall,endWall),opponent:`${home.name} vs ${away.name}`,sourceName:'ESPN golf board (match play)',sourceUrl:`https://www.espn.com/golf/leaderboard?tournamentId=${t.id}`,now,key:`${t.season}|${t.id}`});
+  const event=baseEvent({school,sport:config.sport,status:done?'Final':'Live',title:cup.name||t.name,start:`${startWall.slice(0,10)}T00:00:00.000Z`,display:golfDays(startWall,endWall),opponent:`${home.name} vs ${away.name}`,sourceName:'ESPN golf leaderboard (match play)',sourceUrl:`https://www.espn.com/golf/leaderboard?tournamentId=${t.id}`,now,key:`${t.season}|${t.id}`});
   event.event_type='MEET';event.end_time=`${endWall.slice(0,10)}T23:59:00.000Z`;event.season=t.season;event.golf_event=t.id;event.golf_tour=config.espn;event.golf_cup=true;
   const lead=[home,away].sort((x,y)=>parseFloat(y.score)-parseFloat(x.score));
   const score=`${home.name} ${home.score}, ${away.name} ${away.score}`;
@@ -1813,8 +1811,8 @@ export function golfCupDetails(event,cup,timeZone){
   const [home,away]=cup.teams,rows=cup.matches.map(m=>golfCupMatchRow(m,timeZone));
   const lines=[event.status==='Final'?`${event.headline.replace(/ wins /,' won the '+event.title+', ')}.`:`${home.name} ${home.score}, ${away.name} ${away.score}.`];
   if(/^Tied/.test(event.headline))lines[0]=`The ${event.title} ended tied, ${home.score}-${away.score}.`;
-  const count=(team,kind)=>cup.matches.filter(m=>m.sides.find(x=>x.winner)?.team===team&&(kind==null||(m.sides.every(x=>x.type==='athlete'))===kind)).length;
-  lines.push(`Singles: ${home.name} won ${count(home.name,true)}, ${away.name} ${count(away.name,true)}, ${cup.matches.filter(m=>m.sides.every(x=>x.type==='athlete')&&m.state==='post'&&!m.sides.some(x=>x.winner)).length} halved.`);
+  const singles=m=>m.sides.every(x=>x.singles),count=team=>cup.matches.filter(m=>singles(m)&&m.sides.find(x=>x.winner)?.team===team).length;
+  lines.push(`Singles: ${home.name} won ${count(home.name)}, ${away.name} ${count(away.name)}, ${cup.matches.filter(m=>singles(m)&&m.state==='post'&&!m.sides.some(x=>x.winner)).length} halved.`);
   return{lines,stats:[{label:'Matches',value:String(cup.matches.length)},{label:home.name,value:home.score},{label:away.name,value:away.score}],rows};
 }
 // The LPGA's team events with no ESPN board (the Dow Championship, two-
