@@ -7715,5 +7715,23 @@
   ],
   "indycar-series": [
     "Auto Racing"
+  ],
+  "pga-tour": [
+    "Golf"
+  ],
+  "lpga-tour": [
+    "Golf"
+  ],
+  "dp-world-tour": [
+    "Golf"
+  ],
+  "pga-tour-champions": [
+    "Golf"
+  ],
+  "korn-ferry-tour": [
+    "Golf"
+  ],
+  "liv-golf": [
+    "Golf"
   ]
 }

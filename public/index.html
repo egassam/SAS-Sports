@@ -628,6 +628,13 @@ function liveMore(e,ours,theirs){
 // every car (the top ten shown, the rest folded) with its gap, make and laps led.
 function raceMore(e){
   const d=e.live_details;if(!d)return'';
+  // Golf (pro tours): place, player and country, score to par, today's
+  // round, holes played (or the tee time, or why the player is out).
+  if(d.golf){
+    const grow=v=>`<tr><td>${esc(v.position)}</td><td>${esc(v.driver)}${v.car?` <small>${esc(v.car)}</small>`:''}</td><td>${esc(v.gap||'')}</td><td>${esc(v.today||'')}</td><td>${esc(v.thru||'')}</td></tr>`;
+    const ghead='<tr><th>Pos</th><th>Player</th><th>To par</th><th>Today</th><th>Thru</th></tr>',gorder=d.order||[];
+    return`<div class="live-more">${d.stage?`<div class="live-facts"><span><b>${esc(d.stage)}</b></span></div>`:''}${gorder.length?`<table class="live-stats">${ghead}${gorder.slice(0,10).map(grow).join('')}</table>`:''}${gorder.length>10?`<details><summary>Rest of the field (${gorder.length-10})</summary><table class="live-stats">${ghead}${gorder.slice(10).map(grow).join('')}</table></details>`:''}</div>`;
+  }
   const facts=[d.stage,d.laps_to_go!=null?`${d.laps_to_go} laps to go`:null,...(d.numbers||[]).map(n=>`${n.label}: ${n.value}`)].filter(Boolean);
   const row=v=>`<tr><td>${esc(v.position)}</td><td>${esc(v.driver)} ${esc(v.car)}${v.pit?` <small>${esc(v.pit)}</small>`:''}</td><td>${esc(v.gap||'')}</td><td>${esc(v.make||'')}</td><td>${v.laps_led?esc(v.laps_led):''}</td><td>${esc(v.last_lap_speed||'')}</td></tr>`;
   const head='<tr><th>Pos</th><th>Driver</th><th>Gap</th><th>Make</th><th>Led</th><th>Last lap</th></tr>';
@@ -680,7 +687,7 @@ function seriesBlock(e,full){
   return`<div class="series${full?' series-full':''}"><span class="series-label">Series</span> ${line}${last}${src}</div>`;
 }
 function spotlightCard(e){
-  const c=countdownParts(e),label=e.event_type==='RACE'?'Next race':/tennis|beach volleyball/i.test(e.sport||'')?'Next match':e.event_type==='MEET'||e.event_type==='DUAL'?'Next meet':'Next game';
+  const c=countdownParts(e),label=e.event_type==='RACE'?'Next race':e.golf_event?'Next tournament':/tennis|beach volleyball/i.test(e.sport||'')?'Next match':e.event_type==='MEET'||e.event_type==='DUAL'?'Next meet':'Next game';
   // A date with no published clock says so instead of showing no countdown
   // (user, October 30, Manhattan HS 6A state volleyball: "High school isn't
   // working").
@@ -1381,7 +1388,7 @@ const HOME_FILTER_KEY='sas-home-filter';
 // Each level's page keeps its own choice (sas-home-filter:<level>).
 const homeFilterKey=()=>levelHome?`${HOME_FILTER_KEY}:${levelHome}`:HOME_FILTER_KEY;
 const HOME_FILTER_LEVELS=[['pro','Pro'],['college','College'],['high-school','High school'],['middle-school','Middle school']];
-const HOME_FILTER_SPORTS={pro:['Football','Basketball','Baseball','Hockey','Soccer','Auto Racing','Track & Field'],college:['Football','Basketball','Baseball','Softball','Volleyball','Soccer','Hockey','Cross Country','Track & Field','Golf','Tennis','Swimming & Diving','Wrestling','Lacrosse','Gymnastics','Field Hockey','Beach Volleyball','Rowing','Water Polo','Bowling','Fencing','Equestrian','Rifle','Triathlon','Acrobatics & Tumbling','STUNT','Skiing'],'high-school':['Football','Basketball','Volleyball','Baseball','Softball','Wrestling','Cross Country','Track & Field','Golf','Soccer','Tennis','Bowling','Swimming & Diving','Flag Football'],'middle-school':['Football','Basketball','Volleyball','Wrestling','Cross Country','Track & Field','Tennis','Golf']};
+const HOME_FILTER_SPORTS={pro:['Football','Basketball','Baseball','Hockey','Soccer','Auto Racing','Golf','Track & Field'],college:['Football','Basketball','Baseball','Softball','Volleyball','Soccer','Hockey','Cross Country','Track & Field','Golf','Tennis','Swimming & Diving','Wrestling','Lacrosse','Gymnastics','Field Hockey','Beach Volleyball','Rowing','Water Polo','Bowling','Fencing','Equestrian','Rifle','Triathlon','Acrobatics & Tumbling','STUNT','Skiing'],'high-school':['Football','Basketball','Volleyball','Baseball','Softball','Wrestling','Cross Country','Track & Field','Golf','Soccer','Tennis','Bowling','Swimming & Diving','Flag Football'],'middle-school':['Football','Basketball','Volleyball','Wrestling','Cross Country','Track & Field','Tennis','Golf']};
 function loadHomeFilter(){try{const v=JSON.parse(localStorage.getItem(homeFilterKey())||'[]');return new Set(Array.isArray(v)?v.filter(x=>typeof x==='string'&&x.includes('|')):[])}catch{return new Set()}}
 let homeFilterSet=loadHomeFilter(),homeCustomOpen=false;
 function saveHomeFilter(){try{localStorage.setItem(homeFilterKey(),JSON.stringify([...homeFilterSet]))}catch{}}
@@ -1684,7 +1691,7 @@ const LEVELS=[
   {id:'middle-school',label:'Middle School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.county||'',middle:'County',middles:'All counties',townOf:s=>s.city||'',sectionOf:s=>s.classification||s.conference},
   {id:'high-school',label:'High School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.county||'',middle:'County',middles:'All counties',townOf:s=>s.city||'',sectionOf:s=>s.classification||s.conference},
   {id:'college',label:'College',group:'Conference',groups:'All conferences',team:'School',groupOf:s=>s.conference,sectionOf:s=>s.conference},
-  {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport==='Track & Field'?'Meets':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>s.league==='WNBA'?s.division:['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}
+  {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport==='Track & Field'?'Meets':sport==='Golf'?'Tours':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>s.league==='WNBA'?s.division:['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}
 ];
 const currentLevelInfo=()=>LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
 const schoolLevel=s=>s?.level||'college';
@@ -2049,7 +2056,7 @@ async function openEvent(id){
   let lastGroup='';
   const displayResults=e.event_type==='MEET'?(e.results||[]).filter(x=>x.group||x.participant):(e.results||[]);
   const rows=e.race_table?.length?raceTableHtml(e):displayResults.map(x=>{const group=x.group||'';const heading=group&&group!==lastGroup?`<div class="result-group-head">${esc(group)}</div>`:'';lastGroup=group;const isTeam=/\bteam$/i.test(x.participant||'');return heading+`<div class="result-row meet-result-row ${isTeam?'team-result':''}"><span>${esc(isTeam?'Team finish':(x.participant||x.label||'Result'))}</span><strong>${esc(x.result||x.place||x.value||'')}</strong></div>`}).join('');
-  const resultsTitle=e.event_type==='MEET'?'Full Meet Results':e.event_type==='RACE'?'Full Race Results':'Full Team Results';
+  const resultsTitle=e.golf_event?'Full Leaderboard':e.event_type==='MEET'?'Full Meet Results':e.event_type==='RACE'?'Full Race Results':'Full Team Results';
   const recapUrl=e.recap_url||(/recap/i.test(e.source?.name||'')?e.source?.url:null);
   const recapButton=recapUrl?`<a class="recap-button" href="${esc(recapUrl)}" target="_blank" rel="noopener">${esc(e.recap_label||'View Full Official Recap')}</a>`:'';
   const highlights=(e.highlights||[]).length?`<div class="highlights"><h4>Event Highlights</h4><ul>${e.highlights.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${recapButton}</div>`:'';
@@ -2086,7 +2093,7 @@ function boxScoreHtml(e){
 function raceTableHtml(e){
   const rows=e.race_table||[];if(!rows.length)return'';
   let lastGroup='';
-  return`<div class="race-table">${rows.map(r=>`${r.group&&r.group!==lastGroup?`<div class="result-group-head">${esc(lastGroup=r.group)}</div>`:''}<div class="race-row${r.pos<=3?' podium':''}"><span class="race-pos">${esc(r.pos)}</span><span class="race-driver">${esc(r.driver)}<small>${esc(r.car)}</small></span><span class="race-make">${esc(r.make)}</span><span class="race-team">${esc(r.team)}</span><span class="race-note${r.status?' out':''}">${esc(r.status||r.note||(r.laps_led?`${r.laps_led} laps led`:''))}</span></div>`).join('')}</div>`;
+  return`<div class="race-table">${rows.map(r=>`${r.group&&r.group!==lastGroup?`<div class="result-group-head">${esc(lastGroup=r.group)}</div>`:''}<div class="race-row${(r.place??r.pos)<=3?' podium':''}"><span class="race-pos">${esc(r.pos)}</span><span class="race-driver">${esc(r.driver)}<small>${esc(r.car)}</small></span><span class="race-make">${esc(r.make)}</span><span class="race-team">${esc(r.team)}</span><span class="race-note${r.status?' out':''}">${esc(r.status||r.note||(r.laps_led?`${r.laps_led} laps led`:''))}</span></div>`).join('')}</div>`;
 }
 // A final race in the list: the top three in the race window's layout.
 function raceCard(e){return`<article class="card" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${rankedTitle(e)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div></div><div class="results">${raceTableHtml({race_table:e.race_card?.length?e.race_card:e.race_table.slice(0,3)})}</div></article>`}

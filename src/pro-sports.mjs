@@ -328,6 +328,14 @@ export const PRO_TEAMS={
     kind:'indycar',sport:'Auto Racing',
     schedule:'https://www.indycar.com/Schedule'
   },
+  // Golf (user, November 24, 2026: "Add more pro golf"): each tour is one
+  // entry of its tournaments, from ESPN's golf boards and leaderboards.
+  'pga-tour':{kind:'golf',sport:'Golf',espn:'pga',tour:'PGA Tour',schedule:'https://www.pgatour.com/schedule'},
+  'lpga-tour':{kind:'golf',sport:'Golf',espn:'lpga',tour:'LPGA Tour',schedule:'https://www.lpga.com/tournaments'},
+  'dp-world-tour':{kind:'golf',sport:'Golf',espn:'eur',tour:'DP World Tour',schedule:'https://www.europeantour.com/dpworld-tour/schedule/'},
+  'pga-tour-champions':{kind:'golf',sport:'Golf',espn:'champions-tour',tour:'PGA Tour Champions',schedule:'https://www.pgatour.com/pgatour-champions/schedule'},
+  'korn-ferry-tour':{kind:'golf',sport:'Golf',espn:'ntw',tour:'Korn Ferry Tour',schedule:'https://www.pgatour.com/korn-ferry-tour/schedule'},
+  'liv-golf':{kind:'golf',sport:'Golf',espn:'liv',tour:'LIV Golf',schedule:'https://www.livgolf.com/schedule'},
   // Track and field (user, November 18: "Start with wnba and track and
   // field. Track will be hard with most results in other countries so you
   // will need to be creative"): World Athletics' own calendar and results
@@ -1604,6 +1612,147 @@ export function indycarStandings(payload){
   const rows=entries.map(e=>({pos:Number(stat(e,'rank'))||null,name:e.athlete?.displayName||'',detail:e.athlete?.flag?.alt||'',points:pointsOf(stat(e,'championshipPts'))})).filter(r=>r.name&&r.points!=null).sort((a,b)=>(a.pos??999)-(b.pos??999));
   const table=standingsTable('Drivers',rows,{source:{name:`ESPN IndyCar standings${season?` (${season} season)`:''}`,url:'https://www.espn.com/racing/standings/_/series/irl'}});
   return table?[table]:[];
+}
+
+// ---- Golf (user, November 24, 2026: "Add more pro golf") ----
+// Each tour (PGA Tour, LPGA Tour, DP World Tour, PGA Tour Champions, Korn
+// Ferry Tour, LIV Golf) is one entry of its tournaments. ESPN's golf board
+// for a day (`golf/<tour>/scoreboard?dates=<day>`) names the season holding
+// that day and its calendar (each tournament's id, name and days); it is
+// small except in a tournament week. Each tournament's leaderboard
+// (site.web.api.espn.com `golf/leaderboard?league=<tour>&event=<id>`) gives
+// the course, purse, TV, the defending champion, and every player's place
+// (ties "T4"), score to par, rounds, total, earnings and status (cut,
+// withdrew). The next season's calendar is read (`?dates=<year>`, only
+// scheduled tournaments, about 50 KB) in the last 60 days of a season.
+export const GOLF_BOARD=tour=>`${ESPN_SITE}golf/${tour}/scoreboard`;
+export const GOLF_LEADERBOARD='https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard';
+export const golfLeaderboardUrl=(tour,id)=>`${GOLF_LEADERBOARD}?league=${encodeURIComponent(tour)}&event=${encodeURIComponent(id)}`;
+export const golfBoardDay=(now,timeZone='America/New_York')=>wallClock(now,timeZone).slice(0,10).replaceAll('-','');
+// The season's calendar: [{id, name, start, end, season}], by start.
+export function golfCalendar(board){
+  const league=board?.leagues?.[0],season=Number(league?.season?.year)||null;
+  const status=new Map((board?.events||[]).map(e=>[String(e.id),e.status?.type?.name||'']));
+  return(league?.calendar||[]).filter(c=>c?.id&&c?.label&&Date.parse(c.startDate)).map(c=>({id:String(c.id),name:String(c.label).trim(),start:c.startDate,end:Date.parse(c.endDate)?c.endDate:c.startDate,season,status:status.get(String(c.id))||''})).sort((a,b)=>Date.parse(a.start)-Date.parse(b.start));
+}
+const golfMoney=v=>{const n=Number(String(v??'').replace(/[^\d.]/g,''));return n>0?`$${Math.round(n).toLocaleString('en-US')}`:null};
+const golfToPar=v=>{const s=String(v??'').trim();return s&&s!=='--'?s:null};
+const golfOut=/^(?:CUT|MC|WD|DQ|MDF|DNS|DNF)$/i;
+// One tournament's leaderboard, or null when ESPN has none (a match-play
+// cup such as the Ryder Cup lists no competitions).
+export function golfLeaderboard(payload){
+  const e=payload?.events?.[0],comp=e?.competitions?.[0];if(!e||!comp)return null;
+  const t=e.tournament||{},course=(e.courses||[]).find(c=>c.host)||(e.courses||[])[0]||null,type=comp.status?.type||e.status?.type||{};
+  const rows=(comp.competitors||[]).slice().sort((a,b)=>(a.sortOrder??a.order??999)-(b.sortOrder??b.order??999)).map(c=>{
+    const st=c.status||{},stat=n=>(c.statistics||[]).find(s=>s?.name===n),pos=st.position?.displayName,out=st.type?.name&&/CUT|WD|DQ|MDF|DNS/.test(st.type.name)?(st.displayValue||st.type.shortDetail||'').toUpperCase():null;
+    const rounds=(c.linescores||[]).filter(l=>Number(l?.period)>=1&&Number(l?.period)<=(t.numberOfRounds||4)&&Number(l?.value)>0).sort((a,b)=>a.period-b.period);
+    const current=(c.linescores||[]).find(l=>Number(l?.period)===Number(st.period));
+    const place=Number(st.position?.id)||null;
+    return{place:out?null:place,pos:out?(golfOut.test(out)?out:'–'):(pos&&pos!=='-'?pos:place?String(place):'–'),
+      player:c.athlete?.displayName||c.team?.displayName||'',country:c.athlete?.flag?.alt||'',amateur:Boolean(c.athlete?.amateur),
+      toPar:golfToPar(stat('scoreToPar')?.displayValue??c.score?.displayValue),total:Number(c.score?.value)||null,
+      rounds:rounds.map(l=>Number(l.value)),today:golfToPar(current?.displayValue),thru:st.type?.state==='pre'&&st.teeTime?{tee:st.teeTime}:st.displayThru!=null&&st.displayThru!==''?String(st.displayThru):null,
+      finished:st.type?.name==='STATUS_FINISH',playoff:Boolean(st.playoff),status:out,
+      earnings:golfMoney(stat('officialAmount')?.displayValue??c.earnings),points:Number(stat('cupPoints')?.value)||null};
+  }).filter(r=>r.player);
+  const tv=[...new Set((comp.broadcasts||[]).map(b=>b?.media?.shortName||b?.media?.name||'').filter(Boolean))];
+  return{id:String(e.id),name:String(e.name||'').trim(),start:e.date,end:e.endDate||e.date,state:type.state||'',status:type.name||'',completed:Boolean(type.completed||e.status?.type?.completed||type.name==='STATUS_FINAL'),detail:type.detail||type.description||'',period:Number(comp.status?.period)||null,
+    major:Boolean(t.major),rounds:Number(t.numberOfRounds)||4,team:/team/i.test(t.scoringSystem?.name||''),cut:t.cutRound?{round:t.cutRound,score:golfToPar(t.cutScore>0?`+${t.cutScore}`:t.cutScore===0?'E':String(t.cutScore)),count:Number(t.cutCount)||null}:null,
+    purse:golfMoney(e.purse||e.displayPurse),winner:e.winner?.displayName||null,defending:e.defendingChampion?.athlete?.displayName||null,
+    course:course?{name:course.name||'',par:Number(course.shotsToPar)||null,yards:Number(course.totalYards)||null,place:[course.address?.city,course.address?.state||(course.address?.country&&course.address.country!=='USA'?course.address.country:null)].filter(Boolean).join(', ')}:null,
+    courses:(e.courses||[]).map(c=>c.name).filter(Boolean),tv,rows};
+}
+// "Nov 19-22", "Oct 30 - Nov 2" (the tournament's first and last days).
+export function golfDays(startWall,endWall){
+  const [,m1,d1]=startWall.slice(0,10).split('-').map(Number),[,m2,d2]=endWall.slice(0,10).split('-').map(Number);
+  if(startWall.slice(0,10)===endWall.slice(0,10))return`${MONTHS[m1-1]} ${d1}`;
+  return m1===m2?`${MONTHS[m1-1]} ${d1}-${d2}`:`${MONTHS[m1-1]} ${d1} - ${MONTHS[m2-1]} ${d2}`;
+}
+const golfLine=r=>r.rounds.length?`${r.rounds.join('-')}${r.total&&r.rounds.length>1?` · ${r.total}`:''}`:'';
+// The leaderboard in the race layout: place, player and country, score to
+// par as the tag, rounds and total, earnings (or why the player is out).
+export function golfTable(rows){return rows.map(r=>({pos:r.pos,place:r.place,driver:r.player+(r.amateur?' (a)':''),car:r.country||'',make:r.toPar||'',team:golfLine(r),laps_led:0,status:r.status&&r.status!=='–'?r.status:null,note:r.earnings||''}));}
+export function golfRows(rows){return rows.map(r=>({participant:r.player,result:[r.pos,r.toPar,r.total?String(r.total):null].filter(Boolean).join(' · ')}));}
+const SPELLED=['','one','two','three','four','five','six','seven','eight','nine','ten'];
+const shots=n=>`${SPELLED[n]||n} shot${n===1?'':'s'}`;
+const toParWords=v=>v==='E'?'even par':/^-\d+$/.test(v)?`${v.slice(1)} under`:/^\+\d+$/.test(v)?`${v.slice(1)} over`:v;
+// The expanded view: who won and how, the numbers, the whole field.
+export function golfDetails(event,lb){
+  const rows=lb?.rows||[];if(!rows.length)return null;
+  const [first]=rows,second=rows.find(r=>r!==first&&r.place&&r.place>1),ties=rows.filter(r=>r.place===second?.place);
+  const margin=first.total&&second?.total?second.total-first.total:null,playoff=rows.some(r=>r.playoff)||first.place===second?.place;
+  const runner=ties.length>1?`${ties.slice(0,-1).map(r=>r.player).join(', ')} and ${ties.at(-1).player}`:second?.player;
+  const lines=[];
+  if(first.place===1&&lb.completed){
+    lines.push(`${first.player} won ${/^the\s/i.test(event.title)?event.title.replace(/^the/i,'the'):`the ${event.title}`}${first.toPar?` at ${toParWords(first.toPar)}`:''}${first.total?` (${first.total})`:''}${runner?playoff&&!margin?`, in a playoff over ${runner}`:margin?`, ${shots(margin)} ahead of ${runner}`:`, ahead of ${runner}`:''}.`);
+  }
+  if(first.rounds.length>1)lines.push(`Winning rounds: ${first.rounds.join(', ')}.`);
+  if(lb.cut?.score&&lb.cut.count)lines.push(`${lb.cut.count} players made the cut at ${lb.cut.score}.`);
+  const low=rows.filter(r=>r.rounds.length).reduce((best,r)=>{const m=Math.min(...r.rounds);return!best||m<best.score?{score:m,players:[r.player]}:m===best.score?{score:m,players:[...best.players,r.player]}:best},null);
+  if(low&&!lb.team)lines.push(`Low round: ${low.score} (${low.players.slice(0,3).join(', ')}${low.players.length>3?` and ${low.players.length-3} more`:''}).`);
+  const stats=[{label:'Players',value:String(rows.length)}];
+  if(lb.cut?.count)stats.push({label:'Made cut',value:String(lb.cut.count)});
+  if(lb.cut?.score)stats.push({label:'Cut',value:lb.cut.score});
+  if(lb.purse)stats.push({label:'Purse',value:lb.purse});
+  if(first.earnings)stats.push({label:'Winner\'s share',value:first.earnings});
+  if(lb.course?.par)stats.push({label:'Par',value:String(lb.course.par)});
+  if(lb.course?.yards)stats.push({label:'Yards',value:lb.course.yards.toLocaleString('en-US')});
+  return{lines,stats,rows:golfRows(rows),table:golfTable(rows)};
+}
+// The tour's tournaments: finals with their leaderboards, the one under way
+// with its places, the coming ones with course, purse, TV and the defending
+// champion where ESPN lists them. A past tournament without a leaderboard
+// (cancelled, a cup with no stroke-play board) is not listed (K-State's rule).
+export function golfEvents(calendar,{school,config,timeZone,now,boards=new Map()}){
+  const sport=config.sport,nowMs=now.getTime(),today=dayOf(wallClock(now,timeZone)),events=[];
+  const bySeason=new Map();for(const t of calendar)bySeason.set(t.season,(bySeason.get(t.season)||0)+1);
+  const seen=new Map();
+  for(const t of calendar){
+    const n=(seen.get(t.season)||0)+1;seen.set(t.season,n);
+    if(/CANCEL|POSTPONED/.test(t.status))continue;
+    const lb=boards.get(t.id),startWall=wallClock(lb?.start||t.start,timeZone),endWall=wallClock(lb?.end||t.end,timeZone);
+    const startDay=dayOf(startWall),endDay=dayOf(endWall);
+    if(lb&&/CANCEL|POSTPONED/.test(lb.status))continue;
+    let status;
+    if(lb?.state==='post'&&lb.completed&&lb.rows.length)status='Final';
+    else if(lb?.state==='in'||(startDay<=today&&today<=endDay+864e5&&lb?.rows.some(r=>r.rounds.length)))status='Live';
+    else if(startDay>today)status='Upcoming';
+    else if(startDay<=today&&today<=endDay)status='Today';
+    else continue;
+    const start=`${startWall.slice(0,10)}T00:00:00.000Z`,end=`${endWall.slice(0,10)}T23:59:00.000Z`,title=lb?.name||t.name;
+    const event=baseEvent({school,sport,status,title,start,display:golfDays(startWall,endWall),opponent:lb?.course?.name||null,sourceName:'ESPN golf leaderboard',sourceUrl:`https://www.espn.com/golf/leaderboard?tournamentId=${t.id}`,now,key:`${t.season}|${t.id}`});
+    event.event_type='MEET';event.end_time=end;event.season=t.season;event.golf_event=t.id;event.golf_tour=config.espn;
+    if(lb?.tv.length)event.broadcast=lb.tv.join(', ');
+    const rows=lb?.rows||[];
+    if(status==='Final'){
+      const [winner]=rows;
+      event.winner={name:winner.player};event.headline=`Winner: ${winner.player}${winner.toPar?` (${winner.toPar})`:''}`;
+      event.race_table=golfTable(rows.slice(0,3));event.results=golfRows(rows.slice(0,3));
+      event.has_more_results=rows.length>3;event.result_count=rows.length;
+    }else if(status==='Live'){
+      const round=lb?.period?`Round ${lb.period}`:'Under way',detail=String(lb?.detail||'').replace(/^Round\s*\d+\s*-?\s*/i,'').trim();
+      event.meet_live=true;event.priority_bucket='live';
+      event.recency_label=detail&&!/^in progress$/i.test(detail)?`${round} · ${detail}`:round;
+      const leaders=rows.filter(r=>r.place===rows[0]?.place&&r.place);
+      event.headline=leaders.length?`Leader${leaders.length>1?'s':''}: ${leaders.slice(0,3).map(r=>r.player).join(', ')}${leaders[0].toPar?` (${leaders[0].toPar})`:''}`:'Under way';
+      event.results=rows.slice(0,10).map(r=>({participant:`${r.pos} ${r.player}`,result:[r.toPar,typeof r.thru==='string'?(r.thru==='18'||r.finished?'F':`Thru ${r.thru}`):null].filter(Boolean).join(' · ')}));
+      if(rows.length){
+        event.live_details={golf:true,stage:event.recency_label,order:rows.map(r=>({position:r.pos,driver:r.player,car:r.country||'',gap:r.toPar||'',today:r.today||'',thru:r.status||(r.thru?.tee?`Tee ${wallClock(r.thru.tee,timeZone).slice(11,16)}`:r.thru==='18'?'F':r.thru||'')}))};
+        event.live_score_source='ESPN golf leaderboard';
+      }
+      event.result_count=event.results.length;
+    }else{
+      if(lb?.course?.name)event.results.push({label:'Course',value:lb.course.name+(lb.courses.length>1?` (and ${lb.courses.slice(1).join(', ')})`:'')});
+      if(lb?.course?.place)event.results.push({label:'Location',value:lb.course.place});
+      if(lb?.purse)event.results.push({label:'Purse',value:lb.purse});
+      if(lb?.defending)event.results.push({label:'Defending champion',value:lb.defending});
+      if(lb?.major)event.results.push({label:'Major',value:'Yes'});
+      event.results.push({label:'Tournament',value:`${n} of ${bySeason.get(t.season)}${t.season?` (${t.season} season)`:''}`});
+      event.result_count=event.results.length;
+    }
+    events.push(event);
+  }
+  return events;
 }
 
 // ---- Standings ----

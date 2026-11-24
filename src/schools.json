@@ -7637,6 +7637,155 @@
     ]
   },
   {
+    "id": "pga-tour",
+    "name": "PGA TOUR",
+    "short_name": "PGA Tour",
+    "state": "Florida",
+    "city": "Ponte Vedra Beach",
+    "conference": "PGA Tour",
+    "league": "PGA Tour",
+    "pro_sport": "Golf",
+    "level": "pro",
+    "division": "PGA TOUR",
+    "athletics_url": "https://www.pgatour.com",
+    "aliases": [
+      "PGA Tour",
+      "PGA TOUR",
+      "FedEx Cup",
+      "FedExCup"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "golf/pga",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "lpga-tour",
+    "name": "LPGA Tour",
+    "short_name": "LPGA Tour",
+    "state": "Florida",
+    "city": "Daytona Beach",
+    "conference": "LPGA",
+    "league": "LPGA",
+    "pro_sport": "Golf",
+    "level": "pro",
+    "division": "LPGA Tour",
+    "athletics_url": "https://www.lpga.com",
+    "aliases": [
+      "LPGA",
+      "LPGA Tour",
+      "Ladies Professional Golf Association"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "golf/lpga",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "dp-world-tour",
+    "name": "DP World Tour",
+    "short_name": "DP World Tour",
+    "state": "England",
+    "city": "Virginia Water",
+    "conference": "DP World Tour",
+    "league": "DP World Tour",
+    "pro_sport": "Golf",
+    "level": "pro",
+    "division": "DP World Tour",
+    "athletics_url": "https://www.europeantour.com",
+    "aliases": [
+      "DP World Tour",
+      "European Tour",
+      "Race to Dubai"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "golf/eur",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "pga-tour-champions",
+    "name": "PGA Tour Champions",
+    "short_name": "PGA Tour Champions",
+    "state": "Florida",
+    "city": "Ponte Vedra Beach",
+    "conference": "PGA Tour Champions",
+    "league": "PGA Tour Champions",
+    "pro_sport": "Golf",
+    "level": "pro",
+    "division": "PGA Tour Champions",
+    "athletics_url": "https://www.pgatour.com/pgatour-champions",
+    "aliases": [
+      "PGA Tour Champions",
+      "Champions Tour",
+      "Senior tour"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "golf/champions-tour",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "korn-ferry-tour",
+    "name": "Korn Ferry Tour",
+    "short_name": "Korn Ferry Tour",
+    "state": "Florida",
+    "city": "Ponte Vedra Beach",
+    "conference": "Korn Ferry Tour",
+    "league": "Korn Ferry Tour",
+    "pro_sport": "Golf",
+    "level": "pro",
+    "division": "Korn Ferry Tour",
+    "athletics_url": "https://www.pgatour.com/korn-ferry-tour",
+    "aliases": [
+      "Korn Ferry Tour",
+      "Korn Ferry"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "golf/ntw",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "liv-golf",
+    "name": "LIV Golf League",
+    "short_name": "LIV Golf",
+    "state": "Florida",
+    "city": "West Palm Beach",
+    "conference": "LIV Golf",
+    "league": "LIV Golf",
+    "pro_sport": "Golf",
+    "level": "pro",
+    "division": "LIV Golf League",
+    "athletics_url": "https://www.livgolf.com",
+    "aliases": [
+      "LIV Golf",
+      "LIV"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "golf/liv",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "atlanta-united",
     "name": "Atlanta United FC",
     "short_name": "Atlanta United",

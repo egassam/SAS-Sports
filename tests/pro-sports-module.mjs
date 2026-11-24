@@ -32,8 +32,10 @@ const pro=schools.filter(s=>s.level==='pro');
 // "Start 1-4"; tests/milb-module.mjs, tests/pro-alumni-module.mjs). The 20
 // Premier League and 36 Champions League clubs follow the NWSL (user,
 // November 23: "Add more pro", then "1 then 4"; tests/european-soccer-module.mjs).
-// IndyCar follows Formula 1 (same request; tests/indycar-module.mjs).
-assert.equal(pro.length,254);
+// IndyCar follows Formula 1 (same request; tests/indycar-module.mjs). Six
+// golf tours follow IndyCar (user, November 24: "Add more pro golf";
+// tests/golf-module.mjs).
+assert.equal(pro.length,260);
 assert.deepEqual(pro.filter(s=>s.pro_sport==='Auto Racing').map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1','indycar-series']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
@@ -88,7 +90,7 @@ assert.ok(worker.includes('if(isPro(school))return fetchPro(school,sport,now,aiT
 assert.ok(worker.includes('if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason'));
 assert.ok(worker.includes('if(e.not_in_record)continue;'),'NFL playoffs are out of the season record');
 // ESPN refuses a user agent carrying a web address (found on the preview).
-assert.ok(worker.includes("url.startsWith(ESPN_SITE)||url.startsWith(ESPN_STANDINGS)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT"),'ESPN reads use the scoreboard identity');
+assert.ok(worker.includes("url.startsWith(ESPN_SITE)||url.startsWith(ESPN_STANDINGS)||url.startsWith(GOLF_LEADERBOARD)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT"),'ESPN reads use the scoreboard identity');
 assert.ok(worker.includes('const r=await sourceFetch(url,init,{ttl,staleOnError:true});'),'a refused pro read serves the last copy');
 
 // Times: ESPN gives UTC; the app keeps the team's wall clock.
@@ -283,7 +285,7 @@ assert.ok(worker.includes('if(!Array.isArray(list)||!list.some(r=>r.series_id===
 // repeated in the upcoming list; race finals lead with the winner.
 // Every team at every level gets the countdown (user, October 30).
 assert.ok(page.includes("const spotlightOf=g=>(g.upcoming[0]&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;"));
-assert.ok(page.includes("label=e.event_type==='RACE'?'Next race':/tennis|beach volleyball/i.test(e.sport||'')?'Next match':e.event_type==='MEET'||e.event_type==='DUAL'?'Next meet':'Next game';"));
+assert.ok(page.includes("label=e.event_type==='RACE'?'Next race':e.golf_event?'Next tournament':/tennis|beach volleyball/i.test(e.sport||'')?'Next match':e.event_type==='MEET'||e.event_type==='DUAL'?'Next meet':'Next game';"));
 assert.ok(page.includes("section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')"));
 assert.ok(!page.includes('raceFinalCard'),'race finals use the shared result card');
 

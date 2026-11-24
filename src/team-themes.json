@@ -6742,5 +6742,53 @@
     "panelDark": "#1a040a",
     "line": "#840e22",
     "onAccent": "#ffffff"
+  },
+  "pga-tour": {
+    "primary": "#00205B",
+    "secondary": "#C8102E",
+    "panel": "#000e28",
+    "panelDark": "#000714",
+    "line": "#001844",
+    "onAccent": "#ffffff"
+  },
+  "lpga-tour": {
+    "primary": "#00338D",
+    "secondary": "#E31837",
+    "panel": "#00163f",
+    "panelDark": "#000b1f",
+    "line": "#002669",
+    "onAccent": "#ffffff"
+  },
+  "dp-world-tour": {
+    "primary": "#0A2240",
+    "secondary": "#00B2A9",
+    "panel": "#040f1c",
+    "panelDark": "#02070e",
+    "line": "#071930",
+    "onAccent": "#ffffff"
+  },
+  "pga-tour-champions": {
+    "primary": "#003A70",
+    "secondary": "#B9975B",
+    "panel": "#001a32",
+    "panelDark": "#000c18",
+    "line": "#002b54",
+    "onAccent": "#ffffff"
+  },
+  "korn-ferry-tour": {
+    "primary": "#0B3D2E",
+    "secondary": "#F2A900",
+    "panel": "#041b14",
+    "panelDark": "#020d0a",
+    "line": "#082d22",
+    "onAccent": "#ffffff"
+  },
+  "liv-golf": {
+    "primary": "#111111",
+    "secondary": "#B5E61D",
+    "panel": "#1c1c1c",
+    "panelDark": "#0b0b0b",
+    "line": "#3a3a3a",
+    "onAccent": "#ffffff"
   }
 }
