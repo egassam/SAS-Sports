@@ -5968,3 +5968,25 @@ User: "Can we track how many people are using the app?" Offered (1) our own coun
 User: "Can I see it on my phone without tapping SAS Sports logo five times?", then "Perfect" to the proposed bar. Built (`4.332.0-owner-strip`): `#ownerStrip` (a hidden `ghost` button under the header) filled by `refreshOwnerStrip` when the page has a push subscription and `sas-feedback-owner` is set: "📊 N using today · N this week · N new notes ›" from `/api/push/stats` and `/api/push/feedback` (new = id above `sas-feedback-seen`, written when the full view opens); refreshed on `visibilitychange`; tapping opens `showFeedback`; a 403 clears the owner flag. Tests: `tests/push-alerts.mjs` (hidden start, owner-only refresh); Chromium iPhone 13 (owner: the bar, the full view, seen marked; other phone: no bar; 390 px). CI `guardrails` green on `c17bc97`. Preview: XC 18/20 and 26/21, Manhattan/Anthony/Eisenhower all sports 3 refreshes PASS, `check-reference-page` PASS. Production (merge `592fd1f`): `verify:prod` Manhattan Basketball PASS, XC 18/20 and 26/21, `check-reference-page` PASS, `#ownerStrip` served hidden.
 
 **Confirmed (November 23, 2026).** User: "It all works": the install page, feedback alerts, the usage counter and the owner bar on the user's phone.
+
+## November 24, 2026 — Pro golf (PR #653, `4.333.0-pro-golf`)
+
+**Request (user):** "Add more pro golf". Pro golf was one of the pro ideas offered on Nov 23 (PGA Tour and LPGA); no golf entry existed. The agent added every pro tour ESPN publishes leaderboards for.
+
+**What was built:** Pro → Golf → League (PGA Tour, LPGA, DP World Tour, PGA Tour Champions, Korn Ferry Tour, LIV Golf) → Tours (one entry each: `pga-tour`, `lpga-tour`, `dp-world-tour`, `pga-tour-champions`, `korn-ferry-tour`, `liv-golf`). `src/pro-sports.mjs` Golf part, `fetchGolf` in `src/index.js`, page: golf live table, "Next tournament", "Full Leaderboard", podium by place (ties), Golf in the Pro home filter. `PRO_SEASONS` Golf all year.
+
+**Sources and decisions:**
+- ESPN golf board `golf/<tour>/scoreboard?dates=<today>` gives the season holding that day and its calendar (small outside tournament weeks). The plain board was 800 KB for the PGA Tour and once answered empty for LPGA; a season board (`?dates=<year>`) is 6-31 MB once played, so it is read only for the next season in a season's last 60 days (about 50 KB, nothing played).
+- A new season with no final yet (DP World Tour turned to 2026-27 on Nov 24) keeps last season's finals: the board of a day 10, then 40, days before the new season names the old calendar (checked: eur `?dates=20261116` → 2026 season).
+- Leaderboards: `golf/leaderboard?league=<tour>&event=<id>`. First built on `site.web.api.espn.com`; on the preview every leaderboard read failed in the Worker (all tournaments read Upcoming/Today, 0 results) though it answered curl. `site.api.espn.com` serves the identical payload (compared for RSM Classic, Zurich Classic, CME, Hero), so the reader moved there (commit `bde7914`).
+- ESPN golf standings (`apis/v2/sports/golf/<tour>/standings`) are empty for all tours: no standings.
+- Not listed: cancelled events (The Sentry 2026, LIV Louisiana, LIV Michigan stroke play) and boards with no stroke-play field (Presidents Cup, Solheim Cup, Dow Championship, LIV Michigan match play).
+
+**Tests:** `tests/golf-module.mjs` (ESPN payloads of Nov 24) added to `test`, `test:release:list` and `test:pro-sports-module`; `tests/pro-sports-module.mjs` (260 pro entries, spotlight label), `tests/mlb-module.mjs` (`PRO_SEASONS`) updated. Locally: `test:pro-sports-module`, catalog, regression, home-week, home-customize, home-live passed; the full local `npm test` was cut off by a container restart (not rerun locally). CI `guardrails` (test:release) green on `bde7914`.
+
+**Preview:** first gate showed 0 finals (the host problem above); after the fix `verify:preview --school=<six tours> --sports=all --refreshes=3`: all PASS, finals PGA 45, LPGA 30 (a first run read 0 from an older copy; rerun 30), DP World 35, Champions 28, Korn Ferry 25, LIV 12, expanded views all; XC 18/20 and 26/21. Page on an iPhone 13 profile: Next tournament (Hero World Challenge, Dec 3-6, TV), RSM Classic card (1 Penge, T2 Thorbjornsen, T2 Li, rounds, -16, earnings), window "Full Leaderboard" 147 players with "Marco Penge won the RSM Classic at 16 under (266), in a playoff over …"; page width 390.
+
+**Production:** merge `5b1cf6b`; `/api/status` `4.333.0-pro-golf`; `verify:prod` six tours × 3 refreshes PASS with the same finals and expanded views; XC 18/20 and 26/21.
+
+**Open:** first live golf cards to observe (BMW Australian PGA Nov 26-29; Hero World Challenge Dec 3-6), the live shape is read from finished leaderboards. Only the next coming tournament carries course and purse.
+
