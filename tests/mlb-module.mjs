@@ -58,7 +58,7 @@ assert.deepEqual(mlbScheduleUrls(KC,{month:3,year:2027}),[`${KC}?seasontype=2&se
   assert.ok(finals.every(e=>e.espn_date.startsWith('2026-')));
   assert.ok(coming.length>=150&&coming.every(e=>e.espn_date.startsWith('2027-')),String(coming.length));
 }
-assert.ok(worker.includes("const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]],'Track & Field':[[1,9]]};"));
+assert.ok(worker.includes("const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]],'Track & Field':[[1,9]],Golf:[[1,12]]};"));
 assert.ok(worker.includes('const months=e.pro||isHighSchool(catalogSchool(e.school_id))?null:RECORD_MONTHS[e.sport]'));
 
 // Postseason rounds from ESPN's game notes.

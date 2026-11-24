@@ -75,7 +75,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {INDYCAR_SCHEDULE,INDYCAR_BOARD,INDYCAR_STANDINGS,indycarCalendar,indycarBoardDay,indycarRace,indycarSchedule,indycarRaces,indycarRaceDetails,indycarStandings,MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
+import {GOLF_BOARD,golfLeaderboardUrl,golfBoardDay,golfCalendar,golfLeaderboard,golfEvents,golfDetails,INDYCAR_SCHEDULE,INDYCAR_BOARD,INDYCAR_STANDINGS,indycarCalendar,indycarBoardDay,indycarRace,indycarSchedule,indycarRaces,indycarRaceDetails,indycarStandings,MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -352,7 +352,7 @@ import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 import {feedbackRoute,FEEDBACK_TABLE_SQL} from './feedback.mjs';
 import {usageRoute,usageStats} from './usage.mjs';
 
-const VERSION='4.332.0-owner-strip';
+const VERSION='4.333.0-pro-golf';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5397,6 +5397,7 @@ async function fetchPro(school,sport,now,aiTargetId=null){
   if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);
   if(config.kind==='f1')return fetchF1(school,config,now,timeZone,aiTargetId,failed);
   if(config.kind==='indycar')return fetchIndycar(school,config,now,timeZone,aiTargetId,failed);
+  if(config.kind==='golf')return fetchGolf(school,config,now,timeZone,aiTargetId,failed);
   if(config.kind==='world-athletics')return fetchWorldAthletics(school,config,now,timeZone,aiTargetId,failed);
   return failed('Unknown pro source');
 }
@@ -5477,6 +5478,58 @@ async function fetchIndycar(school,config,now,timeZone,aiTargetId,failed){
   const standings=indycarStandings(standingsPayload);
   if(standings.length)sources.push(INDYCAR_STANDINGS);
   return{events,...(standings.length?{standings}:{}),source_url:INDYCAR_SCHEDULE,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+}
+// Golf (src/pro-sports.mjs, "Golf"): the season's calendar from ESPN's
+// board for today, the next season's in the last 60 days of one, and each
+// tournament's leaderboard: a final's kept six hours (and in the isolate for
+// good: a final does not change), the one under way every minute, the next
+// coming one ten minutes. At most six leaderboards are read at a time.
+const golfFinalMemo=new Map();
+async function fetchGolf(school,config,now,timeZone,aiTargetId,failed){
+  const dayUrl=`${GOLF_BOARD(config.espn)}?dates=${golfBoardDay(now,timeZone)}`;
+  const calendar=golfCalendar(await readJson(dayUrl,SOURCE_TTL.listing));
+  if(!calendar.length)return failed(`${dayUrl}: unreadable or empty`);
+  const sources=[dayUrl],nowMs=now.getTime(),day=864e5,lastEnd=Math.max(...calendar.map(t=>Date.parse(t.end)));
+  // A season with no tournament finished yet (the DP World Tour's turned on
+  // Nov 24, 2026, two days before its first event): last season's finals
+  // stay listed. Its calendar is the board of a day before the new season
+  // (10, then 40 days before its first tournament).
+  const current=Math.max(...calendar.map(t=>t.season||0)),first=Math.min(...calendar.filter(t=>t.season===current).map(t=>Date.parse(t.start)));
+  if(Number.isFinite(first)&&!calendar.some(t=>t.season===current&&Date.parse(t.end)+day<nowMs)){
+    for(const back of [10,40]){
+      const url=`${GOLF_BOARD(config.espn)}?dates=${golfBoardDay(new Date(first-back*day),timeZone)}`,prev=golfCalendar(await readJson(url,SOURCE_TTL.listing));
+      if(prev.length&&prev[0].season<current){calendar.unshift(...prev.filter(t=>!calendar.some(c=>c.id===t.id)));sources.push(url);break;}
+    }
+  }
+  if(lastEnd-nowMs<60*day){
+    const season=Math.max(...calendar.map(t=>t.season||0))+1,url=`${GOLF_BOARD(config.espn)}?dates=${season}`;
+    const next=golfCalendar(await readJson(url,SOURCE_TTL.listing)).filter(t=>t.season>=season&&!calendar.some(c=>c.id===t.id));
+    if(next.length){calendar.push(...next);sources.push(url);}
+  }
+  // Leaderboards: every tournament begun, and the next one to come.
+  const nextUp=calendar.find(t=>Date.parse(t.start)>nowMs&&!/CANCEL/.test(t.status));
+  const wanted=calendar.filter(t=>!/CANCEL/.test(t.status)&&(Date.parse(t.start)-day<=nowMs||t===nextUp));
+  const boards=new Map();let next=0;
+  await Promise.all(Array.from({length:Math.min(6,wanted.length)},async()=>{while(next<wanted.length){
+    const t=wanted[next++],memoKey=`${config.espn}|${t.id}`,kept=golfFinalMemo.get(memoKey);
+    if(kept){boards.set(t.id,kept);continue;}
+    const over=Date.parse(t.end)+2*day<nowMs,underWay=!over&&Date.parse(t.start)-day<=nowMs,url=golfLeaderboardUrl(config.espn,t.id);
+    const lb=golfLeaderboard(await readJson(url,underWay?60:over?SOURCE_TTL.document:SOURCE_TTL.listing));
+    if(!lb)continue;
+    boards.set(t.id,lb);if(underWay)sources.push(url);
+    if(lb.state==='post'&&lb.completed&&lb.rows.length&&over)golfFinalMemo.set(memoKey,lb);
+  }}));
+  const events=golfEvents(calendar,{school,config,timeZone,now,boards});
+  const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
+  if(target&&(target.status==='Final'||target.status==='Live')){
+    const details=golfDetails(target,boards.get(target.golf_event));
+    if(details){
+      target.results=details.rows;target.result_count=details.rows.length;target.race_table=details.table;
+      target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
+      target.highlight_status='Leaderboard from ESPN (place, score to par, rounds, total and earnings for every player).';
+    }
+  }
+  return{events,source_url:config.schedule,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
 }
 async function fetchF1(school,config,now,timeZone,aiTargetId,failed){
   const year=schoolNow(now,school).getUTCFullYear(),calendarUrl=`${JOLPICA_F1}${year}.json`,seasonUrl=`${F1_RESULTS}${year}/races`;
@@ -5838,7 +5891,7 @@ function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:
 // NBA and NHL October to the June finals, professional track and field from
 // the indoor season (January) to the Diamond League final (September).
 const EUROPEAN_SOCCER=new Set(['soccer/eng.1','soccer/uefa.champions']);
-const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]],'Track & Field':[[1,9]]};
+const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]],'Track & Field':[[1,9]],Golf:[[1,12]]};
 // A league whose season is not its sport's (by ESPN path): the WNBA plays
 // May to its October finals.
 // The Premier League plays August to May; the Champions League's league
