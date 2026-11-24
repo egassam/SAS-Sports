@@ -34,9 +34,9 @@ assert.match(worker,/if\(config\.kind==='golf'\)return fetchGolf\(/);
 // Nov 24): its calendar is a board 10, then 40 days before the season.
 assert.match(worker,/for\(const back of \[10,40\]\)\{/);assert.match(worker,/if\(prev\.length&&prev\[0\]\.season<current\)\{calendar\.unshift\(/);
 assert.match(worker,/const PRO_SEASONS=\{[^}]*Golf:\[\[1,12\]\]\};/,'pro golf is in season all year');
-assert.match(worker,/url\.startsWith\(GOLF_LEADERBOARD\)\?\{headers/,'the leaderboard host gets the ESPN headers');
+
 assert.match(page,/sport==='Golf'\?'Tours'/);assert.match(page,/e\.golf_event\?'Next tournament'/);assert.match(page,/e\.golf_event\?'Full Leaderboard'/);assert.match(page,/if\(d\.golf\)\{/);
-assert.equal(golfLeaderboardUrl('pga','401850981'),'https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&event=401850981');
+assert.equal(golfLeaderboardUrl('pga','401850981'),'https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&event=401850981');
 assert.equal(`${GOLF_BOARD('eur')}?dates=${golfBoardDay(now,EASTERN)}`,'https://site.api.espn.com/apis/site/v2/sports/golf/eur/scoreboard?dates=20261124');
 assert.equal(golfDays('2026-11-19T00:00:00.000Z','2026-11-22T00:00:00.000Z'),'Nov 19-22');
 assert.equal(golfDays('2026-10-30T00:00:00.000Z','2026-11-02T00:00:00.000Z'),'Oct 30 - Nov 2');

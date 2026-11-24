@@ -1620,13 +1620,15 @@ export function indycarStandings(payload){
 // for a day (`golf/<tour>/scoreboard?dates=<day>`) names the season holding
 // that day and its calendar (each tournament's id, name and days); it is
 // small except in a tournament week. Each tournament's leaderboard
-// (site.web.api.espn.com `golf/leaderboard?league=<tour>&event=<id>`) gives
+// (`golf/leaderboard?league=<tour>&event=<id>` on site.api.espn.com; the
+// same board on site.web.api.espn.com was never answered from the Worker on
+// the Nov 24 preview) gives
 // the course, purse, TV, the defending champion, and every player's place
 // (ties "T4"), score to par, rounds, total, earnings and status (cut,
 // withdrew). The next season's calendar is read (`?dates=<year>`, only
 // scheduled tournaments, about 50 KB) in the last 60 days of a season.
 export const GOLF_BOARD=tour=>`${ESPN_SITE}golf/${tour}/scoreboard`;
-export const GOLF_LEADERBOARD='https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard';
+export const GOLF_LEADERBOARD=`${ESPN_SITE}golf/leaderboard`;
 export const golfLeaderboardUrl=(tour,id)=>`${GOLF_LEADERBOARD}?league=${encodeURIComponent(tour)}&event=${encodeURIComponent(id)}`;
 export const golfBoardDay=(now,timeZone='America/New_York')=>wallClock(now,timeZone).slice(0,10).replaceAll('-','');
 // The season's calendar: [{id, name, start, end, season}], by start.
