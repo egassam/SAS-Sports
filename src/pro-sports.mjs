@@ -1783,7 +1783,8 @@ export function golfCupLeaderboard(payload){
     sides:c.competitors.slice().sort((a,b)=>cupOrder(a)-cupOrder(b)).map(x=>({team:cupTeam(x.team),players:x.athlete?.displayName?[x.athlete.displayName]:(x.roster||[]).map(r=>r?.athlete?.displayName).filter(Boolean),score:String(x.score?.displayValue??'').trim(),winner:Boolean(x.score?.winner),draw:Boolean(x.score?.draw),singles:Boolean(x.athlete)}))}))
     .sort((a,b)=>Date.parse(a.date)-Date.parse(b.date)||Number(a.id)-Number(b.id));
   const type=e.status?.type||{};
-  return{id:String(e.id),name:String(e.name||'').trim(),start:e.date,end:e.endDate||e.date,state:type.state||'',completed:Boolean(type.completed||type.name==='STATUS_FINAL'),teams,matches};
+  const course=(e.courses||[]).find(c=>c.host)||(e.courses||[])[0]||null;
+  return{id:String(e.id),name:String(e.name||'').trim(),start:e.date,end:e.endDate||e.date,state:type.state||'',completed:Boolean(type.completed||type.name==='STATUS_FINAL'),teams,matches,course:course?.name||null};
 }
 const sideName=s=>`${s.players.length?s.players.join(' / '):`${s.team} pair`} (${s.team})`;
 export function golfCupMatchRow(m,timeZone){
@@ -1795,7 +1796,7 @@ export function golfCupEvent(t,cup,{school,config,timeZone,now}){
   const [home,away]=cup.teams;if(!home||!away)return null;
   const done=cup.state==='post'&&cup.completed,live=cup.state==='in';if(!done&&!live)return null;
   const startWall=wallClock(cup.start||t.start,timeZone),endWall=wallClock(cup.end||t.end,timeZone);
-  const event=baseEvent({school,sport:config.sport,status:done?'Final':'Live',title:cup.name||t.name,start:`${startWall.slice(0,10)}T00:00:00.000Z`,display:golfDays(startWall,endWall),opponent:`${home.name} vs ${away.name}`,sourceName:'ESPN golf leaderboard (match play)',sourceUrl:`https://www.espn.com/golf/leaderboard?tournamentId=${t.id}`,now,key:`${t.season}|${t.id}`});
+  const event=baseEvent({school,sport:config.sport,status:done?'Final':'Live',title:cup.name||t.name,start:`${startWall.slice(0,10)}T00:00:00.000Z`,display:golfDays(startWall,endWall),opponent:cup.course||`${home.name} vs ${away.name}`,sourceName:'ESPN golf leaderboard (match play)',sourceUrl:`https://www.espn.com/golf/leaderboard?tournamentId=${t.id}`,now,key:`${t.season}|${t.id}`});
   event.event_type='MEET';event.end_time=`${endWall.slice(0,10)}T23:59:00.000Z`;event.season=t.season;event.golf_event=t.id;event.golf_tour=config.espn;event.golf_cup=true;
   const lead=[home,away].sort((x,y)=>parseFloat(y.score)-parseFloat(x.score));
   const score=`${home.name} ${home.score}, ${away.name} ${away.score}`;

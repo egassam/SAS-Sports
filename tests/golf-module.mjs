@@ -36,7 +36,7 @@ assert.match(worker,/if\(config\.kind==='golf'\)return fetchGolf\(/);
 assert.match(worker,/for\(const back of \[10,40\]\)\{/);assert.match(worker,/if\(prev\.length&&prev\[0\]\.season<current\)\{calendar\.unshift\(/);
 assert.match(worker,/const PRO_SEASONS=\{[^}]*Golf:\[\[1,12\]\]\};/,'pro golf is in season all year');
 
-assert.match(page,/sport==='Golf'\?'Tours'/);assert.match(page,/e\.golf_event\?'Next tournament'/);assert.match(page,/e\.golf_cup\?'Every Match':e\.golf_event\?'Full Leaderboard'/);assert.match(page,/g\.sport==='Golf'\?'Player':'Driver'/);assert.match(page,/if\(d\.golf\)\{/);
+assert.match(page,/sport==='Golf'\?'Tours'/);assert.match(page,/e\.golf_event\?'Next tournament'/);assert.match(page,/e\.golf_cup\?'Every Match':e\.golf_event\?'Full Leaderboard'/);assert.match(page,/g\.sport==='Golf'\?'Player':'Driver'/);assert.match(page,/\.st-table\.st-wide \.st-num\{width:104px;white-space:nowrap\}/);assert.match(page,/if\(d\.golf\)\{/);
 assert.equal(golfLeaderboardUrl('pga','401850981'),'https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&event=401850981');
 assert.equal(`${GOLF_BOARD('eur')}?dates=${golfBoardDay(now,EASTERN)}`,'https://site.api.espn.com/apis/site/v2/sports/golf/eur/scoreboard?dates=20261124');
 assert.equal(golfDays('2026-11-19T00:00:00.000Z','2026-11-22T00:00:00.000Z'),'Nov 19-22');
@@ -126,7 +126,7 @@ assert.deepEqual([...new Set(presidents.matches.map(m=>m.format))],['Four-ball',
 assert.equal(golfCupLeaderboard(json('pga-rsm')),null,'a stroke-play leaderboard is not a cup');
 const cupEvents=golfEvents(pga,{school,config,timeZone:EASTERN,now,boards:new Map(),cups:new Map([['401824815',presidents]])});
 const pc=cupEvents.find(e=>e.golf_event==='401824815');
-assert.deepEqual([pc.status,pc.title,pc.display_time,pc.headline,pc.opponent,pc.golf_cup],['Final','Presidents Cup','Sep 24-27','USA wins 17-13','USA vs International',true]);
+assert.deepEqual([pc.status,pc.title,pc.display_time,pc.headline,pc.opponent,pc.golf_cup],['Final','Presidents Cup','Sep 24-27','USA wins 17-13','Medinah CC (No. 3)',true]);
 assert.deepEqual(pc.results,[{participant:'USA',result:'17'},{participant:'International',result:'13'}]);
 const pcd=golfCupDetails(pc,presidents,EASTERN);
 assert.deepEqual(pcd.lines,['USA won the Presidents Cup, 17-13.','Singles: USA won 9, International 2, 1 halved.']);
