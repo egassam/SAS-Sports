@@ -5990,3 +5990,24 @@ User: "Can I see it on my phone without tapping SAS Sports logo five times?", th
 
 **Open:** first live golf cards to observe (BMW Australian PGA Nov 26-29; Hero World Challenge Dec 3-6), the live shape is read from finished leaderboards. Only the next coming tournament carries course and purse.
 
+## November 24, 2026 — Golf cups, team events and season standings (PR #655, `4.334.0-golf-cups`)
+
+**Request (user):** "Can we look elsewhere for cup, team events and season standings?" (after PR #653 left out the Presidents Cup, Solheim Cup, Dow Championship, LIV's match-play final, and all season standings).
+
+**Sources checked:**
+- ESPN `apis/v2/sports/golf/<tour>/standings`: empty for all tours. ESPN core API standings (`sports.core.api.espn.com/.../seasons/2026/types/2/standings/0`): PGA Tour FedExCup points, money, wins; LPGA, Champions, Korn Ferry money and wins only; DP World and LIV empty; players by id only; 3-6 MB. Not used.
+- pgatour.com (robots allows): `/fedexcup`, `/pgatour-champions/schwabcup`, `/korn-ferry-tour/pointslist` carry `tourCupSplit` in `__NEXT_DATA__` (official rank, country, points). `/fedexcup` holds FedExCup Fall (ranks from 51) after the TOUR Championship; the main FedExCup list is not in the page.
+- lpga.com (robots allows): Race to CME Globe overview page lists the top 15 as text (the leader's points shortened to "4.0 K"; exact value in the page's data); the full rankings page loads from an API in the browser (not used). `/tournaments/dow-championship/results`: top 10 teams, names the edition ("June 11-14, 2026").
+- europeantour.com: 403 to every read, robots.txt included. livgolf.com: robots.txt disallows ClaudeBot and other AI agents, not read. ESPN has no board for the Dow or LIV's Michigan match play.
+- Cups: ESPN's week board lists the matches (pair ids only); pair names first came from the core API's rosters. **On the preview neither `sports.core.api.espn.com` nor (PR #653) `site.web.api.espn.com` answered the Worker.** The cup's own `golf/leaderboard` on `site.api.espn.com` (`scoringSystem` "Match") lists sessions of matches with format, both sides' players and results: used instead (commit `b2576e3`). ESPN's summary sentence reads "USA beats EUR 15-13" for Europe's 15-13 Solheim Cup; the team points and matches (Europe 14 wins, 2 halved) are used.
+
+**Built:** `golfCupLeaderboard`, `golfCupEvent`, `golfCupDetails` (card "USA wins 17-13", window "Every Match" by day and format, singles count), `lpgaTeamResults` (Dow, season-checked), `pgatourStandings`, `lpgaRaceToCme`; config `standings` and `teamResults` per tour. Page: "Player" column for golf standings, numbers with separators and a 104 px one-line column for long numbers (`st-wide`), "Every Match" title, cup place = course. Golf expanded views use store key `|golf2` (the first preview's cup views with "USA pair" were stored in the shared highlight KV).
+
+**Tests:** `tests/golf-module.mjs` extended (Presidents and Solheim Cup leaderboards, Dow and Race to CME pages trimmed, pgatour.com page data trimmed to `tourCupSplit`); `tests/pro-sports-module.mjs` store-key pin updated. Local golf, pro-sports group, catalog, regression, home-week, home-live passed. CI green on `14a0332`.
+
+**Preview:** cups, Dow and four standings tables served; cup windows 30/30 and 28/28 matches named after the leaderboard switch and key change; phone screenshots (Schwab Cup table one-line numbers; Solheim Cup card and window). `verify:preview` six tours + IndyCar + Chiefs × 3 refreshes PASS; one run read LPGA 28 of 32 finals on a cold start (refreshes after: 32).
+
+**Production:** merge `7eba1fa`, `/api/status` `4.334.0-golf-cups`; `verify:prod` same entries PASS (PGA 46, LPGA 32 finals), XC 18/20 and 26/21; Presidents Cup window 30 matches all named.
+
+**Open:** DP World and LIV standings and LIV's match-play final have no readable source; FedExCup main list not on the page; live cup first at the 2027 Ryder Cup.
+
