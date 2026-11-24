@@ -75,7 +75,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {GOLF_BOARD,golfLeaderboardUrl,golfBoardDay,golfCalendar,golfLeaderboard,golfEvents,golfDetails,INDYCAR_SCHEDULE,INDYCAR_BOARD,INDYCAR_STANDINGS,indycarCalendar,indycarBoardDay,indycarRace,indycarSchedule,indycarRaces,indycarRaceDetails,indycarStandings,MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
+import {golfCupBoard,golfPairRosterUrl,golfPairIds,golfCupNamePairs,golfCupDetails,lpgaResultsUrl,lpgaTeamResults,pgatourStandings,lpgaRaceToCme,GOLF_BOARD,golfLeaderboardUrl,golfBoardDay,golfCalendar,golfLeaderboard,golfEvents,golfDetails,INDYCAR_SCHEDULE,INDYCAR_BOARD,INDYCAR_STANDINGS,indycarCalendar,indycarBoardDay,indycarRace,indycarSchedule,indycarRaces,indycarRaceDetails,indycarStandings,MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -352,7 +352,7 @@ import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 import {feedbackRoute,FEEDBACK_TABLE_SQL} from './feedback.mjs';
 import {usageRoute,usageStats} from './usage.mjs';
 
-const VERSION='4.333.0-pro-golf';
+const VERSION='4.334.0-golf-cups';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5519,17 +5519,43 @@ async function fetchGolf(school,config,now,timeZone,aiTargetId,failed){
     boards.set(t.id,lb);if(underWay)sources.push(url);
     if(lb.state==='post'&&lb.completed&&lb.rows.length&&over)golfFinalMemo.set(memoKey,lb);
   }}));
-  const events=golfEvents(calendar,{school,config,timeZone,now,boards});
+  // Tournaments begun with no stroke-play board: a match-play cup from
+  // ESPN's board for its week (pairs named from their rosters), or an LPGA
+  // team event from lpga.com's results page.
+  const cups=new Map();
+  for(const t of wanted){
+    const lb=boards.get(t.id);if(!lb||lb.rows.length||/CANCEL|POSTPONED/.test(lb.status)||Date.parse(t.start)>nowMs)continue;
+    const memoKey=`${config.espn}|cup|${t.id}`,kept=golfFinalMemo.get(memoKey);if(kept){if(kept.cup)cups.set(t.id,kept.cup);else boards.set(t.id,kept.lb);continue;}
+    const over=Date.parse(t.end)+2*day<nowMs,url=`${GOLF_BOARD(config.espn)}?dates=${golfBoardDay(new Date(Date.parse(lb.start||t.start)+12*3600e3),'America/New_York')}`;
+    const cup=golfCupBoard(await readJson(url,over?SOURCE_TTL.document:60),t.id);
+    if(cup){
+      const pairs=cup.matches.flatMap(m=>m.sides.filter(x=>x.type==='pair').map(x=>[m.id,x.id])),rosters=new Map();let k=0;
+      await Promise.all(Array.from({length:Math.min(6,pairs.length)},async()=>{while(k<pairs.length){const [mid,pid]=pairs[k++];const ids=golfPairIds(await readJson(golfPairRosterUrl(config.espn,t.id,mid,pid),SOURCE_TTL.document));if(ids.length)rosters.set(`${mid}|${pid}`,ids);}}));
+      golfCupNamePairs(cup,rosters);cups.set(t.id,cup);sources.push(url);
+      if(over&&cup.state==='post')golfFinalMemo.set(memoKey,{cup});
+      continue;
+    }
+    if(config.teamResults==='lpga'&&lb.state==='post'){
+      const page=lpgaResultsUrl(t.name),rows=lpgaTeamResults(await readText(page,over?SOURCE_TTL.document:SOURCE_TTL.listing),{season:t.season});
+      if(rows){const full={...lb,rows,completed:true,topOnly:true,source:{name:`LPGA results (lpga.com) · top ${rows.length}`,url:page}};boards.set(t.id,full);sources.push(page);if(over)golfFinalMemo.set(memoKey,{lb:full});}
+    }
+  }
+  const events=golfEvents(calendar,{school,config,timeZone,now,boards,cups});
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
-  if(target&&(target.status==='Final'||target.status==='Live')){
+  if(target?.golf_cup){
+    const details=golfCupDetails(target,cups.get(target.golf_event),timeZone);
+    if(details){target.results=details.rows;target.result_count=details.rows.length;target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;target.highlight_status='Every match from ESPN\'s golf board (pairs named from ESPN\'s rosters).';}
+  }else if(target&&(target.status==='Final'||target.status==='Live')){
     const details=golfDetails(target,boards.get(target.golf_event));
     if(details){
       target.results=details.rows;target.result_count=details.rows.length;target.race_table=details.table;
       target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
-      target.highlight_status='Leaderboard from ESPN (place, score to par, rounds, total and earnings for every player).';
+      target.highlight_status=boards.get(target.golf_event)?.topOnly?'Top ten teams from lpga.com (ESPN publishes no leaderboard for this team event).':'Leaderboard from ESPN (place, score to par, rounds, total and earnings for every player).';
     }
   }
-  return{events,source_url:config.schedule,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+  // Season standings: the tours' own pages (pgatour.com, lpga.com).
+  const standings=(await Promise.all((config.standings||[]).map(async s=>{const html=await readText(s.url,SOURCE_TTL.article);const table=s.kind==='pgatour'?pgatourStandings(html,{url:s.url}):s.kind==='lpga-cme'?lpgaRaceToCme(html,{url:s.url}):null;if(table)sources.push(s.url);return table;}))).filter(Boolean);
+  return{events,...(standings.length?{standings}:{}),source_url:config.schedule,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
 }
 async function fetchF1(school,config,now,timeZone,aiTargetId,failed){
   const year=schoolNow(now,school).getUTCFullYear(),calendarUrl=`${JOLPICA_F1}${year}.json`,seasonUrl=`${F1_RESULTS}${year}/races`;

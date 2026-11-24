@@ -828,12 +828,15 @@ const STANDINGS_SHOWN=5,standingsState=new Map();
 function standingsBlock(g){
   const tables=(Array.isArray(g.standings)?g.standings:[]).filter(x=>x?.rows?.length);if(!tables.length)return'';
   const key=`${g.school_id||g.school}|${g.sport}`,st=standingsState.get(key)||{tab:0,all:false},tab=Math.min(st.tab,tables.length-1),t=tables[tab],lead=t.rows[0]?.points;
-  const cols=Array.isArray(t.columns)?t.columns:null,who=cols||/team|constructor|manufacturer/i.test(t.title)?'Team':'Driver';
+  const cols=Array.isArray(t.columns)?t.columns:null,who=cols||/team|constructor|manufacturer/i.test(t.title)?'Team':g.sport==='Golf'?'Player':'Driver';
+  // Golf points run to millions (Charles Schwab Cup) and to thousandths
+  // (Korn Ferry, Race to CME): shown with separators, gaps rounded alike.
+  const num=v=>typeof v==='number'?v.toLocaleString('en-US',{maximumFractionDigits:3}):v;
   // A team league's table (ESPN, user's next step after racing): its own
   // columns (W-L, Pct, GB, ...), and the team's own row marked and always
   // shown, also when it is below the top 5.
   const ownAt=t.rows.findIndex(r=>r.own),shownRows=st.all?t.rows:t.rows.slice(0,STANDINGS_SHOWN).concat(ownAt>=STANDINGS_SHOWN?[t.rows[ownAt]]:[]);
-  const cells=r=>cols?cols.map(c=>`<td class="st-num st-c-${esc(c.key)}">${esc(r.values?.[c.key]??'')}</td>`).join(''):`${t.wins?`<td class="st-num">${esc(r.wins??0)}</td>`:''}<td class="st-num"><b>${esc(r.points)}</b>${typeof lead==='number'&&typeof r.points==='number'&&r.points<lead?`<span>−${lead-r.points}</span>`:''}</td>`;
+  const cells=r=>cols?cols.map(c=>`<td class="st-num st-c-${esc(c.key)}">${esc(r.values?.[c.key]??'')}</td>`).join(''):`${t.wins?`<td class="st-num">${esc(r.wins??0)}</td>`:''}<td class="st-num"><b>${esc(num(r.points))}</b>${typeof lead==='number'&&typeof r.points==='number'&&r.points<lead?`<span>−${esc(num(Math.round((lead-r.points)*1000)/1000))}</span>`:''}</td>`;
   const rows=shownRows.map(r=>`<tr${r.own?' class="st-own"':''}><td class="st-pos">${esc(r.pos??'')}</td><td class="st-name"><b>${esc(r.name)}</b>${r.detail?`<span>${esc(r.detail)}</span>`:''}</td>${cells(r)}</tr>`).join('');
   const head=cols?cols.map(c=>`<th class="st-num st-c-${esc(c.key)}">${esc(c.label)}</th>`).join(''):`${t.wins?'<th class="st-num">Wins</th>':''}<th class="st-num">Pts</th>`;
   const tabs=tables.length>1?`<div class="st-tabs" role="tablist">${tables.map((x,i)=>`<button type="button" class="st-tab${i===tab?' on':''}" role="tab" aria-selected="${i===tab}" data-st-tab="${i}">${esc(x.title)}</button>`).join('')}</div>`:`<div class="st-title">${esc(t.title)}</div>`;
@@ -2056,7 +2059,7 @@ async function openEvent(id){
   let lastGroup='';
   const displayResults=e.event_type==='MEET'?(e.results||[]).filter(x=>x.group||x.participant):(e.results||[]);
   const rows=e.race_table?.length?raceTableHtml(e):displayResults.map(x=>{const group=x.group||'';const heading=group&&group!==lastGroup?`<div class="result-group-head">${esc(group)}</div>`:'';lastGroup=group;const isTeam=/\bteam$/i.test(x.participant||'');return heading+`<div class="result-row meet-result-row ${isTeam?'team-result':''}"><span>${esc(isTeam?'Team finish':(x.participant||x.label||'Result'))}</span><strong>${esc(x.result||x.place||x.value||'')}</strong></div>`}).join('');
-  const resultsTitle=e.golf_event?'Full Leaderboard':e.event_type==='MEET'?'Full Meet Results':e.event_type==='RACE'?'Full Race Results':'Full Team Results';
+  const resultsTitle=e.golf_cup?'Every Match':e.golf_event?'Full Leaderboard':e.event_type==='MEET'?'Full Meet Results':e.event_type==='RACE'?'Full Race Results':'Full Team Results';
   const recapUrl=e.recap_url||(/recap/i.test(e.source?.name||'')?e.source?.url:null);
   const recapButton=recapUrl?`<a class="recap-button" href="${esc(recapUrl)}" target="_blank" rel="noopener">${esc(e.recap_label||'View Full Official Recap')}</a>`:'';
   const highlights=(e.highlights||[]).length?`<div class="highlights"><h4>Event Highlights</h4><ul>${e.highlights.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${recapButton}</div>`:'';
