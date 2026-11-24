@@ -143,6 +143,9 @@ const coming2=structuredClone(json('pga-presidents-cup'));coming2.events[0].stat
 const pre=golfEvents(pga,{school,config,timeZone:EASTERN,now:new Date('2026-09-01T12:00:00Z'),boards:new Map(),cups:new Map([['401824815',golfCupLeaderboard(coming2)]])}).find(e=>e.golf_event==='401824815');
 assert.equal(pre.status,'Upcoming');
 assert.match(worker,/cup=golfCupLeaderboard\(payload\)/);
+// Golf's saved expanded views have their own key version: the first cup
+// views stored on the preview (pairs unnamed) are not served again.
+assert.ok(worker.includes("proTeam(school).kind==='golf'?'|golf2':'|box2'"));
 
 // The Dow Championship (two-player teams; no ESPN board): lpga.com's results
 // page, the top ten teams, only for the season the page names.
