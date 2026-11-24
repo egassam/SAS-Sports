@@ -6011,3 +6011,7 @@ User: "Can I see it on my phone without tapping SAS Sports logo five times?", th
 
 **Open:** DP World and LIV standings and LIV's match-play final have no readable source; FedExCup main list not on the page; live cup first at the 2027 Ryder Cup.
 
+## November 24, 2026 — Rule 5d: headless browsers and page data feeds (docs only)
+
+**User:** "Should we change a rule and make a headless browser to get data when we get blocked?" The agent recommended against using one to get past blocks (the missing sources, europeantour.com with 403 everywhere and livgolf.com whose robots.txt disallows AI agents, refused on purpose; legal and terms risk before a commercial launch; bot defenses detect headless browsers and can block whole address ranges, risking working sources such as ESPN; the Worker needs paid Cloudflare Browser Rendering), and suggested a narrower rule: a headless browser or a page's own data feed only on sites whose robots.txt allows us and that do not refuse the app, never to get past a refusal; better routes are asking the tours, licensing data (Sportradar, SportsDataIO, DataGolf), and approving allowed page feeds case by case. **User:** "Change the rule to what you suggested." Added as `AGENTS.md` item 5d; the current-session working note updated. Candidates under the rule (not yet built, each needs the user's go-ahead): lpga.com's full Race to CME list (robots allows; the page loads it from its own data feed), indycar.com's results feed.
+
