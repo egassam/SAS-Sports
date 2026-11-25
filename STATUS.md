@@ -2,7 +2,6 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| uc-davis | Volleyball | 🔴 on | live 22-25 · End of 2nd · Sets 0-2 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1799,6 +1798,7 @@
 | ualbany | Field Hockey | ✅ off (passed) | UAlbany at New Hampshire · 2026-10-23T20:40:16.087Z |
 | ualbany | Soccer | ✅ off (passed) | Men's · UAlbany vs Vermont · 2026-10-25T01:30:08.206Z |
 | uc-davis | Basketball | ✅ off (passed) | Women's · UC Davis vs Fullerton · 2026-11-13T00:44:26.398Z |
+| uc-davis | Volleyball | ✅ off (passed) | UC Davis at Grand Canyon · 2026-11-25T09:46:15.748Z |
 | uc-irvine | Basketball | ✅ off (passed) | Women's · UC Irvine at N Arizona · 2026-11-11T08:18:44.625Z |
 | uc-irvine | Soccer | ✅ off (passed) | Men's · UC Irvine vs Santa Barbara · 2026-10-25T06:46:00.294Z |
 | uc-irvine | Volleyball | ✅ off (passed) | Women's · UC Irvine at UC San Diego · 2026-10-24T07:12:58.577Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1128/1956; on 1; off 825; failing 2.
+Done 1129/1956; on 0; off 825; failing 2.
