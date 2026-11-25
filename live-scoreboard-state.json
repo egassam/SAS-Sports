@@ -4801,7 +4801,25 @@
    "state": "off"
   },
   "uc-davis|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-25T01:09:59.962Z",
+   "last_detail": "live 22-25 · End of 2nd · Sets 0-2 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "uc-davis|Volleyball||2026-11-24|1",
+    "title": "UC Davis at Grand Canyon",
+    "started_seen": "2026-11-25T01:01:06.324Z",
+    "live_passes": [
+     "2026-11-25T01:01:06.324Z",
+     "2026-11-25T01:02:27.611Z",
+     "2026-11-25T01:03:49.446Z",
+     "2026-11-25T01:05:12.914Z",
+     "2026-11-25T01:06:34.747Z",
+     "2026-11-25T01:07:56.089Z",
+     "2026-11-25T01:08:57.801Z",
+     "2026-11-25T01:09:59.962Z"
+    ],
+    "final_ok": false
+   }
   },
   "uc-davis|Water Polo": {
    "state": "off"
@@ -12811,7 +12829,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.326.0-ks-counties-8",
- "updated_at": "2026-11-23T01:34:13.909Z",
+ "version": "4.334.0-golf-cups",
+ "updated_at": "2026-11-25T01:09:59.967Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
